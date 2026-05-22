@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cicilia's Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f8f6f2;
+  color: #1a1a2e;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+p { text-align:justify; }
+
+/* ===== SCROLL PROGRESS BAR ===== */
+.scroll-progress {
+  position: fixed; top:0; left:0; height:3px;
+  background: linear-gradient(90deg, #c4a882, #8b6d4c, #5a4030);
+  z-index:1001; width:0%; transition:width 0.1s;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  background: rgba(248,246,242,0.88);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding:0 48px; height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+  transition: box-shadow 0.3s;
+}
+
+.navbar.scrolled { box-shadow: 0 1px 20px rgba(0,0,0,0.06); }
+
+.nav-logo {
+  font-family:'Playfair Display', serif;
+  font-size:22px; font-weight:700;
+  color:#1a1a2e; text-decoration:none;
+  letter-spacing:-0.5px;
+}
+.nav-logo span { color:#c4a882; }
+
+.nav-links { display:flex; gap:2px; list-style:none; align-items:center; }
+
+.nav-links a {
+  text-decoration:none; color:#555;
+  font-size:12.5px; font-weight:500;
+  padding:7px 14px; border-radius:6px;
+  transition:all 0.25s; letter-spacing:0.2px;
+  white-space:nowrap;
+}
+
+.nav-links a:hover { background:#1a1a2e; color:#fff; }
+.nav-links a.active { background:#1a1a2e; color:#fff; }
+
+.hamburger {
+  display:none; flex-direction:column; gap:5px;
+  cursor:pointer; background:none; border:none; padding:4px;
+}
+.hamburger span {
+  width:22px; height:2px; background:#1a1a2e;
+  border-radius:2px; transition:0.3s;
+}
+
+/* ===== HERO SECTION ===== */
+.hero {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center;
+  padding:120px 40px 80px;
+  position:relative; overflow:hidden;
+}
+
+.hero-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(196,168,130,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(196,168,130,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 0%, rgba(196,168,130,0.06) 0%, transparent 50%);
+}
+
+.hero-grid {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(196,168,130,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,168,130,0.04) 1px, transparent 1px);
+  background-size:60px 60px;
+}
+
+.hero-content { position:relative; z-index:1; max-width:720px; }
+
+.hero-badge {
+  display:inline-block; font-size:11px; font-weight:600;
+  color:#c4a882; letter-spacing:4px; text-transform:uppercase;
+  margin-bottom:20px; padding:7px 22px;
+  border:1px solid rgba(196,168,130,0.25);
+  border-radius:50px; background:rgba(248,246,242,0.6);
+}
+
+.hero-image {
+  width:150px; height:150px; border-radius:50%;
+  border:4px solid #fff; box-shadow:0 8px 40px rgba(0,0,0,0.08);
+  margin:0 auto 24px; overflow:hidden;
+  background:#e8ddd0; display:flex;
+  align-items:center; justify-content:center;
+  font-size:12px; color:#aaa;
+  transition:transform 0.5s ease, box-shadow 0.5s ease;
+  cursor:pointer;
+}
+.hero-image:hover {
+  transform:scale(1.04);
+  box-shadow:0 12px 50px rgba(0,0,0,0.15);
+}
+.hero-image img { width:100%; height:100%; object-fit:cover; transition:transform 0.6s ease; }
+.hero-image:hover img { transform:scale(1.08); }
+
+.hero h1 {
+  font-family:'Playfair Display', serif;
+  font-size:64px; font-weight:700;
+  color:#1a1a2e; margin-bottom:6px; line-height:1.08;
+  opacity:0; transform:translateY(20px);
+  animation:fadeUp 0.8s 0.2s forwards;
+}
+
+.hero h1 span {
+  background:linear-gradient(135deg, #c4a882, #8b6d4c, #5a4030);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero .subtitle {
+  font-family:'Playfair Display', serif;
+  font-size:20px; color:#8b6d4c; font-style:italic;
+  margin-bottom:12px;
+  opacity:0; animation:fadeUp 0.8s 0.4s forwards;
+}
+
+.hero .tagline {
+  font-size:15px; color:#666; margin-bottom:32px; line-height:1.9;
+  opacity:0; animation:fadeUp 0.8s 0.6s forwards;
+}
+
+.hero-btns {
+  display:flex; gap:12px; justify-content:center; flex-wrap:wrap;
+  opacity:0; animation:fadeUp 0.8s 0.8s forwards;
+}
+
+.btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:13px 30px; border-radius:50px; text-decoration:none;
+  font-size:14px; font-weight:600; transition:all 0.3s;
+  border:none; cursor:pointer;
+}
+
+.btn-primary {
+  background:#1a1a2e; color:#fff;
+  box-shadow:0 4px 15px rgba(26,26,46,0.15);
+}
+.btn-primary:hover {
+  background:#2a2a4e; transform:translateY(-3px);
+  box-shadow:0 8px 30px rgba(26,26,46,0.2);
+}
+
+.btn-outline {
+  background:transparent; color:#1a1a2e;
+  border:2px solid #1a1a2e;
+}
+.btn-outline:hover { background:#1a1a2e; color:#fff; transform:translateY(-3px); }
+
+@keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+.scroll-indicator {
+  position:absolute; bottom:30px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  color:#bbb; font-size:10px; letter-spacing:3px; text-transform:uppercase;
+  animation:bounce 2.4s ease-in-out infinite;
+  opacity:0; animation:fadeUp 0.8s 1.2s forwards, bounce 2.4s 1.2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%,100% { transform:translateX(-50%) translateY(0); }
+  50% { transform:translateX(-50%) translateY(8px); }
+}
+
+/* ===== SECTIONS COMMON ===== */
+.section {
+  padding:100px 48px;
+  max-width:1120px; margin:0 auto;
+  opacity:0; transform:translateY(40px);
+  transition:opacity 0.8s ease, transform 0.8s ease;
+}
+.section.visible { opacity:1; transform:translateY(0); }
+
+.section-header { text-align:center; margin-bottom:56px; }
+
+.section-number {
+  font-family:'JetBrains Mono', monospace;
+  font-size:12px; font-weight:500;
+  color:#c4a882; letter-spacing:3px; text-transform:uppercase;
+  margin-bottom:6px;
+}
+
+.section-title {
+  font-family:'Playfair Display', serif;
+  font-size:36px; font-weight:700;
+  color:#1a1a2e; margin-bottom:10px;
+}
+
+.section-title .highlight {
+  background:linear-gradient(135deg, #c4a882, #8b6d4c);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.section-desc {
+  font-size:15px; color:#888;
+  max-width:580px; margin:0 auto; line-height:1.8;
+}
+
+.section-divider {
+  width:60px; height:3px; background:linear-gradient(90deg, #c4a882, #8b6d4c);
+  border-radius:3px; margin:14px auto 0;
+}
+
+/* ===== OVERVIEW GRID ===== */
+.overview-grid {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
+  gap:16px; margin-bottom:40px;
+}
+
+.overview-card {
+  background:#fff; border-radius:14px; padding:24px 20px;
+  text-align:center; border:1px solid rgba(0,0,0,0.04);
+  box-shadow:0 2px 12px rgba(0,0,0,0.03);
+  transition:all 0.3s; cursor:default;
+}
+.overview-card:hover {
+  transform:translateY(-4px);
+  box-shadow:0 8px 30px rgba(0,0,0,0.06);
+  border-color:rgba(196,168,130,0.2);
+}
+
+.overview-card .icon {
+  font-size:28px; margin-bottom:10px;
+  display:inline-block;
+}
+.overview-card h4 {
+  font-size:13px; font-weight:600; color:#1a1a2e;
+  margin-bottom:2px; letter-spacing:0.3px;
+}
+.overview-card p {
+  font-size:11px; color:#aaa; font-weight:400;
+}
+
+/* ===== CONTENT CARDS ===== */
+.content-card {
+  background:#fff; border-radius:18px; padding:36px;
+  margin-bottom:28px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.03);
+  border:1px solid rgba(0,0,0,0.05);
+  transition:all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+  position:relative;
+}
+
+.content-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, #c4a882, #8b6d4c);
+  border-radius:18px 18px 0 0;
+  opacity:0; transition:opacity 0.3s;
+}
+
+.content-card:hover {
+  box-shadow:0 8px 35px rgba(0,0,0,0.06);
+  transform:translateY(-3px);
+  border-color:rgba(196,168,130,0.15);
+}
+.content-card:hover::before { opacity:1; }
+
+.content-card h3 {
+  font-family:'Playfair Display', serif;
+  font-size:21px; color:#1a1a2e; margin-bottom:6px;
+}
+
+.content-card h4 {
+  font-size:14px; font-weight:600; color:#8b6d4c;
+  text-transform:uppercase; letter-spacing:1px;
+  margin-bottom:10px; margin-top:18px;
+}
+
+.content-card p {
+  font-size:14.5px; color:#444; margin-bottom:10px; line-height:1.8;
+}
+
+.content-card p:last-child { margin-bottom:0; }
+
+.content-card ul, .content-card ol {
+  margin:8px 0 14px 18px; font-size:14.5px; color:#444; line-height:1.8;
+}
+
+.content-card ul:last-child, .content-card ol:last-child { margin-bottom:0; }
+.content-card li { margin-bottom:5px; }
+
+.card-tag {
+  display:inline-block; font-size:10px; font-weight:700;
+  color:#c4a882; letter-spacing:2px; text-transform:uppercase;
+  margin-bottom:6px; padding:3px 12px;
+  background:rgba(196,168,130,0.08); border-radius:4px;
+}
+
+/* ===== REFERENCE LINK ===== */
+.ref-link {
+  font-size:12px; color:#999; padding:3px 0;
+  word-break:break-all; display:flex; align-items:center; gap:6px;
+}
+.ref-link::before {
+  content:'\25B6'; display:inline-block; width:16px; height:16px;
+  background:rgba(196,168,130,0.12); color:#c4a882;
+  border-radius:50%; flex-shrink:0;
+  text-align:center; line-height:16px;
+  font-size:8px; letter-spacing:0;
+}
+.ref-link:hover { color:#666; }
+
+/* ===== REFLECTION ===== */
+.reflection {
+  background:linear-gradient(135deg, #f5efe7, #faf6f0);
+  border-radius:18px; padding:36px; margin:28px 0;
+  border:1px solid rgba(196,168,130,0.12);
+  position:relative;
+}
+.reflection::before {
+  content:'\201C'; font-family:'Playfair Display', serif;
+  font-size:72px; color:rgba(196,168,130,0.15);
+  position:absolute; top:8px; left:20px; line-height:1;
+}
+.reflection h4 {
+  font-family:'Playfair Display', serif;
+  font-size:19px; color:#1a1a2e; margin-bottom:10px;
+  padding-left:30px;
+}
+.reflection p { font-size:14.5px; color:#444; margin-bottom:8px; line-height:1.8; padding-left:30px; }
+.reflection ul { padding-left:50px; font-size:14.5px; color:#444; line-height:1.8; }
+.reflection li { margin-bottom:4px; }
+
+.ref-citation {
+  font-size:12px; color:#888; margin-top:12px;
+  padding-top:12px; padding-left:30px;
+  border-top:1px solid rgba(0,0,0,0.05);
+  text-align:left;
+}
+
+/* ===== STEPS (for guided reading etc) ===== */
+.steps { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:16px 0; }
+
+.step-card {
+  background:#f8f6f2; border-radius:12px; padding:20px;
+  border:1px solid rgba(0,0,0,0.04); transition:all 0.3s;
+}
+.step-card:hover { background:#f5efe7; }
+.step-card .step-num {
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px; font-weight:600; color:#c4a882;
+  letter-spacing:2px; text-transform:uppercase; margin-bottom:4px;
+}
+.step-card h4 { font-size:14px; margin-top:0; margin-bottom:6px; }
+.step-card p { font-size:13.5px; margin-bottom:8px; }
+.step-card .ref-link { font-size:11px; }
+
+/* ===== ABOUT GRID ===== */
+.about-grid {
+  display:grid; grid-template-columns:260px 1fr;
+  gap:44px; align-items:start;
+}
+
+.about-image {
+  width:100%; border-radius:18px; overflow:hidden;
+  background:#e8ddd0; aspect-ratio:1;
+  display:flex; align-items:center; justify-content:center;
+  color:#aaa; font-size:13px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.04);
+  transition:transform 0.5s ease, box-shadow 0.5s ease;
+}
+.about-image:hover { transform:scale(1.02); box-shadow:0 8px 35px rgba(0,0,0,0.1); }
+.about-image img { width:100%; height:100%; object-fit:cover; transition:transform 0.6s ease; }
+.about-image:hover img { transform:scale(1.06); }
+
+.about-extra-image {
+  width:100%; max-width:320px; border-radius:14px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.06);
+  transition:transform 0.5s ease, box-shadow 0.5s ease;
+  margin-top:18px;
+}
+.about-extra-image:hover { transform:scale(1.02); box-shadow:0 8px 35px rgba(0,0,0,0.1); }
+
+/* ===== EMPTY SLOT ===== */
+.empty-slot {
+  border:2px dashed #ddd; border-radius:12px;
+  min-height:100px; display:flex; align-items:center; justify-content:center;
+  color:#ccc; font-size:13px; font-style:italic;
+  margin:14px 0; cursor:pointer; transition:all 0.3s;
+  background:repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(200,200,200,0.03) 10px, rgba(200,200,200,0.03) 20px);
+}
+.empty-slot:hover { border-color:#c4a882; color:#c4a882; background:rgba(196,168,130,0.03); }
+
+/* ===== TABLE OF CONTENTS ===== */
+.toc-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+  gap:14px;
+}
+
+.toc-item {
+  display:flex;
+  align-items:center;
+  gap:18px;
+  background:#fff;
+  border-radius:14px;
+  padding:20px 24px;
+  text-decoration:none;
+  border:1px solid rgba(0,0,0,0.04);
+  box-shadow:0 2px 8px rgba(0,0,0,0.02);
+  transition:all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+  position:relative;
+  overflow:hidden;
+}
+
+.toc-item::before {
+  content:'';
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:3px;
+  background:linear-gradient(180deg, #c4a882, #8b6d4c);
+  border-radius:0 3px 3px 0;
+  opacity:0;
+  transition:opacity 0.3s;
+}
+
+.toc-item:hover {
+  transform:translateY(-3px);
+  box-shadow:0 8px 30px rgba(0,0,0,0.06);
+  border-color:rgba(196,168,130,0.2);
+}
+
+.toc-item:hover::before { opacity:1; }
+
+.toc-num {
+  font-family:'JetBrains Mono', monospace;
+  font-size:22px;
+  font-weight:600;
+  color:#c4a882;
+  min-width:40px;
+  text-align:center;
+  line-height:1;
+}
+
+.toc-body { flex:1; min-width:0; }
+
+.toc-chapter {
+  font-size:10.5px;
+  font-weight:600;
+  color:#c4a882;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:1px;
+}
+
+.toc-title {
+  font-family:'Playfair Display', serif;
+  font-size:17px;
+  font-weight:600;
+  color:#1a1a2e;
+  margin-bottom:2px;
+  line-height:1.3;
+}
+
+.toc-desc {
+  font-size:12.5px;
+  color:#999;
+  line-height:1.4;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.toc-arrow {
+  font-size:18px;
+  color:#ddd;
+  transition:all 0.3s;
+  flex-shrink:0;
+}
+
+.toc-item:hover .toc-arrow {
+  color:#c4a882;
+  transform:translateX(4px);
+}
+
+/* ===== TWO COL ===== */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+
+/* ===== REFERENCES ===== */
+.ref-entry {
+  font-size:13.5px; color:#444; margin-bottom:14px;
+  padding-left:30px; text-indent:-30px; line-height:1.7;
+}
+
+/* ===== BACK TO TOP ===== */
+.back-top {
+  position:fixed; bottom:30px; right:30px; z-index:999;
+  width:44px; height:44px; border-radius:50%;
+  background:#1a1a2e; color:#fff; border:none;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; opacity:0; pointer-events:none;
+  transition:all 0.3s; box-shadow:0 4px 15px rgba(26,26,46,0.15);
+}
+.back-top.visible { opacity:1; pointer-events:auto; }
+.back-top:hover { transform:translateY(-3px); background:#2a2a4e; }
+
+/* ===== FOOTER ===== */
+.footer {
+  background:#1a1a2e; position:relative; overflow:hidden;
+  padding:56px 40px 32px;
+}
+.footer::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(196,168,130,0.3), transparent);
+}
+.footer-inner {
+  max-width:1120px; margin:0 auto;
+  display:grid; grid-template-columns:2fr 1fr 1fr;
+  gap:40px; text-align:left;
+}
+.footer-brand h4 {
+  font-family:'Playfair Display', serif;
+  font-size:20px; color:#fff; margin-bottom:6px;
+}
+.footer-brand h4 span { color:#c4a882; }
+.footer-brand p {
+  font-size:13px; color:rgba(255,255,255,0.35);
+  line-height:1.7; max-width:320px;
+}
+.footer-col h5 {
+  font-size:11px; font-weight:600; color:rgba(255,255,255,0.25);
+  text-transform:uppercase; letter-spacing:2px; margin-bottom:12px;
+}
+.footer-col a {
+  display:block; font-size:13px; color:rgba(255,255,255,0.45);
+  text-decoration:none; margin-bottom:8px; transition:color 0.2s;
+}
+.footer-col a:hover { color:#c4a882; }
+.footer-bottom {
+  max-width:1120px; margin:32px auto 0; padding-top:20px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:12px;
+}
+.footer-bottom p {
+  font-size:12px; color:rgba(255,255,255,0.25);
+}
+.footer-bottom .social { display:flex; gap:12px; }
+.footer-bottom .social a {
+  width:32px; height:32px; border-radius:50%;
+  background:rgba(255,255,255,0.05);
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.3s; color:rgba(255,255,255,0.3); text-decoration:none;
+}
+.footer-bottom .social a:hover { background:#c4a882; color:#1a1a2e; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:960px) {
+  .nav-links { display:none; }
+  .hamburger { display:flex; }
+  .nav-links.open {
+    display:flex; flex-direction:column; position:absolute;
+    top:64px; left:0; right:0;
+    background:rgba(248,246,242,0.98);
+    padding:12px 20px 24px;
+    border-bottom:1px solid rgba(0,0,0,0.06);
+    gap:4px; max-height:80vh; overflow-y:auto;
+  }
+  .nav-links.open a { font-size:13px; padding:10px 14px; border-radius:6px; }
+  .hero h1 { font-size:44px; }
+  .hero .subtitle { font-size:20px; }
+  .section-title { font-size:28px; }
+  .section { padding:60px 28px; }
+  .navbar { padding:0 24px; }
+  .about-grid { grid-template-columns:1fr; gap:28px; }
+  .about-image { max-width:220px; margin:0 auto; }
+  .steps { grid-template-columns:1fr; gap:12px; }
+  .content-card p, .reflection p, .content-card li { text-align:justify; }
+}
+
+@media (max-width:640px) {
+  .hero { padding:100px 20px 60px; }
+  .hero h1 { font-size:32px; }
+  .hero .subtitle { font-size:17px; }
+  .hero .tagline { font-size:14px; }
+  .hero-badge { font-size:10px; padding:5px 16px; }
+  .hero-image { width:120px; height:120px; margin-bottom:18px; }
+  .hero-btns { flex-direction:column; align-items:center; }
+  .hero-btns .btn { width:100%; max-width:280px; justify-content:center; }
+
+  .section { padding:44px 16px; }
+  .section-title { font-size:24px; }
+  .section-number { font-size:11px; }
+  .section-desc { font-size:14px; }
+
+  .content-card { padding:20px; border-radius:14px; margin-bottom:20px; }
+  .content-card h3 { font-size:18px; }
+  .content-card p, .content-card li { font-size:14px; text-align:justify; }
+  .content-card ul, .content-card ol { padding-left:16px; }
+  .card-tag { font-size:9px; padding:2px 10px; }
+
+  .reflection { padding:20px; border-radius:14px; margin:20px 0; }
+  .reflection h4 { font-size:17px; padding-left:0; }
+  .reflection p { font-size:14px; padding-left:0; text-align:justify; }
+  .reflection ul { padding-left:24px; }
+  .reflection::before { font-size:40px; top:12px; left:14px; }
+  .ref-citation { padding-left:0; font-size:11px; }
+
+  .two-col { grid-template-columns:1fr; gap:16px; }
+  .overview-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+  .overview-card { padding:16px 12px; }
+  .overview-card .icon { font-size:22px; margin-bottom:6px; }
+  .overview-card h4 { font-size:12px; }
+  .overview-card p { font-size:10px; }
+
+  .toc-grid { grid-template-columns:1fr; gap:10px; }
+  .toc-item { padding:14px 18px; gap:12px; }
+  .toc-num { font-size:18px; min-width:30px; }
+  .toc-chapter { font-size:9px; }
+  .toc-title { font-size:15px; }
+  .toc-desc { white-space:normal; font-size:11.5px; }
+  .toc-arrow { font-size:16px; }
+
+  .step-card { padding:16px; }
+  .step-card p { font-size:13px; text-align:justify; }
+
+  .ref-entry { font-size:12.5px; padding-left:24px; text-indent:-24px; }
+
+  .footer { padding:40px 20px 24px; }
+  .footer-inner { grid-template-columns:1fr; gap:28px; }
+  .footer-brand p { max-width:100%; }
+  .footer-bottom { flex-direction:column; text-align:center; }
+
+  .empty-slot { min-height:80px; font-size:12px; }
+  .back-top { bottom:16px; right:16px; width:36px; height:36px; }
+  .btn { font-size:13px; padding:11px 22px; }
+}
+
+@media (max-width:380px) {
+  .hero h1 { font-size:27px; }
+  .hero .subtitle { font-size:15px; }
+  .section-title { font-size:21px; }
+  .section { padding:36px 12px; }
+  .content-card { padding:16px; }
+  .overview-grid { grid-template-columns:1fr 1fr; gap:8px; }
+  .overview-card { padding:12px 8px; }
+  .navbar { padding:0 12px; }
+  .nav-logo { font-size:18px; }
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="progressBar"></div>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <a href="#home" class="nav-logo">Cicilia<span>.</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home" class="active">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#topics">Topics</a></li>
+    <li><a href="#contents">Contents</a></li>
+    <li><a href="#early-literacy">Early Literacy</a></li>
+    <li><a href="#comprehension">Comprehension</a></li>
+    <li><a href="#vocabulary">Vocabulary</a></li>
+    <li><a href="#workshop">Workshop</a></li>
+    <li><a href="#critical-literacy">Critical Lit</a></li>
+    <li><a href="#dyslexia">Dyslexia</a></li>
+    <li><a href="#sel">SEL</a></li>
+    <li><a href="#ai">AI</a></li>
+    <li><a href="#reflections">Reflections</a></li>
+    <li><a href="#references">Refs</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ Master of Education</div>
+    <div class="hero-image" id="profilePhoto"><img src="1.jpeg" alt="Cicilia Kretteka Mondle"></div>
+    <h1>Cicilia's <span>Portfolio</span></h1>
+    <div class="subtitle">A Journey in Literacy &amp; Learning</div>
+    <p class="tagline">
+      <strong style="color:#1a1a2e;">Cicilia Kretteka Mondle</strong><br>
+      Asian University For Women &mdash; AUW254003<br>
+      Exploring early literacy, critical thinking, social-emotional learning, and the future of education.
+    </p>
+    <div class="hero-btns">
+      <a href="#about" class="btn btn-primary">Explore Portfolio &nbsp;↓</a>
+      <a href="#contents" class="btn btn-outline">Table of Contents</a>
+      <a href="#references" class="btn btn-outline">References</a>
+    </div>
+  </div>
+  <div class="scroll-indicator"><span>Scroll</span>
+    <svg width="14" height="22" viewBox="0 0 14 22" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M7 0v14M2 9l5 5 5-5"/></svg>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="section" id="about">
+  <div class="section-header">
+    <div class="section-number">About Me</div>
+    <h2 class="section-title">Who <span class="highlight">I Am</span></h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-image"><img src="1.jpeg" alt="Cicilia Kretteka Mondle"></div>
+    <div>
+      <p>I am a passionate educator and curriculum enthusiast currently pursuing my Master's in Education at Asian University for Women. Alongside my studies, I work as a teacher at William Carey Academy, where I apply learner-centered and practical teaching approaches in the classroom. I genuinely love working with children and supporting their growth both academically and personally.</p>
+      <p>I believe that meaningful change in Bangladesh's education system begins with strong curriculum development. A well-designed curriculum can ensure that every child has access to high-quality education, regardless of their background, as it serves as the backbone of every institution.</p>
+      <p>My goal is to contribute to the development of effective, inclusive, and engaging curricula that empower both teachers and learners. Through this portfolio, I have compiled the key ideas, strategies, and reflections from my coursework &mdash; covering early literacy methods, comprehension, critical literacy, conflict resolution, and the role of technology in education.</p>
+      <p style="margin-top:14px;"><strong style="color:#1a1a2e;">LinkedIn:</strong> <a href="https://www.linkedin.com/in/cicilia-kretteka/" target="_blank" style="color:#c4a882; font-weight:500;">linkedin.com/in/cicilia-kretteka</a></p>
+      <div style="display:flex; gap:14px; margin-top:18px; flex-wrap:wrap;">
+        <img src="2.jpg" alt="Cicilia's work" class="about-extra-image">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TOPICS OVERVIEW ===== -->
+<section class="section" id="topics">
+  <div class="section-header">
+    <div class="section-number">Overview</div>
+    <h2 class="section-title">Areas <span class="highlight">Covered</span></h2>
+    <p class="section-desc">A snapshot of the key domains explored throughout this portfolio.</p>
+    <div class="section-divider"></div>
+  </div>
+  <div class="overview-grid">
+    <div class="overview-card"><div class="icon">📖</div><h4>Early Literacy</h4><p>LEA, Singing, Guided Reading</p></div>
+    <div class="overview-card"><div class="icon">🧠</div><h4>Comprehension</h4><p>Close Reading, Shared Reading</p></div>
+    <div class="overview-card"><div class="icon">📝</div><h4>Vocabulary</h4><p>Strategies, Morphology</p></div>
+    <div class="overview-card"><div class="icon">✍️</div><h4>Workshop</h4><p>Writing &amp; Reader's Workshop</p></div>
+    <div class="overview-card"><div class="icon">🔍</div><h4>Critical Literacy</h4><p>Text Analysis, Media</p></div>
+    <div class="overview-card"><div class="icon">💡</div><h4>Dyslexia</h4><p>Special Needs, Inclusion</p></div>
+    <div class="overview-card"><div class="icon">🤝</div><h4>SEL</h4><p>Conflict Resolution, Empathy</p></div>
+    <div class="overview-card"><div class="icon">🤖</div><h4>AI &amp; Future</h4><p>EdTech, Impact</p></div>
+  </div>
+</section>
+
+<!-- ===== TABLE OF CONTENTS ===== -->
+<section class="section" id="contents">
+  <div class="section-header">
+    <div class="section-number">Navigation</div>
+    <h2 class="section-title">Table of <span class="highlight">Contents</span></h2>
+    <p class="section-desc">A structured overview of all chapters in this portfolio.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="toc-grid">
+    <a href="#early-literacy" class="toc-item">
+      <div class="toc-num">01</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 1</div>
+        <div class="toc-title">Early Literacy Methods</div>
+        <div class="toc-desc">Language Experience Approach, Teaching Through Singing, Guided Reading</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#comprehension" class="toc-item">
+      <div class="toc-num">02</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 2</div>
+        <div class="toc-title">Comprehension &amp; Reading Development</div>
+        <div class="toc-desc">Close Reading, Shared Reading, Orton-Gillingham Approach</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#vocabulary" class="toc-item">
+      <div class="toc-num">03</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 3</div>
+        <div class="toc-title">Vocabulary Development</div>
+        <div class="toc-desc">Vocabulary Strategies, Morphological Analysis, Five Contexts for Reading</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#workshop" class="toc-item">
+      <div class="toc-num">04</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 4</div>
+        <div class="toc-title">Writing &amp; Reading Workshop</div>
+        <div class="toc-desc">Writing Workshop, Reader's Workshop, Bibliotherapy</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#critical-literacy" class="toc-item">
+      <div class="toc-num">05</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 5</div>
+        <div class="toc-title">Critical Literacy</div>
+        <div class="toc-desc">Critical Literacy Framework, Critical Media Studies, Text Analysis</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#dyslexia" class="toc-item">
+      <div class="toc-num">06</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 6</div>
+        <div class="toc-title">Dyslexia &amp; Special Needs</div>
+        <div class="toc-desc">Understanding Dyslexia, Screening &amp; Assessment, Inclusive Strategies</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#sel" class="toc-item">
+      <div class="toc-num">07</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 7</div>
+        <div class="toc-title">Conflict Resolution &amp; SEL</div>
+        <div class="toc-desc">Transformative SEL, Healing-Centered Trauma Support, Peer Mediation</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#ai" class="toc-item">
+      <div class="toc-num">08</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 8</div>
+        <div class="toc-title">The Future of Literacy &amp; AI</div>
+        <div class="toc-desc">AI in Education, Personalized Learning, Societal Impacts</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#reflections" class="toc-item">
+      <div class="toc-num">09</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 9</div>
+        <div class="toc-title">Course Reflections</div>
+        <div class="toc-desc">Overall reflections on the learning journey throughout this course</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#references" class="toc-item">
+      <div class="toc-num"></div>
+      <div class="toc-body">
+        <div class="toc-chapter">References</div>
+        <div class="toc-title">Works Cited</div>
+        <div class="toc-desc">All sources cited in APA format with hanging indents</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 1: EARLY LITERACY ===== -->
+<section class="section" id="early-literacy">
+  <div class="section-header">
+    <div class="section-number">Chapter 01</div>
+    <h2 class="section-title">Early <span class="highlight">Literacy Methods</span></h2>
+    <p class="section-desc">Foundational approaches to teaching reading to young learners.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="content-card">
+    <div class="card-tag">Method 01</div>
+    <h3>Language Experience Approach (LEA)</h3>
+    <p>LEA is a reading method where students create stories or sentences from their own experiences, and the teacher writes them down for reading practice. This approach honors the child's voice and makes reading personally meaningful.</p>
+    <p><strong>Example:</strong> After a zoo visit, students describe what they saw and the teacher writes their sentences on chart paper for the class to read together.</p>
+    <div class="ref-link">youtu.be/taH4pzbNt6k</div>
+  </div>
+
+  <div class="content-card">
+    <div class="card-tag">Method 02</div>
+    <h3>Teaching Through Singing</h3>
+    <p>A literacy strategy where songs and lyrics improve reading, pronunciation, vocabulary, and fluency. Since children already remember the tune and words, reading becomes easier and more enjoyable.</p>
+    <p><strong>Example:</strong> The teacher teaches "Baby Shark" to kindergarten students by singing together. After memorizing, the teacher writes lyrics on chart paper and points to each word while singing. Students later identify familiar words, practice letter sounds, and read independently.</p>
+    <div class="ref-link">youtube.com/shorts/J0shIsMBDek</div>
+  </div>
+
+  <div class="content-card">
+    <div class="card-tag">Method 03</div>
+    <h3>Guided Reading</h3>
+    <p>A small-group reading instruction method where the teacher supports students as they read texts at their learning level.</p>
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">Step 01</div>
+        <h4>Before Reading</h4>
+        <p>The teacher prepares students by discussing the topic, pictures, or difficult words.</p>
+        <div class="ref-link">youtube.com/watch?v=HFRcwN2x6Gs</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">Step 02</div>
+        <h4>During Reading</h4>
+        <p>Students read while the teacher supports comprehension and pronunciation.</p>
+        <div class="ref-link">youtube.com/watch?v=HZdIHuNtIbc</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">Step 03</div>
+        <h4>After Reading</h4>
+        <p>The teacher checks comprehension through discussion, questions, and activities.</p>
+        <div class="ref-link">youtube.com/watch?v=hTXQPIYLzoo</div>
+      </div>
+    </div>
+    <div class="reflection">
+      <h4>My Reflection on Guided Reading</h4>
+      <p>The three stages of guided reading demonstrate efficient ways to organize reading courses. Before reading, asking students to look at pictures and discuss the topic prompted them to consider what they already knew. During reading, guiding struggling kids with hints and relating new words to familiar songs kept them engaged. After reading, word-finding activities and syllable clapping helped students learn phonics and vocabulary.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 2: COMPREHENSION ===== -->
+<section class="section" id="comprehension">
+  <div class="section-header">
+    <div class="section-number">Chapter 02</div>
+    <h2 class="section-title">Comprehension &amp; <span class="highlight">Reading Development</span></h2>
+    <p class="section-desc">True reading requires thinking strategies, not just word decoding.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="content-card">
+      <h3>Close Reading</h3>
+      <p>An intense focus on understanding ideas in a short text. The teacher models comprehension strategies repeatedly until students internalize them.</p>
+      <div class="ref-link">youtube.com/watch?v=iKIUovilf5Y</div>
+      <div class="ref-link">youtube.com/watch?v=CZwDGCMbsts</div>
+      <div class="ref-link">youtube.com/watch?v=zIZZEvPRR9A</div>
+    </div>
+    <div class="content-card">
+      <h3>Shared Reading</h3>
+      <p>Focuses mostly on decoding words in the text. The teacher and students read together, modeling fluent reading.</p>
+      <div class="ref-link">youtube.com/watch?v=Y2UDee7STBo</div>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <h3>Orton-Gillingham for Dyslexic Children</h3>
+    <p>This one-on-one approach starts by assessing the child's ability to recognize letter names and sounds, following the sequence: <strong>Model → Shared → Guided → Independent</strong>. Concepts include CVC words ("not," "fan"), open vowels ("no"), and silent-e patterns ("note").</p>
+    <div class="ref-link">youtube.com/watch?v=zZgS8Ij1Ltg</div>
+    <div class="ref-link">youtube.com/watch?v=j2hazzQ5bSs</div>
+  </div>
+
+  <div class="reflection">
+    <h4>My Response on Reading Comprehension</h4>
+    <p>Keene and Zimmermann's article highlights that true reading needs thinking techniques rather than just word decoding. Skilled readers use strategies like asking questions, making guesses, and relating text to prior knowledge. Most kids are good at decoding but poor at comprehension.</p>
+    <p>Based on my experience, both learner types benefit from reading aloud with expression. When I make my classroom interactive with discussion, fun read-alouds, and student participation, even inattentive students start to focus and engage.</p>
+    <div class="ref-citation">Keene, E. O., &amp; Zimmermann, S. (2013). Years later, comprehension strategies are still at work. <em>The Reading Teacher</em>, 66(8), 601–606.</div>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 3: VOCABULARY ===== -->
+<section class="section" id="vocabulary">
+  <div class="section-header">
+    <div class="section-number">Chapter 03</div>
+    <h2 class="section-title">Vocabulary <span class="highlight">Development</span></h2>
+    <p class="section-desc">Building a rich vocabulary is essential for reading comprehension and academic success.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="content-card">
+      <h3>Strategies for Learning Words</h3>
+      <ul>
+        <li>Use a dictionary or digital device</li>
+        <li>Use context clues from the sentence</li>
+        <li>Search for images or definitions online</li>
+        <li>Ask a friend or teacher</li>
+        <li>Use morphological analysis (word parts)</li>
+        <li>Look at pictures for clues</li>
+        <li>Use schema / background knowledge</li>
+        <li>Choose texts at the right difficulty level</li>
+        <li>Apply the Frayer Model</li>
+        <li>Use Reciprocal Teaching: clarify, summarize, question, predict</li>
+      </ul>
+    </div>
+    <div class="content-card">
+      <h3>Morphological Analysis</h3>
+      <p>Understanding word parts helps students decode meaning. For example:</p>
+      <p style="font-size:20px; font-weight:600; color:#8b6d4c; margin:8px 0;"><strong>Ast</strong> (star) → astronaut, aster, astronomer, astrology</p>
+      <h4>Five Contexts for Reading Instruction</h4>
+      <ol>
+        <li><strong>Language Experience Approach</strong> — experience, write, read, phonics</li>
+        <li><strong>Teacher Reading</strong> — model decoding or comprehension</li>
+        <li><strong>Whole Group Instruction</strong> — model, shared, guided, independent</li>
+        <li><strong>Small Group Guided Reading</strong> — 4–8 students, before/during/after</li>
+        <li><strong>Reading Workshop</strong> — mini-lesson, self-selected reading, sharing</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="reflection">
+    <h4>My Vocabulary Reading Response</h4>
+    <p>Blachowicz and Fisher (2011) explain that the best way to help students learn words is to provide a word-rich environment with opportunities to use words meaningfully. Students learn better from repeated exposure, wordplay, discussion, and reading — not just definitions.</p>
+    <p>In class, we discussed how vocabulary can be taught even in low-resource schools. Setting small vocabulary goals per class — where one teacher creates a class word list used across subjects — is a practical and effective method.</p>
+    <div class="ref-citation">Blachowicz, C. L., &amp; Fisher, P. J. (2011). Best practices in vocabulary instruction revisited. <em>Best practices in literacy instruction</em>, 4, 224–249.</div>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 4: WORKSHOP ===== -->
+<section class="section" id="workshop">
+  <div class="section-header">
+    <div class="section-number">Chapter 04</div>
+    <h2 class="section-title">Writing &amp; <span class="highlight">Reading Workshop</span></h2>
+    <p class="section-desc">Student-centered approaches that build independent, confident readers and writers.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="content-card">
+      <h3>Writing Workshop</h3>
+      <p>A student-centered approach where students learn writing through regular practice, guidance, sharing, and revision.</p>
+      <ul>
+        <li><strong>Mini-Lesson</strong> (5–15 min): One skill or strategy</li>
+        <li><strong>Independent Writing:</strong> Students write on their own topics</li>
+        <li><strong>Conferencing:</strong> Individual or small-group feedback</li>
+        <li><strong>Sharing:</strong> Builds confidence and peer learning</li>
+      </ul>
+      <div class="ref-link">youtube.com/watch?v=FXTA_mUYPKU</div>
+      <div class="ref-link">youtube.com/watch?v=uI2LBpCwyOE</div>
+    </div>
+    <div class="content-card">
+      <h3>Reader's Workshop</h3>
+      <p>A student-centered approach where students develop reading skills through independent reading, guidance, discussion, and reflection.</p>
+      <ul>
+        <li><strong>Mini-Lesson</strong> (5–15 min): Reading strategy focus</li>
+        <li><strong>Independent Reading:</strong> Self-selected books</li>
+        <li><strong>Conferencing:</strong> Discuss progress and comprehension</li>
+        <li><strong>Sharing:</strong> Builds communication and critical thinking</li>
+      </ul>
+      <div class="ref-link">youtube.com/watch?v=LPHVmIOcFbg</div>
+      <div class="ref-link">youtube.com/watch?v=gviJBpfWLGs</div>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <h3>Bibliotherapy</h3>
+    <p>Using book reading to bring up and solve social problems in the classroom. Students often cannot express problems directly but may identify with ideas in a story.</p>
+    <ul>
+      <li>Talk to parents at drop-off or pick-up</li>
+      <li>Observe children in different settings</li>
+      <li>Ask other staff members</li>
+    </ul>
+  </div>
+
+  <div class="reflection">
+    <h4>My Response to Workshop Videos</h4>
+    <p>The videos highlighted that education is not just imparting knowledge but understanding students' emotions and experiences. Technology can enhance learning but also create inequality — a critical concern in developing countries where urban and rural students have very different experiences.</p>
+    <p>Most importantly, emotional support and motivation are key to learning. Students labelled as "weak" may simply lack support, confidence, or opportunity. As educators, we should focus on creating supportive environments rather than labelling difficulties.</p>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 5: CRITICAL LITERACY ===== -->
+<section class="section" id="critical-literacy">
+  <div class="section-header">
+    <div class="section-number">Chapter 05</div>
+    <h2 class="section-title">Critical <span class="highlight">Literacy</span></h2>
+    <p class="section-desc">Questioning texts, examining power, and reading beyond the surface to promote equity.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="content-card">
+    <h3>What is Critical Literacy?</h3>
+    <p>An approach that encourages students to think deeply about texts and examine issues of power, fairness, inequality, and perspective. Readers ask:</p>
+    <ul>
+      <li>Whose voice is included or missing?</li>
+      <li>Is the situation fair to all characters?</li>
+      <li>How could the story change from another perspective?</li>
+    </ul>
+    <div class="ref-link">vimeo.com/939840927 — Dr. Glenn DeVoogd on Critical Literacy</div>
+  </div>
+
+  <div class="two-col">
+    <div class="content-card">
+      <h4>How Do We Come to a Conclusion?</h4>
+      <ul>
+        <li>Evidence from the text</li>
+        <li>Awareness of context (social, historical, cultural)</li>
+        <li>Considering multiple perspectives</li>
+        <li>Evaluating impact (who benefits/harmed)</li>
+      </ul>
+    </div>
+    <div class="content-card">
+      <h3>Critical Media Studies</h3>
+      <p>Billboards, TV, movies, and advertisements all influence people. Critical media studies helps students understand implicit values, develop alternative narratives, and take action for justice.</p>
+      <div class="ref-link">criticalmediaproject.org</div>
+    </div>
+  </div>
+
+  <div class="reflection">
+    <h4>My Response on Critical Literacy</h4>
+    <p>McLaughlin and DeVoogd (2020) discuss critical expressionism — expanding reader response through creative responses like art, dramatization, and digital projects. Critical literacy pushes readers beyond the text to consider power relations, attitudes, and unseen prejudices.</p>
+    <p><strong>Analysis of <em>The Tortoise and the Hare</em>:</strong></p>
+    <ul>
+      <li><strong>Concealed values:</strong> Dedication, humility, and hard work over natural talent</li>
+      <li><strong>Missing perspectives:</strong> Other animals' viewpoints; the rabbit's background</li>
+      <li><strong>Action for justice:</strong> Apply lessons to real-life situations where people are underestimated</li>
+    </ul>
+    <div class="ref-citation">McLaughlin, M., &amp; DeVoogd, G. (2020). Critical expressionism: Expanding reader response in critical literacy. <em>The Reading Teacher</em>, 73(5), 587–595.</div>
+  </div>
+
+  <div class="reflection">
+    <h4>Critical Analysis: Encanto (2021)</h4>
+    <p>The movie shows a distinct lean towards perfection and productivity — strong powers are more appreciated, reflecting a societal ideology that worth equals productivity. Mirabel is left out for lacking powers, and Bruno is isolated for his misunderstood ability.</p>
+    <p><strong>Alternative perspective:</strong> Each person is valuable regardless of capabilities. Mirabel brings emotional insight and healing. The movie urges acceptance of diversity in talents, personality, and feelings.</p>
+    <div class="ref-citation">Bush, J. (Director). (2021). <em>Encanto</em> [Film]. Walt Disney Pictures.</div>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 6: DYSLEXIA ===== -->
+<section class="section" id="dyslexia">
+  <div class="section-header">
+    <div class="section-number">Chapter 06</div>
+    <h2 class="section-title">Dyslexia &amp; <span class="highlight">Special Needs</span></h2>
+    <p class="section-desc">Understanding learning differences and creating inclusive classrooms.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="content-card">
+      <h3>Understanding Dyslexia</h3>
+      <p>Dyslexia is a specific, neurobiological learning issue — not a sign of intelligence or lack of effort. It affects the ability to recognize, decode, and spell words, and is linked to phonological processing.</p>
+      <ul>
+        <li>Varies from person to person</li>
+        <li>Often hereditary; can co-occur with other conditions</li>
+        <li>The brain is not naturally wired for reading</li>
+        <li>With proper instruction, the brain can adapt (neuroplasticity)</li>
+        <li>Students often experience anxiety, frustration, and self-doubt</li>
+      </ul>
+    </div>
+    <div class="content-card">
+      <h3>Screening &amp; Assessment</h3>
+      <p>The Multi-Tiered System of Support (MTSS) provides varying levels of assistance based on student needs:</p>
+      <ul>
+        <li>Phonological awareness</li>
+        <li>Working memory</li>
+        <li>Rapid naming</li>
+        <li>Vocabulary, phonics, decoding</li>
+        <li>Reading fluency</li>
+      </ul>
+      <div class="ref-link">ca-diverse-learning.org/programs/Literacy-dyslexia</div>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <h3>Teaching Literacy for Special Needs Students</h3>
+    <p>Adapts reading and writing methods with flexible strategies: visual aids, multisensory activities, repetition, and assistive tools. Activities include picture cards, tracing letters in sand, and word matching games.</p>
+    <div class="ref-link">readingrockets.org — Hooking Struggling Readers</div>
+  </div>
+
+  <div class="reflection">
+    <h4>My Reading Response on Dyslexia</h4>
+    <p>After completing modules on dyslexia, the reading brain, and screening &amp; assessment, I developed a much deeper understanding. One key insight: the human brain is not built for reading — we learn by collaborating different brain parts, and when certain parts don't function the same way, dyslexia can result. But the brain is flexible — with the right instruction, it can adapt.</p>
+    <p>My main concern is that in South Asia, children are often labelled as "slow" or "untalented" instead of being properly assessed. I believe it is my responsibility to educate my community so that children are not harmed or misunderstood.</p>
+    <div class="ref-citation">UC|CSU Collaborative for Neuroscience, Diversity, and Learning. (n.d.). <em>Literacy &amp; dyslexia</em>.</div>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 7: SEL ===== -->
+<section class="section" id="sel">
+  <div class="section-header">
+    <div class="section-number">Chapter 07</div>
+    <h2 class="section-title">Conflict Resolution &amp; <span class="highlight">Social-Emotional Learning</span></h2>
+    <p class="section-desc">Building empathy, resolving conflicts, and supporting students' emotional well-being.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="content-card">
+      <h3>Transformative SEL</h3>
+      <p>An approach that develops social-emotional skills while promoting equity, identity, relationships, and social awareness.</p>
+      <p><strong>Example:</strong> In a discussion about bullying, students learn empathy and communication skills while also discussing fairness and cultural differences.</p>
+      <div class="ref-link">casel.org — Fundamentals of SEL</div>
+    </div>
+    <div class="content-card">
+      <h3>Healing-Centered Engagement</h3>
+      <p>Formulated by Shawn Ginwright, HCE shifts from "What is wrong with you?" to "What is good about you?"</p>
+      <ul>
+        <li><strong>Asset-based</strong> — focus on strengths</li>
+        <li><strong>Cultural</strong> — value identity and community</li>
+        <li><strong>Political</strong> — address systemic issues</li>
+        <li><strong>Adult flourishing</strong> — support the whole person</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <h3>Peer Mediation</h3>
+    <p>Trained student mediators help peers resolve disagreements peacefully. Steps include: Introduction (ground rules), Listening (each side shares), Solutions (brainstorm together), and Closing (sign agreement).</p>
+    <div class="ref-link">wpdi.org — Whitaker Peace and Development Initiative</div>
+    <div class="ref-link">youtube.com/watch?v=6lzIqdf7-3Q — The 17 Camels Story</div>
+  </div>
+
+  <div class="reflection">
+    <h4>My Response on SEL &amp; Healing-Centered Engagement</h4>
+    <p>I believe that if an educational institution doesn't know how to support trauma, the teacher-student relationship becomes non-friendly. In Bangladesh, mental health is often neglected or treated as non-existent. As second parents or guardians, educators can make a great difference. The teacher-student relationship plays a vital role in creating a safe space where children can grow emotionally and academically.</p>
+    <div class="ref-citation">Ginwright, S. (2018). The future of healing: Shifting from trauma informed care to healing centered engagement. <em>Occasional Paper</em>, 25(1), 25–32.</div>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 8: AI ===== -->
+<section class="section" id="ai">
+  <div class="section-header">
+    <div class="section-number">Chapter 08</div>
+    <h2 class="section-title">The Future of <span class="highlight">Literacy &amp; AI</span></h2>
+    <p class="section-desc">Technology is transforming education — exploring the possibilities and responsibilities.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="content-card">
+      <h3>AI for Teachers</h3>
+      <ul>
+        <li>Generate differentiated materials for varied ability levels</li>
+        <li>Create lesson plans at different Bloom's Taxonomy levels</li>
+        <li>Design assessments and rubrics</li>
+      </ul>
+      <div class="ref-link">aiforeducation.io — Prompt Library</div>
+      <div class="ref-link">youtube.com/watch?v=Z0e4eYVb6Cc</div>
+      <div class="ref-link">youtube.com/watch?v=1tn3H7dlXGg</div>
+    </div>
+    <div class="content-card">
+      <h3>AI for Students</h3>
+      <ul>
+        <li>Help students start projects</li>
+        <li>Create high-interest materials</li>
+        <li>Text-to-speech, visual aids, translation for disabilities</li>
+        <li>Personalized learning paths based on interests</li>
+      </ul>
+      <div class="ref-link">youtube.com/watch?v=6oLNLCO0vfI</div>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <h3>Societal Impacts of AI</h3>
+    <ul>
+      <li><strong>High Energy Consumption:</strong> AI systems require massive electricity</li>
+      <li><strong>Resource Depletion:</strong> Hardware depends on rare minerals</li>
+      <li><strong>E-Waste:</strong> Frequent upgrades contribute to pollution</li>
+      <li><strong>Water Usage:</strong> Data centers strain local water supplies</li>
+      <li><strong>Employment:</strong> Automation can replace human jobs</li>
+      <li><strong>Intellectual Property:</strong> Questions of ownership and copyright</li>
+    </ul>
+    <div class="ref-link">youtube.com/watch?v=eXdVDhOGqoE</div>
+  </div>
+
+  <div class="content-card">
+    <h3>30 Under 30: Young Leaders in Literacy</h3>
+    <p>ILA celebrates 30 educators under 30 making remarkable contributions. Notable: <strong>Ahmad</strong> from Afghanistan (p. 51) and <strong>Ahmed</strong> (p. 55).</p>
+    <div class="ref-link">literacyworldwide.org — ILA 2023 30 Under 30</div>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 9: REFLECTIONS ===== -->
+<section class="section" id="reflections">
+  <div class="section-header">
+    <div class="section-number">Chapter 09</div>
+    <h2 class="section-title">Course <span class="highlight">Reflections</span></h2>
+    <p class="section-desc">Looking back at my learning journey through this course.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="reflection" style="background:#fff; border:1px solid rgba(196,168,130,0.15);">
+    <p>Throughout this course, I have learned that literacy is not simply about decoding words — it is about making meaning, questioning perspectives, and empowering learners. The journey from early literacy methods like LEA and Guided Reading to more advanced concepts like Critical Literacy and AI in education has given me a comprehensive toolkit for my teaching practice.</p>
+
+    <p>One of the most important shifts in my thinking has been understanding the difference between decoding and comprehension. Many students can read words fluently but struggle to understand what they read. This has made me more intentional about teaching comprehension strategies explicitly.</p>
+
+    <p>Critical literacy has been particularly eye-opening. Learning to question texts — asking whose voice is missing, what values are being promoted, and how power operates in stories — has transformed how I approach reading with my students. I now see that literacy can be a tool for social justice and equity.</p>
+
+    <p>I also gained deep insights into dyslexia and special needs education. Understanding that dyslexia is neurobiological, not a reflection of intelligence, has changed how I view struggling readers. I am now better equipped to identify signs of dyslexia and provide appropriate support.</p>
+
+    <p>The conflict resolution and SEL components of the course have been equally valuable. I now recognize that students' emotional well-being is inseparable from their academic success. The Healing-Centered Engagement framework has given me a new lens for understanding and supporting students who have experienced trauma.</p>
+
+    <p>Finally, exploring AI in education has opened my eyes to both possibilities and responsibilities. As educators, we must harness technology thoughtfully while ensuring equity and critical awareness.</p>
+
+    <p>As I move forward in my career, I carry these lessons with me. My goal is to create classrooms where every child feels seen, supported, and empowered to become a confident reader and critical thinker. I am especially committed to bringing awareness about dyslexia and inclusive education to South Asian contexts, where these issues are still often misunderstood.</p>
+  </div>
+</section>
+
+<!-- ===== REFERENCES ===== -->
+<section class="section" id="references">
+  <div class="section-header">
+    <div class="section-number">References</div>
+    <h2 class="section-title">Works <span class="highlight">Cited</span></h2>
+    <p class="section-desc">All sources cited in APA format throughout this portfolio.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="content-card" style="padding:40px;">
+    <div class="ref-entry">Blachowicz, C. L., &amp; Fisher, P. J. (2011). Best practices in vocabulary instruction revisited. In <em>Best practices in literacy instruction</em> (4th ed., pp. 224–249). Guilford Press.</div>
+    <div class="ref-entry">Bush, J. (Director). (2021). <em>Encanto</em> [Film]. Walt Disney Pictures.</div>
+    <div class="ref-entry">Collaborative for Academic, Social, and Emotional Learning. (n.d.). <em>Fundamentals of SEL</em>. https://casel.org/fundamentals-of-sel</div>
+    <div class="ref-entry">Critical Media Project. (n.d.). <em>Critical media project</em>. https://criticalmediaproject.org</div>
+    <div class="ref-entry">Domestic Harmonizer. (n.d.). <em>Domestic harmonizer project</em>. https://domesticharmonizer.org</div>
+    <div class="ref-entry">Ginwright, S. (2018). The future of healing: Shifting from trauma informed care to healing centered engagement. <em>Occasional Paper</em>, 25(1), 25–32.</div>
+    <div class="ref-entry">International Literacy Association. (2023). <em>30 under 30</em>. https://www.literacyworldwide.org/docs/default-source/communications/literacy-today/ila-2023-30-under-30.pdf</div>
+    <div class="ref-entry">Keene, E. O., &amp; Zimmermann, S. (2013). Years later, comprehension strategies are still at work. <em>The Reading Teacher</em>, 66(8), 601–606. https://doi.org/10.1002/trtr.1167</div>
+    <div class="ref-entry">McLaughlin, M., &amp; DeVoogd, G. (2020). Critical expressionism: Expanding reader response in critical literacy. <em>The Reading Teacher</em>, 73(5), 587–595.</div>
+    <div class="ref-entry">UC|CSU Collaborative for Neuroscience, Diversity, and Learning. (n.d.). <em>Literacy &amp; dyslexia</em>. https://ca-diverse-learning.org/programs/Literacy-dyslexia</div>
+    <div class="ref-entry">Whitaker Peace and Development Initiative. (n.d.). <em>WPDI</em>. https://wpdi.org</div>
+    <div class="ref-entry">InsideTrack. (n.d.). <em>Support students with this healing-centered engagement framework</em>. https://www.insidetrack.org/blog/support-students-with-this-healing-centered-engagement-framework</div>
+  </div>
+
+  <div class="content-card" style="background:#f5efe7; border-color:rgba(196,168,130,0.15);">
+    <p style="font-size:14px; color:#666; margin:0;"><strong>Note:</strong> YouTube video references are embedded throughout the chapters as direct links. Additional sources include guided reading demonstrations, phonics activities, writing workshop examples, and critical literacy talks accessed through the course materials.</p>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h4>Cicilia<span>.</span></h4>
+      <p>Master of Education candidate at Asian University for Women, dedicated to inclusive literacy education and curriculum development in Bangladesh.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Navigate</h5>
+      <a href="#home">Home</a>
+      <a href="#about">About Me</a>
+      <a href="#contents">Table of Contents</a>
+      <a href="#references">References</a>
+    </div>
+    <div class="footer-col">
+      <h5>Connect</h5>
+      <a href="https://www.linkedin.com/in/cicilia-kretteka/" target="_blank">LinkedIn</a>
+      <a href="https://asian-university.org/" target="_blank">Asian University for Women</a>
+      <a href="mailto:">Email</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p id="footerCopyright">&copy; 2026 Cicilia Kretteka Mondle — Asian University For Women</p>
+    <div class="social">
+      <a href="https://www.linkedin.com/in/cicilia-kretteka/" target="_blank" title="LinkedIn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="https://asian-university.org/" target="_blank" title="University">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 8l11 6 9-4.91V17h2V9.24l3-1.64L12 2zm0 3.86L18.27 8 12 10.14 5.73 8 12 5.86zM18 14.09l-6 3.27-6-3.27V12l6 3.27L18 12v2.09z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== BACK TO TOP ===== -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<script>
+// === HAMBURGER TOGGLE ===
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+document.querySelectorAll('.nav-links a').forEach(l => l.addEventListener('click', () => {
+  document.getElementById('navLinks').classList.remove('open');
+}));
+
+// === SCROLL PROGRESS BAR ===
+window.addEventListener('scroll', () => {
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('progressBar').style.width = progress + '%';
+
+  document.getElementById('backTop').classList.toggle('visible', scrollTop > 500);
+  document.getElementById('navbar').classList.toggle('scrolled', scrollTop > 50);
+
+  const sections = document.querySelectorAll('.section[id]');
+  let current = '';
+  sections.forEach(s => {
+    const rect = s.getBoundingClientRect();
+    if (rect.top <= 200) current = s.getAttribute('id');
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// === INTERSECTION OBSERVER FOR SECTIONS ===
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+// === DYNAMIC YEAR & LAST UPDATED ===
+document.getElementById('footerCopyright').innerHTML = '&copy; ' + new Date().getFullYear() + ' Cicilia Kretteka Mondle &mdash; Asian University For Women';
+const updatedSpan = document.createElement('p');
+updatedSpan.textContent = 'Last updated: ' + document.lastModified;
+document.querySelector('.footer-bottom').appendChild(updatedSpan);
+
+// === HERO IMAGE CLICK: FULLSCREEN PREVIEW ===
+document.getElementById('profilePhoto').addEventListener('click', function() {
+  const img = this.querySelector('img');
+  if (!img) return;
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;cursor:zoom-out;animation:fadeIn 0.3s ease;';
+  const fullImg = document.createElement('img');
+  fullImg.src = img.src;
+  fullImg.style.cssText = 'max-width:90%;max-height:90%;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.4);transform:scale(0.92);transition:transform 0.3s ease;';
+  overlay.appendChild(fullImg);
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => { fullImg.style.transform = 'scale(1)'; });
+  overlay.addEventListener('click', () => { document.body.removeChild(overlay); });
+});
+
+// === KEYBOARD SHORTCUT: ESC TO CLOSE OVERLAY ===
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const overlay = document.querySelector('div[style*="z-index:9999"]');
+    if (overlay) document.body.removeChild(overlay);
+  }
+});
+</script>
+
+</body>
+</html>
