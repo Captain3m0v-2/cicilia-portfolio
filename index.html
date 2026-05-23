@@ -9,6 +9,8 @@
 <style>
 /* ===== RESET & BASE ===== */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+p, li, .content-card p, .reflection p, .step-card p, .tagline, .section-desc, .about-grid p { text-align:justify; }
+.content-card img, .content-card img[style*="max-width"] { display:block; margin-left:auto; margin-right:auto; }
 html { scroll-behavior:smooth; }
 
 body {
@@ -743,6 +745,12 @@ p { text-align:justify; }
 .editable-image:hover::after{opacity:1}
 .edit-chapter-btn{display:inline-block;margin:8px 0;padding:5px 14px;border-radius:6px;border:1px dashed #c4a882;background:transparent;color:#c4a882;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s}
 .edit-chapter-btn:hover{background:rgba(196,168,130,0.1)}
+.del-btn{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:6px;border:1px solid rgba(231,76,60,0.3);background:transparent;color:#e74c3c;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;margin:4px}
+.del-btn:hover{background:#e74c3c;color:#fff}
+.del-btn-sm{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:4px;border:none;background:rgba(231,76,60,0.7);color:#fff;font-size:12px;line-height:1;cursor:pointer;transition:all 0.15s;position:absolute;top:6px;right:6px;z-index:5;opacity:0}
+.del-btn-sm:hover{background:#e74c3c;transform:scale(1.1)}
+.content-card:hover .del-btn-sm,.reflection:hover .del-btn-sm{opacity:1}
+.card-img-wrap{position:relative;display:inline-block;max-width:100%}
 .add-btn{display:inline-flex;align-items:center;gap:4px;margin:8px 6px 8px 0;padding:5px 12px;border-radius:6px;border:1px dashed #888;background:transparent;color:#888;font-size:11px;font-weight:500;cursor:pointer;transition:all 0.2s}
 .add-btn:hover{border-color:#27ae60;color:#27ae60;background:rgba(39,174,96,0.04)}
 .add-btn-section{display:block;width:100%;padding:10px;border-radius:10px;border:2px dashed #ddd;background:transparent;color:#bbb;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:center;margin:16px 0}
@@ -847,20 +855,10 @@ p { text-align:justify; }
 <nav class="navbar" id="navbar">
   <a href="#home" class="nav-logo">Cicilia<span>.</span></a>
   <ul class="nav-links" id="navLinks">
-    <li><a href="#home" class="active">Home</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="#topics">Topics</a></li>
     <li><a href="#contents">Contents</a></li>
-    <li><a href="#early-literacy">Early Literacy</a></li>
-    <li><a href="#comprehension">Comprehension</a></li>
-    <li><a href="#vocabulary">Vocabulary</a></li>
-    <li><a href="#workshop">Workshop</a></li>
-    <li><a href="#critical-literacy">Critical Lit</a></li>
-    <li><a href="#dyslexia">Dyslexia</a></li>
-    <li><a href="#sel">SEL</a></li>
-    <li><a href="#ai">AI</a></li>
     <li><a href="#reading-responses">Responses</a></li>
-    <li><a href="#references">Refs</a></li>
+    <li><a href="#references">References</a></li>
   </ul>
   <button class="hamburger" id="hamburger" onclick="toggleNav()">
     <span></span><span></span><span></span>
@@ -872,17 +870,16 @@ p { text-align:justify; }
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
   <div class="hero-content">
-    <div class="hero-badge">✦ Master of Education</div>
+    <div class="hero-badge">✦ Master of Education Candidate</div>
     <div class="hero-image" id="profilePhoto"><img src="images/1.jpeg" alt="Cicilia Kretteka Mondle"></div>
-    <h1>Cicilia's <span>Portfolio</span></h1>
-    <div class="subtitle">A Journey in Literacy &amp; Learning</div>
+    <h1>Cicilia Kretteka <span>Mondle</span></h1>
+    <div class="subtitle">M.Ed. Portfolio — Literacy &amp; Learning</div>
     <p class="tagline">
-      <strong style="color:#1a1a2e;">Cicilia Kretteka Mondle</strong><br>
-      Asian University For Women &mdash; AUW254003<br>
-      Exploring early literacy, critical thinking, social-emotional learning, and the future of education.
+      Asian University For Women<br>
+      Exploring early literacy, comprehension, critical thinking, social-emotional learning, and the future of education.
     </p>
     <div class="hero-btns">
-      <a href="#about" class="btn btn-primary">Explore Portfolio &nbsp;↓</a>
+      <a href="#about" class="btn btn-primary">About Me &nbsp;↓</a>
       <a href="#contents" class="btn btn-outline">Table of Contents</a>
       <a href="#references" class="btn btn-outline">References</a>
     </div>
@@ -909,7 +906,6 @@ p { text-align:justify; }
       <div style="display:flex; gap:14px; margin-top:18px; flex-wrap:wrap;">
         <img src="images/2.jpg" alt="Cicilia's work" class="about-extra-image">
       </div>
-    </div>
   </div>
 </section>
 
@@ -923,13 +919,17 @@ p { text-align:justify; }
   </div>
   <div class="overview-grid">
     <div class="overview-card"><div class="icon">📖</div><h4>Early Literacy</h4><p>LEA, Singing, Guided Reading</p></div>
-    <div class="overview-card"><div class="icon">🧠</div><h4>Comprehension</h4><p>Close Reading, Shared Reading</p></div>
-    <div class="overview-card"><div class="icon">📝</div><h4>Vocabulary</h4><p>Strategies, Morphology</p></div>
-    <div class="overview-card"><div class="icon">✍️</div><h4>Workshop</h4><p>Writing &amp; Reader's Workshop</p></div>
-    <div class="overview-card"><div class="icon">🔍</div><h4>Critical Literacy</h4><p>Text Analysis, Media</p></div>
+    <div class="overview-card"><div class="icon">📜</div><h4>Alienation</h4><p>Plato, Marx, Workshop</p></div>
+    <div class="overview-card"><div class="icon">🔬</div><h4>Science of Reading</h4><p>Phonics, Book Club</p></div>
+    <div class="overview-card"><div class="icon">📚</div><h4>Quality Literature</h4><p>Direct Instruction</p></div>
     <div class="overview-card"><div class="icon">💡</div><h4>Dyslexia</h4><p>Special Needs, Inclusion</p></div>
-    <div class="overview-card"><div class="icon">🤝</div><h4>SEL</h4><p>Conflict Resolution, Empathy</p></div>
-    <div class="overview-card"><div class="icon">🤖</div><h4>AI &amp; Future</h4><p>EdTech, Impact</p></div>
+    <div class="overview-card"><div class="icon">🤝</div><h4>SEL</h4><p>Conflict Resolution</p></div>
+    <div class="overview-card"><div class="icon">🧠</div><h4>Comprehension</h4><p>Close Reading, Orton</p></div>
+    <div class="overview-card"><div class="icon">🔍</div><h4>Critical Literacy</h4><p>Text Analysis, Media</p></div>
+    <div class="overview-card"><div class="icon">🌐</div><h4>Future of Literacy</h4><p>Vocabulary, Trends</p></div>
+    <div class="overview-card"><div class="icon">♿</div><h4>Special Needs Lit</h4><p>Bibliotherapy</p></div>
+    <div class="overview-card"><div class="icon">🤖</div><h4>AI in Education</h4><p>EdTech, Impact</p></div>
+    <div class="overview-card"><div class="icon">✍️</div><h4>Responses</h4><p>All Reflections</p></div>
   </div>
 </section>
 
@@ -947,87 +947,117 @@ p { text-align:justify; }
       <div class="toc-num">01</div>
       <div class="toc-body">
         <div class="toc-chapter">Chapter 1</div>
-        <div class="toc-title">Early Literacy Methods</div>
-        <div class="toc-desc">Language Experience Approach, Teaching Through Singing, Guided Reading</div>
+        <div class="toc-title">Literacy Strategies &amp; Methods</div>
+        <div class="toc-desc">LEA, Singing, Guided Reading, Reciprocal Teaching, Bimodal Reading, Fluency, Gradual Release</div>
       </div>
       <div class="toc-arrow">→</div>
     </a>
 
-    <a href="#comprehension" class="toc-item">
+    <a href="#plato-marx" class="toc-item">
       <div class="toc-num">02</div>
       <div class="toc-body">
         <div class="toc-chapter">Chapter 2</div>
-        <div class="toc-title">Comprehension &amp; Reading Development</div>
-        <div class="toc-desc">Close Reading, Shared Reading, Orton-Gillingham Approach</div>
+        <div class="toc-title">Plato &amp; Marx's Theory of Alienation</div>
+        <div class="toc-desc">Reading Workshop, Writing Workshop, Marx's Alienation, IRE Critique</div>
       </div>
       <div class="toc-arrow">→</div>
     </a>
 
-    <a href="#vocabulary" class="toc-item">
+    <a href="#science-reading" class="toc-item">
       <div class="toc-num">03</div>
       <div class="toc-body">
         <div class="toc-chapter">Chapter 3</div>
-        <div class="toc-title">Vocabulary Development</div>
-        <div class="toc-desc">Vocabulary Strategies, Morphological Analysis, Five Contexts for Reading</div>
+        <div class="toc-title">Science of Reading</div>
+        <div class="toc-desc">Research-Based Methods, Book Club, Phonics Instruction with Tape Measure</div>
       </div>
       <div class="toc-arrow">→</div>
     </a>
 
-    <a href="#workshop" class="toc-item">
+    <a href="#quality-literature" class="toc-item">
       <div class="toc-num">04</div>
       <div class="toc-body">
         <div class="toc-chapter">Chapter 4</div>
-        <div class="toc-title">Writing &amp; Reading Workshop</div>
-        <div class="toc-desc">Writing Workshop, Reader's Workshop, Bibliotherapy</div>
-      </div>
-      <div class="toc-arrow">→</div>
-    </a>
-
-    <a href="#critical-literacy" class="toc-item">
-      <div class="toc-num">05</div>
-      <div class="toc-body">
-        <div class="toc-chapter">Chapter 5</div>
-        <div class="toc-title">Critical Literacy</div>
-        <div class="toc-desc">Critical Literacy Framework, Critical Media Studies, Text Analysis</div>
+        <div class="toc-title">The Importance of Quality Literature</div>
+        <div class="toc-desc">Direct Instruction, Metacognition, Connect with Students, Shared Reading</div>
       </div>
       <div class="toc-arrow">→</div>
     </a>
 
     <a href="#dyslexia" class="toc-item">
-      <div class="toc-num">06</div>
+      <div class="toc-num">05</div>
       <div class="toc-body">
-        <div class="toc-chapter">Chapter 6</div>
+        <div class="toc-chapter">Chapter 5</div>
         <div class="toc-title">Dyslexia &amp; Special Needs</div>
-        <div class="toc-desc">Understanding Dyslexia, Screening &amp; Assessment, Inclusive Strategies</div>
+        <div class="toc-desc">Dyslexia, Screening &amp; Assessment, Inclusive Strategies</div>
       </div>
       <div class="toc-arrow">→</div>
     </a>
 
     <a href="#sel" class="toc-item">
-      <div class="toc-num">07</div>
+      <div class="toc-num">06</div>
       <div class="toc-body">
-        <div class="toc-chapter">Chapter 7</div>
+        <div class="toc-chapter">Chapter 6</div>
         <div class="toc-title">Conflict Resolution &amp; SEL</div>
         <div class="toc-desc">Transformative SEL, Healing-Centered Trauma Support, Peer Mediation</div>
       </div>
       <div class="toc-arrow">→</div>
     </a>
 
-    <a href="#ai" class="toc-item">
+    <a href="#comprehension" class="toc-item">
+      <div class="toc-num">07</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 7</div>
+        <div class="toc-title">Comprehension &amp; Reading Development</div>
+        <div class="toc-desc">Close Reading, Shared Reading, Orton-Gillingham Approach</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#critical-literacy" class="toc-item">
       <div class="toc-num">08</div>
       <div class="toc-body">
         <div class="toc-chapter">Chapter 8</div>
-        <div class="toc-title">The Future of Literacy &amp; AI</div>
-        <div class="toc-desc">AI in Education, Personalized Learning, Societal Impacts</div>
+        <div class="toc-title">Critical Literacy</div>
+        <div class="toc-desc">Critical Literacy Framework, Critical Media Studies, Text Analysis</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#future-literacy" class="toc-item">
+      <div class="toc-num">09</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 9</div>
+        <div class="toc-title">The Future of Literacy</div>
+        <div class="toc-desc">Vocabulary Strategies, Morphological Analysis, Five Contexts, 30 Under 30</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#special-needs" class="toc-item">
+      <div class="toc-num">10</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 10</div>
+        <div class="toc-title">Teaching Literacy for Special Needs</div>
+        <div class="toc-desc">Special Needs Literacy, Bibliotherapy</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>
+
+    <a href="#ai" class="toc-item">
+      <div class="toc-num">11</div>
+      <div class="toc-body">
+        <div class="toc-chapter">Chapter 11</div>
+        <div class="toc-title">Teaching &amp; Learning with AI</div>
+        <div class="toc-desc">AI for Teachers &amp; Students, Personalized Learning, Societal Impacts</div>
       </div>
       <div class="toc-arrow">→</div>
     </a>
 
     <a href="#reading-responses" class="toc-item">
-      <div class="toc-num"></div>
+      <div class="toc-num">12</div>
       <div class="toc-body">
-        <div class="toc-chapter">Reading Responses</div>
-        <div class="toc-title">All Reading Responses</div>
+        <div class="toc-chapter">Chapter 12</div>
+        <div class="toc-title">Reading Responses</div>
         <div class="toc-desc">All personal reading responses and reflections organized by chapter</div>
       </div>
       <div class="toc-arrow">→</div>
@@ -1045,11 +1075,11 @@ p { text-align:justify; }
   </div>
 </section>
 
-<!-- ===== CHAPTER 1: EARLY LITERACY ===== -->
+<!-- ===== CHAPTER 1: LITERACY STRATEGIES & METHODS ===== -->
 <section class="section" id="early-literacy">
   <div class="section-header">
     <div class="section-number">Chapter 01</div>
-    <h2 class="section-title">Early <span class="highlight">Literacy Methods</span></h2>
+    <h2 class="section-title">Literacy <span class="highlight">Strategies &amp; Methods</span></h2>
     <p class="section-desc">Foundational approaches to teaching reading to young learners.</p>
     <div class="section-divider"></div>
   </div>
@@ -1065,8 +1095,8 @@ p { text-align:justify; }
   <div class="content-card">
     <div class="card-tag">Method 02</div>
     <h3>Teaching Through Singing</h3>
-    <p>A literacy strategy where songs and lyrics improve reading, pronunciation, vocabulary, and fluency. Since children already remember the tune and words, reading becomes easier and more enjoyable.</p>
-    <p><strong>Example:</strong> The teacher teaches "Baby Shark" to kindergarten students by singing together. After memorizing, the teacher writes lyrics on chart paper and points to each word while singing. Students later identify familiar words, practice letter sounds, and read independently.</p>
+    <p>A literacy strategy where songs and lyrics improve reading, pronunciation, vocabulary, and fluency.</p>
+    <p><strong>Example:</strong> The teacher teaches "Baby Shark" to kindergarten students. After memorizing, the teacher writes lyrics on chart paper and points to each word while singing.</p>
     <div class="ref-link">youtube.com/shorts/J0shIsMBDek</div>
   </div>
 
@@ -1074,229 +1104,109 @@ p { text-align:justify; }
     <div class="card-tag">Method 03</div>
     <h3>Guided Reading</h3>
     <p>A small-group reading instruction method where the teacher supports students while they read texts at their learning level.</p>
-    <p><strong>Example:</strong> The teacher reads a story with a small group and helps students sound out difficult words.</p>
     <div class="steps">
       <div class="step-card">
         <div class="step-num">Step 01</div>
         <h4>Before Reading</h4>
-        <p>The teacher prepares students for the text by discussing the topic, pictures, or difficult words. For example: The teacher asks students what they know about animals before reading a zoo story.</p>
+        <p>The teacher prepares students by discussing the topic, pictures, or difficult words.</p>
         <div class="ref-link">youtube.com/watch?v=HFRcwN2x6Gs</div>
       </div>
       <div class="step-card">
         <div class="step-num">Step 02</div>
         <h4>During Reading</h4>
-        <p>Students read the text while the teacher supports comprehension and pronunciation. Mainly, the teacher helps students decode unfamiliar words while reading.</p>
+        <p>Students read while the teacher supports comprehension and pronunciation.</p>
         <div class="ref-link">youtube.com/watch?v=HZdIHuNtIbc</div>
       </div>
       <div class="step-card">
         <div class="step-num">Step 03</div>
         <h4>After Reading</h4>
-        <p>Students discuss, summarize, or reflect on the reading. Most of the students talk about their favorite part of the story after reading.</p>
+        <p>Students discuss, summarize, or reflect on the reading.</p>
         <div class="ref-link">youtube.com/watch?v=hTXQPIYLzoo</div>
       </div>
     </div>
+    <img src="images/image1.png" alt="Literacy Strategy diagram" style="max-width:100%;border-radius:8px;margin:12px 0">
   </div>
 
   <div class="content-card">
     <div class="card-tag">Method 04</div>
     <h3>Reciprocal Teaching</h3>
-    <p>A discussion-based reading strategy where students practice predicting, questioning, clarifying, and summarizing. One student predicts what will happen next while another summarizes the paragraph.</p>
-    <p><strong>Example:</strong> A group of students reads a short story about a lost puppy. One student predicts what might happen next. Another asks questions such as, "Why did the puppy run away?" A third clarifies difficult words like "shelter" or "rescue," and another summarizes the main events. The teacher guides at first, but gradually students take responsibility for leading the conversation.</p>
-    <h4>Four Steps of Reciprocal Teaching</h4>
+    <p>A discussion-based strategy where students practice predicting, questioning, clarifying, and summarizing.</p>
     <ol>
-      <li><strong>Predict</strong> — what the text might be about based on title, pictures, or headings</li>
-      <li><strong>Clarify</strong> — difficult words or ideas in the reading</li>
+      <li><strong>Predict</strong> — what the text might be about</li>
+      <li><strong>Clarify</strong> — difficult words or ideas</li>
       <li><strong>Summarize</strong> — the text in your own words</li>
-      <li><strong>Question</strong> — ask the group a question about the text</li>
+      <li><strong>Question</strong> — ask the group a question</li>
     </ol>
     <div class="ref-link">youtube.com/watch?v=tC032EkLC3A</div>
-    <img src="images/image1.png" alt="Reciprocal Teaching diagram" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <img src="images/image2.png" alt="Reciprocal Teaching diagram" style="max-width:100%;border-radius:8px;margin:12px 0">
   </div>
 
   <div class="content-card">
     <div class="card-tag">Method 05</div>
     <h3>Bimodal Reading</h3>
-    <p>A reading strategy where students listen to audio while simultaneously following the written text. This helps improve pronunciation, fluency, comprehension, and word recognition.</p>
-    <p><strong>Example:</strong> A teacher gives students a short storybook along with an audiobook recording. As the narrator reads the story aloud, students follow the same words in the book using their fingers. When students hear and see the words together, they better understand pronunciation, sentence flow, and meaning. After listening several times, students become more confident and begin reading the story independently.</p>
+    <p>Students listen to audio while simultaneously following the written text. This improves pronunciation, fluency, comprehension, and word recognition.</p>
     <div class="ref-link">youtu.be/A_oaBe532Uo</div>
   </div>
 
   <div class="content-card">
     <div class="card-tag">Method 06</div>
     <h3>Reading Fluency Strategies</h3>
-    <p>Five key strategies to build reading fluency in young learners:</p>
     <ol>
-      <li><strong>Choral Reading</strong> — Students read a text aloud together as a group. <em>Example:</em> The whole class reads a poem together at the same time. <div class="ref-link">youtu.be/rQFlnAukEFs</div></li>
-      <li><strong>Echo Reading</strong> — The teacher reads first and students repeat afterward. <em>Example:</em> The teacher reads one sentence loudly and students repeat it together. <div class="ref-link">youtube.com/watch?v=4gRXca5G-Ow</div></li>
-      <li><strong>Repeated Reading</strong> — Students read the same text multiple times to improve fluency and confidence. <em>Example:</em> A student reads the same short story every day for a week. <div class="ref-link">youtu.be/8q2mvF_6K6M</div></li>
-      <li><strong>Alternative Passage Reading</strong> — Students and teachers take turns reading different parts of a text. The teacher reads one paragraph and the student reads the next paragraph.</li>
-      <li><strong>Buddy Reading</strong> — Two students read together and help each other understand the text. An older student reads a story with a younger student. <div class="ref-link">youtu.be/b9Q7Bkca_yw</div></li>
+      <li><strong>Choral Reading</strong> — class reads together <div class="ref-link">youtu.be/rQFlnAukEFs</div></li>
+      <li><strong>Echo Reading</strong> — teacher reads, students repeat <div class="ref-link">youtube.com/watch?v=4gRXca5G-Ow</div></li>
+      <li><strong>Repeated Reading</strong> — same text multiple times <div class="ref-link">youtu.be/8q2mvF_6K6M</div></li>
+      <li><strong>Alternative Passage</strong> — teacher and student take turns</li>
+      <li><strong>Buddy Reading</strong> — two students help each other <div class="ref-link">youtu.be/b9Q7Bkca_yw</div></li>
     </ol>
   </div>
 
   <div class="content-card">
     <div class="card-tag">Method 07</div>
     <h3>Gradual Release of Responsibility</h3>
-    <p>A teaching method where the teacher slowly gives students more responsibility for learning and completing tasks independently. It moves from strong teacher support to independent student work.</p>
-    <div class="steps" style="grid-template-columns:repeat(4,1fr)">
-      <div class="step-card">
-        <div class="step-num">I DO</div>
-        <h4>Model</h4>
-        <p>Teacher demonstrates the skill while students observe and listen. Purpose: to show how to do something correctly.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">I DO, YOU HELP</div>
-        <h4>Shared</h4>
-        <p>Teacher and students work together. Teacher still leads, but students participate and give answers.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">YOU DO, I HELP</div>
-        <h4>Guided</h4>
-        <p>Students try the task on their own while the teacher gives support, guidance, and feedback when needed.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">YOU DO</div>
-        <h4>Independent</h4>
-        <p>Students complete the task independently without teacher support to show mastery.</p>
-      </div>
-    </div>
+    <p>From strong teacher support to independent student work.</p>
+    <ul>
+      <li><strong>Model</strong> — I do, you watch</li>
+      <li><strong>Shared</strong> — I do, you help</li>
+      <li><strong>Guided</strong> — You do, I help</li>
+      <li><strong>Independent</strong> — You do alone</li>
+    </ul>
     <div class="ref-link">youtube.com/watch?v=uE_KTMRwbJs</div>
     <div class="ref-link">youtube.com/watch?v=Jge_gsKn-tU</div>
-    <img src="images/image2.png" alt="Gradual Release of Responsibility diagram" style="max-width:100%;border-radius:8px;margin:12px 0">
-  </div>
-
-  <div class="content-card">
-    <div class="card-tag">Method 08</div>
-    <h3>Phonics Instruction: Blending with the Tape Measure</h3>
-    <p>A teaching strategy used to help children combine individual letter sounds smoothly to read words. A tape measure or similar visual tool is stretched while students slowly blend sounds together, helping them hear how separate sounds form a complete word.</p>
-    <p><strong>Example:</strong> The teacher shows the word "cat." Students say each sound slowly: /c/ - /a/ - /t/ while stretching the tape measure. Then they blend the sounds together to read the full word: "cat." This activity improves phonemic awareness, decoding skills, and early reading fluency.</p>
-    <div class="ref-link">youtube.com/watch?v=PLfgrXUl9Mk</div>
-    <div class="ref-link">youtube.com/watch?v=uyWzM9g5C8M</div>
-  </div>
-
-  <div class="content-card">
-    <div class="card-tag">Method 09</div>
-    <h3>The Importance of Quality Literature</h3>
-    <p>Quality children's literature plays a vital role in developing early literacy skills. Well-written books with engaging stories, rich vocabulary, and beautiful illustrations help children develop a love for reading, build background knowledge, and improve comprehension.</p>
-    <div class="ref-link">youtube.com/watch?v=Xa4--M9F7Kg</div>
-    <div class="ref-link">youtube.com/watch?v=FmGdmqzPo60</div>
-    <div class="ref-link">youtu.be/taH4pzbNt6k</div>
+    <img src="images/image3.png" alt="Gradual Release of Responsibility diagram" style="max-width:100%;border-radius:8px;margin:12px 0">
   </div>
 </section>
 
-<!-- ===== CHAPTER 2: COMPREHENSION ===== -->
-<section class="section" id="comprehension">
+<!-- ===== CHAPTER 2: PLATO & MARX ===== -->
+<section class="section" id="plato-marx">
   <div class="section-header">
     <div class="section-number">Chapter 02</div>
-    <h2 class="section-title">Comprehension &amp; <span class="highlight">Reading Development</span></h2>
-    <p class="section-desc">True reading requires thinking strategies, not just word decoding.</p>
-    <div class="section-divider"></div>
-  </div>
-
-  <div class="two-col">
-    <div class="content-card">
-      <h3>Close Reading</h3>
-      <p>An intense focus on understanding ideas in a short text. The teacher models comprehension strategies repeatedly until students internalize them.</p>
-      <div class="ref-link">youtube.com/watch?v=iKIUovilf5Y</div>
-      <div class="ref-link">youtube.com/watch?v=CZwDGCMbsts</div>
-      <div class="ref-link">youtube.com/watch?v=zIZZEvPRR9A</div>
-    </div>
-    <div class="content-card">
-      <h3>Shared Reading</h3>
-      <p>Focuses mostly on decoding words in the text. The teacher and students read together, modeling fluent reading.</p>
-      <div class="ref-link">youtube.com/watch?v=Y2UDee7STBo</div>
-    </div>
-  </div>
-
-  <div class="content-card">
-    <h3>Orton-Gillingham for Dyslexic Children</h3>
-    <p>Some students need one-on-one instruction. In this approach, the teacher starts by assessing the child's ability to recognize letter names and letter sounds, following the sequence: <strong>Model → Shared → Guided → Independent</strong>.</p>
-    <p><strong>Key Concepts:</strong></p>
-    <ul>
-      <li><strong>CVC Words (Closed Vowel):</strong> Consonant-Vowel-Consonant words where a consonant comes after the vowel, making the vowel say its short sound. <em>Examples:</em> "not," "fan," "tin"</li>
-      <li><strong>Open Vowels:</strong> No consonant after the vowel (CV pattern), so the vowel says its own name (long sound). <em>Example:</em> "no"</li>
-      <li><strong>Silent-e Pattern:</strong> The 'e' at the end gives power to the preceding vowel so it can say its own name. <em>Example:</em> "note" (the 'e' gives power to 'o')</li>
-    </ul>
-    <p><strong>Teaching story:</strong> Teachers often tell young students that vowels "can't say their own name" if they are surrounded by consonants (e.g., "not"). Using a folded piece of cardboard — purple on one side (consonant), green on the other (vowel) — teachers can visually demonstrate how consonants block the vowel's sound. This multisensory approach helps students internalize the concept through sight, sound, and touch.</p>
-    <p>In multi-syllable words like "student" (STU-DENT), the first syllable 'STU' has an open vowel 'U' that says its own name, while the 'E' in the second syllable cannot because it is closed by 'NT'.</p>
-    <p>In the sequence of explicit, direct teaching (Model, Shared, Guided, Independent), this is an example of Shared Activity — the teacher controls the reading while the student shares in the reading.</p>
-    <div class="ref-link">youtube.com/watch?v=zZgS8Ij1Ltg</div>
-    <div class="ref-link">youtube.com/watch?v=j2hazzQ5bSs</div>
-  </div>
-</section>
-
-<!-- ===== CHAPTER 3: VOCABULARY ===== -->
-<section class="section" id="vocabulary">
-  <div class="section-header">
-    <div class="section-number">Chapter 03</div>
-    <h2 class="section-title">Vocabulary <span class="highlight">Development</span></h2>
-    <p class="section-desc">Building a rich vocabulary is essential for reading comprehension and academic success.</p>
-    <div class="section-divider"></div>
-  </div>
-
-  <div class="two-col">
-    <div class="content-card">
-      <h3>Strategies for Learning Words</h3>
-      <ul>
-        <li>Use a dictionary or digital device</li>
-        <li>Use context clues from the sentence</li>
-        <li>Search for images or definitions online</li>
-        <li>Ask a friend or teacher</li>
-        <li>Use morphological analysis (word parts)</li>
-        <li>Look at pictures for clues</li>
-        <li>Use schema / background knowledge</li>
-        <li>Choose texts at the right difficulty level</li>
-        <li>Apply the Frayer Model</li>
-        <li>Use Reciprocal Teaching: clarify, summarize, question, predict</li>
-      </ul>
-    </div>
-    <div class="content-card">
-      <h3>Morphological Analysis</h3>
-      <p>Understanding word parts helps students decode meaning. For example:</p>
-      <p style="font-size:20px; font-weight:600; color:#8b6d4c; margin:8px 0;"><strong>Ast</strong> (star) → astronaut, aster, astronomer, astrology</p>
-      <div class="ref-link">barefootteflteacher.com — Connect with Students: Build Upon Student Assets</div>
-      <h4>Five Contexts for Reading Instruction</h4>
-      <ol>
-        <li><strong>Language Experience Approach</strong> — experience, write, read, phonics</li>
-        <li><strong>Teacher Reading</strong> — model decoding or comprehension</li>
-        <li><strong>Whole Group Instruction</strong> — model, shared, guided, independent</li>
-        <li><strong>Small Group Guided Reading</strong> — 4–8 students, before/during/after</li>
-        <li><strong>Reading Workshop</strong> — mini-lesson, self-selected reading, sharing</li>
-      </ol>
-    </div>
-  </div>
-</section>
-
-<!-- ===== CHAPTER 4: WORKSHOP ===== -->
-<section class="section" id="workshop">
-  <div class="section-header">
-    <div class="section-number">Chapter 04</div>
-    <h2 class="section-title">Writing &amp; <span class="highlight">Reading Workshop</span></h2>
-    <p class="section-desc">Student-centered approaches that build independent, confident readers and writers.</p>
+    <h2 class="section-title">Plato &amp; Marx's <span class="highlight">Theory of Alienation</span></h2>
+    <p class="section-desc">How educational systems can alienate teachers and students from authentic learning.</p>
     <div class="section-divider"></div>
   </div>
 
   <div class="two-col">
     <div class="content-card">
       <h3>Writing Workshop</h3>
-      <p>A student-centered approach where students learn writing through regular practice, guidance, sharing, and revision.</p>
+      <p>A student-centered approach where students learn writing through regular practice, guidance, and sharing.</p>
       <ul>
-        <li><strong>Mini-Lesson</strong> (5–15 min): One skill or strategy</li>
-        <li><strong>Independent Writing:</strong> Students write on their own topics</li>
-        <li><strong>Conferencing:</strong> Individual or small-group feedback</li>
-        <li><strong>Sharing:</strong> Builds confidence and peer learning</li>
+        <li><strong>Mini-Lesson</strong> — one skill or strategy</li>
+        <li><strong>Independent Writing</strong> — students write on their own topics</li>
+        <li><strong>Conferencing</strong> — individual feedback</li>
+        <li><strong>Sharing</strong> — builds confidence</li>
       </ul>
       <div class="ref-link">youtube.com/watch?v=FXTA_mUYPKU</div>
       <div class="ref-link">youtube.com/watch?v=uI2LBpCwyOE</div>
+      <img src="images/image4.png" alt="Writing Workshop" style="max-width:100%;border-radius:8px;margin:12px 0">
     </div>
     <div class="content-card">
       <h3>Reader's Workshop</h3>
-      <p>A student-centered approach where students develop reading skills through independent reading, guidance, discussion, and reflection.</p>
+      <p>A student-centered reading approach with independent reading, guidance, and discussion.</p>
       <ul>
-        <li><strong>Mini-Lesson</strong> (5–15 min): Reading strategy focus</li>
-        <li><strong>Independent Reading:</strong> Self-selected books</li>
-        <li><strong>Conferencing:</strong> Discuss progress and comprehension</li>
-        <li><strong>Sharing:</strong> Builds communication and critical thinking</li>
+        <li><strong>Mini-Lesson</strong> — reading strategy focus</li>
+        <li><strong>Independent Reading</strong> — self-selected books</li>
+        <li><strong>Conferencing</strong> — discuss progress</li>
+        <li><strong>Sharing</strong> — communication and critical thinking</li>
       </ul>
       <div class="ref-link">youtube.com/watch?v=LPHVmIOcFbg</div>
       <div class="ref-link">youtube.com/watch?v=gviJBpfWLGs</div>
@@ -1305,31 +1215,31 @@ p { text-align:justify; }
   </div>
 
   <div class="content-card">
-    <h3>Bibliotherapy</h3>
-    <p>Using book reading to bring up and solve social problems in the classroom. Students often cannot express problems directly but may identify with ideas in a story.</p>
-    <ul>
-      <li>Talk to parents at drop-off or pick-up</li>
-      <li>Observe children in different settings</li>
-      <li>Ask other staff members</li>
-    </ul>
-  </div>
-
-  <div class="content-card">
     <h3>Marx's Theory of Alienation in Education</h3>
-    <p>Karl Marx's theory of alienation is used in modern educational contexts to explain how excessive control, standardized systems, and limited autonomy can make teachers feel disconnected from their work, students, and professional identity. The study argues that these policies reduce teachers' creativity and job satisfaction in the classroom.</p>
+    <p>Karl Marx's theory explains how excessive control, standardized systems, and limited autonomy make teachers feel disconnected from their work and professional identity.</p>
     <div class="ref-citation">Aksakalli, A. (2024). From Marx to the classroom: Understanding teacher alienation in policy contexts. <em>Policy Futures in Education</em>, 23(2), 337–354.</div>
+    <img src="images/image5.png" alt="Marx's Alienation" style="max-width:100%;border-radius:8px;margin:12px 0">
   </div>
 
   <div class="content-card">
     <h3>Student Freedom of Thought: Beyond IRE</h3>
-    <p>Often students are not very active in teacher-led discussions for a couple of reasons. The IRE pattern — where the teacher <strong>I</strong>nitiates a question, the student <strong>R</strong>esponds, and the teacher <strong>E</strong>valuates — can be oppressive. If the teacher asks, "Who discovered America?" the teacher is doing all the work of coming up with the question. The student is not as engaged as they would be if they came up with their own question.</p>
-    <p>In a group, the student thinks: "I don't want to embarrass myself by challenging the teacher's bad question or by hearing the teacher tell me I am wrong." So they just say "Columbus" to avoid drama and embarrassment. The student is not actually wondering about that question. If they were authentically wondering, that might lead them to find out more.</p>
-    <p>When the teacher responds "good," it shuts down learning. Learning is over — got the answer right, moving on. This is "learning welfare" and "learning dependency." Our students will never become managers or professionals who ask questions and initiate projects if they don't learn to ask their own questions. Teacher control of questions and answers becomes a form of "mind control" and oppression.</p>
+    <p>The IRE pattern (<strong>I</strong>nitiate, <strong>R</strong>espond, <strong>E</strong>valuate) can be oppressive. When the teacher controls both questions and answers, students develop "learning dependency" and never learn to ask their own questions.</p>
+    <img src="images/image6.png" alt="Student-centered learning" style="max-width:100%;border-radius:8px;margin:12px 0">
+  </div>
+</section>
+
+<!-- ===== CHAPTER 3: SCIENCE OF READING ===== -->
+<section class="section" id="science-reading">
+  <div class="section-header">
+    <div class="section-number">Chapter 03</div>
+    <h2 class="section-title">Science of <span class="highlight">Reading</span></h2>
+    <p class="section-desc">Evidence-based approaches to reading instruction grounded in research.</p>
+    <div class="section-divider"></div>
   </div>
 
   <div class="content-card">
     <h3>Review of Different Methods</h3>
-    <p>How these methods connect with students' prior understanding:</p>
+    <p>How methods connect with students' prior understanding:</p>
     <ul>
       <li><strong>Interactive Reading</strong> — review and discussion</li>
       <li><strong>Language Experience Approach</strong> — review and discussion</li>
@@ -1341,14 +1251,179 @@ p { text-align:justify; }
       <li><strong>Writer's Workshop</strong> — review and discussion</li>
     </ul>
     <div class="ref-link">youtube.com/watch?v=tC032EkLC3A</div>
-    <img src="images/image3.png" alt="Methods review diagram" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <img src="images/image7.png" alt="Methods review diagram" style="max-width:100%;border-radius:8px;margin:12px 0">
+  </div>
+
+  <div class="content-card">
+    <h3>Sample for Book Club Discussion</h3>
+    <p>Access a book club discussion sample to explore literature circles in the classroom.</p>
+    <div class="ref-link">drive.google.com/file/d/1N-h5larkvMoB-M079_lZA2y2z5liV0TG/view</div>
+  </div>
+
+  <div class="content-card">
+    <h3>Blending with the Tape Measure</h3>
+    <p>A visual tool stretched while students blend sounds: /c/ - /a/ - /t/ → "cat." Improves phonemic awareness and decoding.</p>
+    <div class="ref-link">youtube.com/watch?v=PLfgrXUl9Mk</div>
+    <div class="ref-link">youtube.com/watch?v=uyWzM9g5C8M</div>
+    <img src="images/image8.png" alt="Phonics blending tool" style="max-width:100%;border-radius:8px;margin:12px 0">
   </div>
 </section>
 
-<!-- ===== CHAPTER 5: CRITICAL LITERACY ===== -->
+<!-- ===== CHAPTER 4: QUALITY LITERATURE ===== -->
+<section class="section" id="quality-literature">
+  <div class="section-header">
+    <div class="section-number">Chapter 04</div>
+    <h2 class="section-title">The Importance of <span class="highlight">Quality Literature</span></h2>
+    <p class="section-desc">Direct instruction, metacognition, and meaningful engagement with texts.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="content-card">
+    <h3>Quality Literature in Early Literacy</h3>
+    <img src="images/image9.png" alt="Quality literature examples" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <p>Well-written books with engaging stories, rich vocabulary, and beautiful illustrations help children develop a love for reading and build background knowledge.</p>
+    <div class="ref-link">youtube.com/watch?v=Xa4--M9F7Kg</div>
+    <div class="ref-link">youtube.com/watch?v=FmGdmqzPo60</div>
+    <div class="ref-link">youtu.be/taH4pzbNt6k</div>
+  </div>
+
+  <div class="content-card">
+    <h3>Direct Instruction &amp; Metacognition</h3>
+    <p>Using the Gradual Release of Responsibility:</p>
+    <ul>
+      <li><strong>Model</strong> — I do; you watch</li>
+      <li><strong>Shared Activity</strong> — I do; you help</li>
+      <li><strong>Guided Activity</strong> — You do; I help</li>
+      <li><strong>Independent Activity</strong> — You do alone</li>
+    </ul>
+    <div class="ref-link">youtube.com/watch?v=j9SjFsimywA</div>
+    <div class="ref-link">youtube.com/watch?v=uE_KTMRwbJs</div>
+    <div class="ref-link">youtube.com/watch?v=00-i6m8ELiw</div>
+    <div class="ref-link">youtube.com/watch?v=Jge_gsKn-tU</div>
+    <div class="ref-link">youtube.com/watch?v=uI2LBpCwyOE</div>
+  </div>
+
+  <div class="content-card">
+    <h3>Connect with Students!</h3>
+    <p>Build upon student assets to develop reading and writing. Connect learning to students' lives and cultural backgrounds.</p>
+    <div class="ref-link">barefootteflteacher.com — Translanguaging &amp; Codeswitching</div>
+    <img src="images/image10.png" alt="Connecting with students" style="max-width:100%;border-radius:8px;margin:12px 0">
+  </div>
+
+  <div class="content-card">
+    <h3>Shared Reading for Emergent Readers</h3>
+    <ol>
+      <li><strong>Choral Reading</strong> — teacher and students read together</li>
+      <li><strong>Echo Reading</strong> — teacher models, students repeat</li>
+      <li><strong>Repeated Reading</strong> — practice 2-3 times</li>
+      <li><strong>Alternative Passage</strong> — take turns</li>
+      <li><strong>Buddy Reading</strong> — pairs help each other</li>
+    </ol>
+    <div class="ref-link">youtube.com/watch?v=s1gBauKkbJs</div>
+    <div class="ref-link">youtube.com/watch?v=4gRXca5G-Ow</div>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 7: COMPREHENSION ===== -->
+<section class="section" id="comprehension">
+  <div class="section-header">
+    <div class="section-number">Chapter 07</div>
+    <h2 class="section-title">Comprehension &amp; <span class="highlight">Reading Development</span></h2>
+    <p class="section-desc">True reading requires thinking strategies, not just word decoding.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="content-card">
+      <h3>Close Reading</h3>
+      <p>An intense focus on understanding ideas in a short text. The teacher models comprehension strategies repeatedly.</p>
+      <div class="ref-link">youtube.com/watch?v=iKIUovilf5Y</div>
+      <div class="ref-link">youtube.com/watch?v=CZwDGCMbsts</div>
+      <div class="ref-link">youtube.com/watch?v=zIZZEvPRR9A</div>
+    </div>
+    <div class="content-card">
+      <h3>Shared Reading</h3>
+      <p>Focuses on decoding words. Teacher and students read together, modeling fluent reading.</p>
+      <div class="ref-link">youtube.com/watch?v=Y2UDee7STBo</div>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <h3>Orton-Gillingham for Dyslexic Children</h3>
+    <p>One-on-one instruction using multisensory techniques. Teachers use purple/green folded cardboard to teach CVC words, open vowels, and silent-e patterns.</p>
+    <p><strong>CVC (Closed Vowel):</strong> Consonant-Vowel-Consonant — "not," "fan," "tin"</p>
+    <p><strong>Open Vowel:</strong> No consonant after vowel — "no" (vowel says its own name)</p>
+    <p><strong>Silent-e:</strong> "note" — the 'e' gives power to the 'o'</p>
+    <p>In multi-syllable words like "student" (STU-DENT), the first syllable has an open vowel 'U', while the 'E' in the second syllable is closed by 'NT'.</p>
+    <div class="ref-link">youtube.com/watch?v=zZgS8Ij1Ltg</div>
+    <div class="ref-link">youtube.com/watch?v=j2hazzQ5bSs</div>
+    <img src="images/image11.png" alt="Comprehension strategies" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <img src="images/image12.png" alt="Reading development" style="max-width:100%;border-radius:8px;margin:12px 0">
+  </div>
+</section>
+
+<!-- ===== CHAPTER 9: FUTURE OF LITERACY ===== -->
+<section class="section" id="future-literacy">
+  <div class="section-header">
+    <div class="section-number">Chapter 09</div>
+    <h2 class="section-title">The Future of <span class="highlight">Literacy</span></h2>
+    <p class="section-desc">How educators and technology are shaping the next generation of readers.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="content-card">
+    <h3>30 Under 30: Young Leaders in Literacy</h3>
+    <p>ILA celebrates 30 educators under 30. Notable: <strong>Ahmad</strong> from Afghanistan (p. 51) and <strong>Ahmed</strong> (p. 55).</p>
+    <div class="ref-link">literacyworldwide.org — ILA 2023 30 Under 30</div>
+    <img src="images/image14.png" alt="Future of literacy" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <img src="images/image15.png" alt="Young leaders in literacy" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <img src="images/image16.png" alt="Literacy innovation" style="max-width:100%;border-radius:8px;margin:12px 0">
+  </div>
+
+  <div class="content-card">
+    <h3>Bibliotherapy</h3>
+    <p>Using book reading to bring up and solve social problems in the classroom. Students often cannot express problems directly but may identify with ideas in a story. Teachers can identify issues by:</p>
+    <ul>
+      <li>Talk to parents at drop-off or pick-up</li>
+      <li>Observe children in different settings</li>
+      <li>Ask other staff members</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== CHAPTER 10: TEACHING LITERACY FOR SPECIAL NEEDS ===== -->
+<section class="section" id="special-needs">
+  <div class="section-header">
+    <div class="section-number">Chapter 10</div>
+    <h2 class="section-title">Teaching Literacy for <span class="highlight">Special Needs</span></h2>
+    <p class="section-desc">Adapting reading and writing instruction to meet individual learning needs.</p>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="content-card">
+    <h3>Understanding Special Needs Literacy</h3>
+    <p>Teaching Literacy for Special Needs Students is an instructional approach that adapts reading and writing teaching methods to meet the individual learning needs of students with disabilities or learning difficulties. It uses flexible strategies such as visual aids, multisensory activities, repetition, and assistive tools to help students develop basic literacy skills at their own pace.</p>
+    <p><strong>Example:</strong> A teacher may use picture cards, tracing letters in sand, and simple word matching games to help a student with learning difficulties recognize letters and build early reading skills.</p>
+    <div class="ref-link">readingrockets.org — Hooking Struggling Readers</div>
+  </div>
+
+  <div class="content-card">
+    <h3>Bibliotherapy</h3>
+    <p>Using book reading to bring up and solve social problems in the classroom. Students often cannot express problems directly but may identify with ideas in a story. Teachers can identify issues by:</p>
+    <ul>
+      <li>Talk to parents at drop-off or pick-up</li>
+      <li>Observe children in different settings</li>
+      <li>Ask other staff members</li>
+    </ul>
+    <img src="images/image17.png" alt="Bibliotherapy" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <img src="images/image18.jpg" alt="Special needs literacy" style="max-width:100%;border-radius:8px;margin:12px 0">
+  </div>
+</section>
+
+<!-- ===== CHAPTER 8: CRITICAL LITERACY ===== -->
 <section class="section" id="critical-literacy">
   <div class="section-header">
-    <div class="section-number">Chapter 05</div>
+    <div class="section-number">Chapter 08</div>
     <h2 class="section-title">Critical <span class="highlight">Literacy</span></h2>
     <p class="section-desc">Questioning texts, examining power, and reading beyond the surface to promote equity.</p>
     <div class="section-divider"></div>
@@ -1363,6 +1438,8 @@ p { text-align:justify; }
       <li>How could the story change from another perspective?</li>
     </ul>
     <div class="ref-link">vimeo.com/939840927 — Dr. Glenn DeVoogd on Critical Literacy</div>
+    <img src="images/image19.jpg" alt="Critical Literacy concepts" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <img src="images/image20.png" alt="Critical Literacy analysis" style="max-width:100%;border-radius:8px;margin:12px 0">
   </div>
 
   <div class="two-col">
@@ -1394,10 +1471,10 @@ p { text-align:justify; }
 
 </section>
 
-<!-- ===== CHAPTER 6: DYSLEXIA ===== -->
+<!-- ===== CHAPTER 5: DYSLEXIA ===== -->
 <section class="section" id="dyslexia">
   <div class="section-header">
-    <div class="section-number">Chapter 06</div>
+    <div class="section-number">Chapter 05</div>
     <h2 class="section-title">Dyslexia &amp; <span class="highlight">Special Needs</span></h2>
     <p class="section-desc">Understanding learning differences and creating inclusive classrooms.</p>
     <div class="section-divider"></div>
@@ -1434,13 +1511,15 @@ p { text-align:justify; }
     <p>An instructional approach that adapts reading and writing teaching methods to meet the individual learning needs of students with disabilities or learning difficulties. It uses flexible strategies such as visual aids, multisensory activities, repetition, and assistive tools to help students develop basic literacy skills at their own pace.</p>
     <p><strong>Example:</strong> A teacher may use picture cards, tracing letters in sand, and simple word matching games to help a student with learning difficulties recognize letters and build early reading skills.</p>
     <div class="ref-link">readingrockets.org — Hooking Struggling Readers</div>
+    <img src="images/image21.png" alt="Dyslexia support strategies" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <img src="images/image22.png" alt="Special needs literacy tools" style="max-width:100%;border-radius:8px;margin:12px 0">
   </div>
 </section>
 
-<!-- ===== CHAPTER 7: SEL ===== -->
+<!-- ===== CHAPTER 6: SEL ===== -->
 <section class="section" id="sel">
   <div class="section-header">
-    <div class="section-number">Chapter 07</div>
+    <div class="section-number">Chapter 06</div>
     <h2 class="section-title">Conflict Resolution &amp; <span class="highlight">Social-Emotional Learning</span></h2>
     <p class="section-desc">Building empathy, resolving conflicts, and supporting students' emotional well-being.</p>
     <div class="section-divider"></div>
@@ -1474,22 +1553,26 @@ p { text-align:justify; }
       <li><strong>Collaborative:</strong> Others are comfortable with conflict and will try to find ways to work with everyone involved to meet unmet needs.</li>
     </ul>
     <div class="ref-link">wpdi.org — Whitaker Peace and Development Initiative</div>
-    <img src="images/image4.png" alt="Conflict styles graph" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <img src="images/image23.png" alt="Conflict styles graph" style="max-width:100%;border-radius:8px;margin:12px 0">
   </div>
 
   <div class="content-card">
-    <h3>Domestic Harmonizer</h3>
-    <p>A Domestic Harmonizer is a person who helps maintain peace, balance, and smooth relationships within a household or family. This person often manages responsibilities, resolves conflicts, and creates a supportive and organized home environment. For example, a mother or father who organizes family routines, helps solve disagreements between siblings, and ensures everyone feels cared for can be described as a domestic harmonizer.</p>
-    <p>Create an account at the Domestic Harmonizer Project website to access all open-source content available to educators at no cost. Register as a "teacher." Review the DHP Annual Report to gain awareness of the program's impact.</p>
-    <div class="ref-link">domesticharmonizer.org</div>
-    <img src="images/image5.png" alt="Domestic Harmonizer diagram" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <h3>Domestic Harmonizer Project</h3>
+    <p>A community-based initiative that promotes conflict resolution among families in Bangladesh.</p>
+    <div class="ref-link">domesticharmonizer.org — Domestic Harmonizer Project</div>
+    <img src="images/image24.png" alt="Domestic Harmonizer diagram" style="max-width:100%;border-radius:8px;margin:12px 0">
+  </div>
+
+  <div class="content-card">
+    <h3>Maslow's Hierarchy &amp; SEL</h3>
+    <p>Students' basic needs must be met before higher-level learning can occur.</p>
+    <img src="images/image25.png" alt="Maslow's Hierarchy of Needs" style="max-width:100%;border-radius:8px;margin:12px 0">
   </div>
 
   <div class="content-card">
     <h3>Maslow's Hierarchy of Needs &amp; DHP Needs</h3>
     <p>Maslow's Hierarchy of Needs is a psychological framework that categorizes human needs from basic physiological requirements to self-actualization. The DHP (Domestic Harmonizer Project) Needs framework differs in that needs are not organized as a hierarchy, but instead as floating discs that can move. This flexible model can be helpful for conflict resolution because it recognizes that different needs may take priority depending on the situation.</p>
     <div class="ref-link">en.wikipedia.org/wiki/Maslow%27s_hierarchy_of_needs</div>
-    <img src="images/image6.png" alt="Maslow's Hierarchy of Needs" style="max-width:100%;border-radius:8px;margin:12px 0">
   </div>
 
   <div class="content-card">
@@ -1513,16 +1596,15 @@ p { text-align:justify; }
     <p>The solution is written down, read back to the disputants, and both parties sign the mediation contract. The mediators congratulate them and ask them to tell others that the conflict has been solved to prevent rumors.</p>
     <div class="ref-link">wpdi.org — Whitaker Peace and Development Initiative</div>
     <div class="ref-link">youtube.com/watch?v=6lzIqdf7-3Q — The 17 Camels Story</div>
-    <img src="images/image7.png" alt="Peer Mediation diagram" style="max-width:100%;border-radius:8px;margin:12px 0">
   </div>
 </section>
 
-<!-- ===== CHAPTER 8: AI ===== -->
+<!-- ===== CHAPTER 11: AI ===== -->
 <section class="section" id="ai">
   <div class="section-header">
-    <div class="section-number">Chapter 08</div>
-    <h2 class="section-title">The Future of <span class="highlight">Literacy &amp; AI</span></h2>
-    <p class="section-desc">Technology is transforming education — exploring the possibilities and responsibilities.</p>
+    <div class="section-number">Chapter 11</div>
+    <h2 class="section-title">Teaching &amp; Learning <span class="highlight">with AI</span></h2>
+    <p class="section-desc">Exploring the possibilities and responsibilities of AI in education.</p>
     <div class="section-divider"></div>
   </div>
 
@@ -1551,8 +1633,14 @@ p { text-align:justify; }
   </div>
 
   <div class="content-card">
+    <div class="card-tag">Visual</div>
+    <img src="images/image26.png" alt="AI in education diagram" style="max-width:100%;border-radius:8px;margin:12px 0">
+    <img src="images/image27.png" alt="AI tools for teachers" style="max-width:100%;border-radius:8px;margin:12px 0">
+  </div>
+
+  <div class="content-card">
     <h3>Personalized Learning with AI</h3>
-    <p>AI enables personalized learning by adapting content to the needs and interests of each student. Teachers can create differentiated materials that cater to different reading levels, learning styles, interests, and paces. This helps ensure that every student receives instruction suited to their unique learning journey.</p>
+    <p>AI enables personalized learning by adapting content to the needs and interests of each student. Teachers can create differentiated materials that cater to different reading levels, learning styles, interests, and paces.</p>
     <p><strong>Example prompts for teachers:</strong></p>
     <ul>
       <li>"Create a reading comprehension worksheet about dolphins at a 3rd-grade reading level."</li>
@@ -1576,15 +1664,9 @@ p { text-align:justify; }
     </ul>
     <div class="ref-link">youtube.com/watch?v=eXdVDhOGqoE</div>
   </div>
-
-  <div class="content-card">
-    <h3>30 Under 30: Young Leaders in Literacy</h3>
-    <p>ILA celebrates 30 educators under 30 making remarkable contributions. Notable: <strong>Ahmad</strong> from Afghanistan (p. 51) and <strong>Ahmed</strong> (p. 55).</p>
-    <div class="ref-link">literacyworldwide.org — ILA 2023 30 Under 30</div>
-  </div>
 </section>
 
-<!-- ===== CHAPTER 9: READING RESPONSES ===== -->
+<!-- ===== CHAPTER 12: READING RESPONSES ===== -->
 <section class="section" id="reading-responses">
   <div class="section-header">
     <div class="section-number">Reading Responses</div>
@@ -1607,6 +1689,9 @@ p { text-align:justify; }
   <div class="reflection" id="resp-1">
     <h4>Ch 1: My Reflection on Guided Reading</h4>
     <p>The three stages of guided reading demonstrate efficient ways to organize reading courses. Before reading, asking students to look at pictures and discuss the topic prompted them to consider what they already knew. During reading, guiding struggling kids with hints and relating new words to familiar songs kept them engaged. After reading, word-finding activities and syllable clapping helped students learn phonics and vocabulary.</p>
+    <div class="ref-citation">Guided reading lesson. (n.d.). [Video]. YouTube. https://youtu.be/HFRcwN2x6Gs</div>
+    <div class="ref-citation">Guided reading strategies. (n.d.). [Video]. YouTube. https://youtu.be/HZdIHuNtIbc</div>
+    <div class="ref-citation">Guided reading classroom example. (n.d.). [Video]. YouTube. https://youtu.be/hTXQPIYLzoo</div>
   </div>
 
   <div class="reflection" id="resp-2">
@@ -1639,6 +1724,7 @@ p { text-align:justify; }
     <p>I focused on a child in the scatterplot who was above the slanted line (high listening comprehension) but to the left of the vertical line (limited reading comprehension). This student has reading difficulties on their own, but they can comprehend language when they hear it. This demonstrates that access to the text is the problem rather than intelligence or intellectual ability.</p>
     <p>Based on my experience, both learner types benefit from reading aloud with expression. Expressive reading facilitates the connection between spoken language and written text for kids with good listening comprehension but poor reading abilities. Listening to expressive reading also demonstrates how meaning is created for students who are able to decode but need deeper comprehension.</p>
     <p>When I make my classroom interactive with discussion, fun read-alouds, and student participation, even inattentive students start to focus and engage. This shows that making the classroom a fun and interactive place really helps students understand and pay attention.</p>
+    <img src="images/image13.jpg" alt="Comprehension strategies" style="max-width:100%;border-radius:8px;margin:12px 0">
     <div class="ref-citation">Keene, E. O., &amp; Zimmermann, S. (2013). Years later, comprehension strategies are still at work. <em>The Reading Teacher</em>, 66(8), 601–606.</div>
   </div>
 
@@ -1991,6 +2077,7 @@ function enterEditMode() {
   document.getElementById('adminBtn').textContent = '✓';
   document.getElementById('adminBtn').title = 'Edit mode active';
   makeEditable();
+  addDeleteButtons();
   showToast('Edit mode activated — click any text to edit');
 }
 
@@ -2002,6 +2089,8 @@ function exitEditMode() {
   document.getElementById('adminBtn').title = 'Admin';
   document.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
   document.querySelectorAll('.edit-chapter-btn').forEach(el => el.remove());
+  document.querySelectorAll('.del-btn').forEach(el => el.remove());
+  document.querySelectorAll('.del-btn-sm').forEach(el => el.remove());
   document.querySelectorAll('.admin-overlay').forEach(el => el.remove());
   closeChapterEdit();
 }
@@ -2100,6 +2189,94 @@ function makeEditable() {
       }
     });
   });
+}
+
+function addDeleteButtons() {
+  // Delete chapter buttons (alongside edit chapter buttons)
+  document.querySelectorAll('.section[id]').forEach(sec => {
+    if (sec.id === 'home' || sec.id === 'about' || sec.id === 'topics' || sec.id === 'contents' || sec.id === 'references') return;
+    const existing = sec.querySelector('.del-btn.del-chapter');
+    if (existing) return;
+    const btn = document.createElement('button');
+    btn.className = 'del-btn del-chapter';
+    btn.textContent = '🗑 Delete Chapter';
+    btn.onclick = function() { deleteChapter(sec.id); };
+    // Insert after the edit chapter button if it exists
+    const editBtn = sec.querySelector('.edit-chapter-btn');
+    if (editBtn) {
+      editBtn.parentNode.insertBefore(btn, editBtn.nextSibling);
+    } else {
+      sec.appendChild(btn);
+    }
+  });
+
+  // Delete content card buttons
+  document.querySelectorAll('.section[id] .content-card').forEach(card => {
+    if (card.querySelector('.del-btn-sm')) return;
+    const btn = document.createElement('button');
+    btn.className = 'del-btn-sm';
+    btn.textContent = '×';
+    btn.title = 'Delete this card';
+    btn.onclick = function(e) { e.stopPropagation(); deleteCard(card); };
+    card.style.position = 'relative';
+    card.insertBefore(btn, card.firstChild);
+  });
+
+  // Delete image buttons
+  document.querySelectorAll('.section[id] .content-card img[src*="images/"]').forEach(img => {
+    if (img.parentElement.classList.contains('card-img-wrap')) return;
+    const wrap = document.createElement('span');
+    wrap.className = 'card-img-wrap';
+    img.parentNode.insertBefore(wrap, img);
+    wrap.appendChild(img);
+    if (wrap.querySelector('.del-btn-sm')) return;
+    const btn = document.createElement('button');
+    btn.className = 'del-btn-sm';
+    btn.textContent = '×';
+    btn.title = 'Delete this image';
+    btn.onclick = function(e) { e.stopPropagation(); deleteImage(img); };
+    wrap.insertBefore(btn, wrap.firstChild);
+  });
+
+  // Delete reflection buttons
+  document.querySelectorAll('#reading-responses .reflection').forEach(ref => {
+    if (ref.querySelector('.del-btn-sm')) return;
+    const btn = document.createElement('button');
+    btn.className = 'del-btn-sm';
+    btn.textContent = '×';
+    btn.title = 'Delete this reflection';
+    btn.onclick = function(e) { e.stopPropagation(); deleteReflection(ref); };
+    ref.style.position = 'relative';
+    ref.insertBefore(btn, ref.firstChild);
+  });
+}
+
+function deleteChapter(id) {
+  if (!confirm('Delete this entire chapter and all its content? This cannot be undone.')) return;
+  const sec = document.getElementById(id);
+  if (!sec) return;
+  const tocItem = document.querySelector(`.toc-item[href="#${id}"]`);
+  if (tocItem) tocItem.remove();
+  sec.remove();
+  showToast('Chapter deleted');
+}
+
+function deleteCard(card) {
+  if (!confirm('Remove this card?')) return;
+  card.remove();
+  showToast('Card removed');
+}
+
+function deleteImage(img) {
+  if (!confirm('Remove this image?')) return;
+  img.remove();
+  showToast('Image removed');
+}
+
+function deleteReflection(ref) {
+  if (!confirm('Remove this reflection?')) return;
+  ref.remove();
+  showToast('Reflection removed');
 }
 
 function openChapterEdit(sectionId) {
@@ -2258,7 +2435,7 @@ document.addEventListener('scroll', function() {
 function addCard() {
   const sections = document.querySelectorAll('.section[id]');
   const chapters = Array.from(sections).filter(s =>
-    !['home','about','topics','contents','references'].includes(s.id)
+    !['home','about','topics','contents','reading-responses','references'].includes(s.id)
   );
   if (chapters.length === 0) { showToast('No chapter found to add card to'); return; }
   // Ask which chapter
@@ -2279,7 +2456,7 @@ function addCard() {
 function addReflection() {
   const sections = document.querySelectorAll('.section[id]');
   const chapters = Array.from(sections).filter(s =>
-    !['home','about','topics','contents','references'].includes(s.id)
+    !['home','about','topics','contents','reading-responses','references'].includes(s.id)
   );
   if (chapters.length === 0) { showToast('No chapter found'); return; }
   const names = chapters.map(s => s.id.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()));
@@ -2322,7 +2499,7 @@ function addReference() {
 function addChapterPrompt() {
   const sections = document.querySelectorAll('.section[id]');
   const chapters = Array.from(sections).filter(s =>
-    !['home','about','topics','contents','references'].includes(s.id)
+    !['home','about','topics','contents','reading-responses','references'].includes(s.id)
   );
 
   const names = chapters.map((s,i) => (i+1)+': '+(s.querySelector('.section-title')?.textContent || s.id));
@@ -2399,7 +2576,7 @@ function addChapterPrompt() {
 function renumberChapters() {
   const sections = document.querySelectorAll('.section[id]');
   const chapters = Array.from(sections).filter(s =>
-    !['home','about','topics','contents','references'].includes(s.id)
+    !['home','about','topics','contents','reading-responses','references'].includes(s.id)
   );
   chapters.forEach((s, i) => {
     const num = s.querySelector('.section-number');
@@ -2412,15 +2589,12 @@ function rebuildNav() {
   if (!nav) return;
   const sections = document.querySelectorAll('.section[id]');
   const chapters = Array.from(sections).filter(s =>
-    !['home','about','topics','contents','references'].includes(s.id)
+    !['home','about','topics','contents','reading-responses','references'].includes(s.id)
   );
-  const staticLinks = ['Home','About','Topics','Contents'];
-  const refLink = nav.querySelector('li:last-child');
-  nav.innerHTML = '';
+  const staticLinks = ['About','Contents','Responses','References'];
+  const navLinks = document.querySelectorAll('.nav-links a');
   staticLinks.forEach((text,i) => {
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-    const ids = ['home','about','topics','contents'];
+    const ids = ['about','contents','reading-responses','references'];
     a.href = '#' + ids[i];
     a.textContent = text;
     a.className = i === 0 ? 'active' : '';
@@ -2444,7 +2618,7 @@ function rebuildTOC() {
   if (!tocGrid) return;
   const sections = document.querySelectorAll('.section[id]');
   const chapters = Array.from(sections).filter(s =>
-    !['home','about','topics','contents','references'].includes(s.id)
+    !['home','about','topics','contents','reading-responses','references'].includes(s.id)
   );
   tocGrid.innerHTML = '';
   chapters.forEach((s, i) => {
