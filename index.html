@@ -1924,10 +1924,7 @@ try {
 } catch(e) { observer = null; }
 document.querySelectorAll('.section').forEach(s => {
   if (!observer) return;
-  const rect = s.getBoundingClientRect();
-  const onScreen = rect.top < window.innerHeight && rect.bottom > 0;
-  if (!onScreen) s.classList.add('animate');
-  if (onScreen) s.classList.add('visible');
+  s.classList.add('visible');
   observer.observe(s);
 });
 
