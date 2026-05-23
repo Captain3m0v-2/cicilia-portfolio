@@ -2395,22 +2395,7 @@ function fmtSize(dir) {
 }
 
 function insertImage() {
-  const chapters = getChapters();
-  if (chapters.length === 0) { showToast('No chapter found'); return; }
-  const names = chapters.map(s => s.querySelector('.section-title')?.textContent?.trim() || s.id);
-  const idx = prompt('Insert image into which chapter? (1-'+chapters.length+')\n'+names.map((n,i)=>(i+1)+': '+n).join('\n'),'1');
-  if (!idx) return;
-  const i = parseInt(idx)-1;
-  if (i < 0 || i >= chapters.length) { showToast('Invalid number'); return; }
-  const sec = chapters[i];
-  const cards = sec.querySelectorAll('.content-card');
-  let posMsg = 'After which card? (0=at top';
-  const cardTitles = [];
-  cards.forEach((c,j) => { const t = c.querySelector('h3')?.textContent?.trim() || c.querySelector('h4')?.textContent?.trim() || 'Card '+(j+1); cardTitles.push(t); });
-  posMsg += ', 1-'+cards.length+'=after that card, or empty for end)';
-  const posStr = prompt(posMsg+'\n'+cardTitles.map((t,j)=>(j+1)+': '+t).join('\n'), cards.length.toString());
-  if (posStr === null) return;
-  const pos = posStr.trim() === '' ? cards.length : Math.max(0, Math.min(cards.length, parseInt(posStr) || 0));
+  // Step 1: Open file picker FIRST (must be in user gesture)
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*';
@@ -2418,7 +2403,25 @@ function insertImage() {
   document.body.appendChild(input);
   input.onchange = function(e) {
     const file = e.target.files[0];
-    if (!file) { document.body.removeChild(input); return; }
+    document.body.removeChild(input);
+    if (!file) return;
+    // Step 2: Now ask where to place it
+    const chapters = getChapters();
+    if (chapters.length === 0) { showToast('No chapter found'); return; }
+    const names = chapters.map(s => s.querySelector('.section-title')?.textContent?.trim() || s.id);
+    const idx = prompt('Insert image into which chapter? (1-'+chapters.length+')\n'+names.map((n,i)=>(i+1)+': '+n).join('\n'),'1');
+    if (!idx) return;
+    const i = parseInt(idx)-1;
+    if (i < 0 || i >= chapters.length) { showToast('Invalid number'); return; }
+    const sec = chapters[i];
+    const cards = sec.querySelectorAll('.content-card');
+    let posMsg = 'After which card? (0=at top';
+    const cardTitles = [];
+    cards.forEach((c,j) => { const t = c.querySelector('h3')?.textContent?.trim() || c.querySelector('h4')?.textContent?.trim() || 'Card '+(j+1); cardTitles.push(t); });
+    posMsg += ', 1-'+cards.length+'=after that card, or empty for end)';
+    const posStr = prompt(posMsg+'\n'+cardTitles.map((t,j)=>(j+1)+': '+t).join('\n'), cards.length.toString());
+    if (posStr === null) return;
+    const pos = posStr.trim() === '' ? cards.length : Math.max(0, Math.min(cards.length, parseInt(posStr) || 0));
     const reader = new FileReader();
     reader.onload = function(ev) {
       const img = document.createElement('img');
@@ -2434,7 +2437,6 @@ function insertImage() {
         const after = cards[pos];
         after.parentNode.insertBefore(img, after.nextSibling);
       }
-      document.body.removeChild(input);
       showToast('Image inserted at position '+(pos+1));
     };
     reader.readAsDataURL(file);
