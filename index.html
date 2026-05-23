@@ -2371,6 +2371,22 @@ function fmtSize(dir) {
 }
 
 function insertImage() {
+  const chapters = getChapters();
+  if (chapters.length === 0) { showToast('No chapter found'); return; }
+  const names = chapters.map(s => s.querySelector('.section-title')?.textContent?.trim() || s.id);
+  const idx = prompt('Insert image into which chapter? (1-'+chapters.length+')\n'+names.map((n,i)=>(i+1)+': '+n).join('\n'),'1');
+  if (!idx) return;
+  const i = parseInt(idx)-1;
+  if (i < 0 || i >= chapters.length) { showToast('Invalid number'); return; }
+  const sec = chapters[i];
+  const cards = sec.querySelectorAll('.content-card');
+  let posMsg = 'After which card? (0=at top';
+  const cardTitles = [];
+  cards.forEach((c,j) => { const t = c.querySelector('h3')?.textContent?.trim() || c.querySelector('h4')?.textContent?.trim() || 'Card '+(j+1); cardTitles.push(t); });
+  posMsg += ', 1-'+cards.length+'=after that card, or empty for end)';
+  const posStr = prompt(posMsg+'\n'+cardTitles.map((t,j)=>(j+1)+': '+t).join('\n'), cards.length.toString());
+  if (posStr === null) return;
+  const pos = posStr.trim() === '' ? cards.length : Math.max(0, Math.min(cards.length, parseInt(posStr) || 0));
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*';
@@ -2379,10 +2395,20 @@ function insertImage() {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function(ev) {
-      const dataUrl = ev.target.result;
-      document.execCommand('insertHTML', false, '<br><img src="'+dataUrl+'" alt="" style="max-width:100%;border-radius:8px;margin:8px 0"><br>');
-      document.getElementById('formatToolbar').classList.remove('show');
-      showToast('Image inserted');
+      const img = document.createElement('img');
+      img.src = ev.target.result;
+      img.style.cssText = 'max-width:100%;border-radius:8px;margin:8px 0;display:block';
+      img.alt = '';
+      if (pos === 0 && cards.length > 0) {
+        cards[0].parentNode.insertBefore(img, cards[0]);
+      } else if (pos >= cards.length || cards.length === 0) {
+        const ref = sec.querySelector('.reflection') || sec.querySelector('.edit-chapter-btn') || sec.querySelector('.del-btn');
+        if (ref) { sec.insertBefore(img, ref); } else { sec.appendChild(img); }
+      } else {
+        const after = cards[pos];
+        after.parentNode.insertBefore(img, after.nextSibling);
+      }
+      showToast('Image inserted at position '+(pos+1));
     };
     reader.readAsDataURL(file);
   };
@@ -2431,46 +2457,72 @@ document.addEventListener('scroll', function() {
   document.getElementById('formatToolbar').classList.remove('show');
 }, { passive: true });
 
-// ===== ADD NEW SECTIONS =====
-function addCard() {
+// ===== HELPERS =====
+function getChapters() {
   const sections = document.querySelectorAll('.section[id]');
-  const chapters = Array.from(sections).filter(s =>
+  return Array.from(sections).filter(s =>
     !['home','about','topics','contents','reading-responses','references'].includes(s.id)
   );
-  if (chapters.length === 0) { showToast('No chapter found to add card to'); return; }
-  // Ask which chapter
-  const names = chapters.map(s => s.id.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()));
+}
+function promptPosition(sec, label) {
+  const cards = sec.querySelectorAll('.content-card');
+  if (cards.length === 0) return 0;
+  const titles = [];
+  cards.forEach((c,j) => { const t = c.querySelector('h3')?.textContent?.trim() || c.querySelector('h4')?.textContent?.trim() || 'Card '+(j+1); titles.push(t); });
+  const posStr = prompt(label+' (0=at top, 1-'+cards.length+'=after that card, empty for end)\n'+titles.map((t,j)=>(j+1)+': '+t).join('\n'), cards.length.toString());
+  if (posStr === null) return -1;
+  if (posStr.trim() === '') return cards.length;
+  return Math.max(0, Math.min(cards.length, parseInt(posStr) || 0));
+}
+function insertBeforePosition(sec, el, pos) {
+  const cards = sec.querySelectorAll('.content-card');
+  if (pos <= 0 || cards.length === 0) {
+    const first = cards[0] || sec.querySelector('.reflection') || sec.querySelector('.edit-chapter-btn') || sec.querySelector('.del-btn');
+    if (first) { sec.insertBefore(el, first); } else { sec.appendChild(el); }
+  } else if (pos >= cards.length) {
+    const ref = sec.querySelector('.reflection') || sec.querySelector('.edit-chapter-btn') || sec.querySelector('.del-btn');
+    if (ref) { sec.insertBefore(el, ref); } else { sec.appendChild(el); }
+  } else {
+    const after = cards[pos];
+    after.parentNode.insertBefore(el, after.nextSibling);
+  }
+}
+
+// ===== ADD NEW SECTIONS =====
+function addCard() {
+  const chapters = getChapters();
+  if (chapters.length === 0) { showToast('No chapter found'); return; }
+  const names = chapters.map(s => s.querySelector('.section-title')?.textContent?.trim() || s.id);
   const idx = prompt('Add card to which chapter? (1-'+chapters.length+')\n'+names.map((n,i)=>(i+1)+': '+n).join('\n'),'1');
   if (!idx) return;
   const i = parseInt(idx)-1;
   if (i < 0 || i >= chapters.length) { showToast('Invalid number'); return; }
   const sec = chapters[i];
+  const pos = promptPosition(sec, 'Position?');
+  if (pos < 0) return;
   const card = document.createElement('div');
   card.className = 'content-card';
   card.innerHTML = '<h3 contenteditable="true">New Section</h3><p contenteditable="true">Add your content here. Click to edit.</p>';
-  const editBtn = sec.querySelector('.edit-chapter-btn');
-  sec.insertBefore(card, editBtn);
-  showToast('Card added to ' + names[i]);
+  insertBeforePosition(sec, card, pos);
+  showToast('Card added');
 }
 
 function addReflection() {
-  const sections = document.querySelectorAll('.section[id]');
-  const chapters = Array.from(sections).filter(s =>
-    !['home','about','topics','contents','reading-responses','references'].includes(s.id)
-  );
+  const chapters = getChapters();
   if (chapters.length === 0) { showToast('No chapter found'); return; }
-  const names = chapters.map(s => s.id.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()));
+  const names = chapters.map(s => s.querySelector('.section-title')?.textContent?.trim() || s.id);
   const idx = prompt('Add reflection to which chapter? (1-'+chapters.length+')\n'+names.map((n,i)=>(i+1)+': '+n).join('\n'),'1');
   if (!idx) return;
   const i = parseInt(idx)-1;
   if (i < 0 || i >= chapters.length) { showToast('Invalid number'); return; }
   const sec = chapters[i];
+  const pos = promptPosition(sec, 'Position?');
+  if (pos < 0) return;
   const ref = document.createElement('div');
   ref.className = 'reflection';
   ref.innerHTML = '<h4 contenteditable="true">My Reflection</h4><p contenteditable="true">Write your reflection here. Click to edit.</p>';
-  const editBtn = sec.querySelector('.edit-chapter-btn');
-  sec.insertBefore(ref, editBtn);
-  showToast('Reflection added to ' + names[i]);
+  insertBeforePosition(sec, ref, pos);
+  showToast('Reflection added');
 }
 
 function addOverviewCard() {
