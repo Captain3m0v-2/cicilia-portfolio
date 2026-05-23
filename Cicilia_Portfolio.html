@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cicilia's Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&family=Alex+Brush&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Lato', Georgia, serif;
+    background: #e8ddd0;
+    color: #2c2c2c;
+    line-height: 1.7;
+    padding: 40px 0;
+  }
+
+  .book {
+    max-width: 816px;
+    margin: 0 auto;
+    background: #faf6f0;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+    position: relative;
+    min-height: 1056px;
+  }
+
+  .page {
+    padding: 60px 70px 80px;
+    position: relative;
+    min-height: 1056px;
+    page-break-after: always;
+    border-bottom: 1px solid #e8ddd0;
+  }
+
+  .page-number {
+    position: absolute;
+    bottom: 40px;
+    width: calc(100% - 140px);
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 2px;
+  }
+
+  /* ===== TITLE PAGE ===== */
+  .title-page {
+    background: linear-gradient(135deg, #faf6f0 0%, #f0e6d8 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 1056px;
+    padding: 60px 70px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .title-page::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(139, 109, 76, 0.03) 30px, rgba(139, 109, 76, 0.03) 31px);
+    pointer-events: none;
+  }
+
+  .title-ornament-top {
+    font-size: 48px;
+    color: #8b6d4c;
+    letter-spacing: 12px;
+    margin-bottom: 20px;
+    font-family: 'Georgia', serif;
+  }
+
+  .title-main {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: #3d2b1f;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .title-sub {
+    font-family: 'Alex Brush', cursive;
+    font-size: 32px;
+    color: #8b6d4c;
+    margin-bottom: 30px;
+  }
+
+  .title-divider {
+    width: 120px;
+    height: 2px;
+    background: #c4a882;
+    margin: 20px auto;
+  }
+
+  .title-line {
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    color: #666;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 6px 0;
+  }
+
+  .title-line.name {
+    font-size: 18px;
+    color: #3d2b1f;
+    letter-spacing: 6px;
+    font-weight: 700;
+    margin-top: 15px;
+  }
+
+  .title-line.id {
+    font-size: 12px;
+    color: #999;
+    letter-spacing: 3px;
+  }
+
+  .title-image-placeholder {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 4px solid #c4a882;
+    margin: 25px 0;
+    background: #e8ddd0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #aaa;
+    overflow: hidden;
+  }
+
+  .title-image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .title-ornament-bottom {
+    font-size: 36px;
+    color: #c4a882;
+    letter-spacing: 8px;
+    margin-top: 20px;
+    font-family: 'Georgia', serif;
+  }
+
+  .title-year {
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    color: #aaa;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 10px;
+  }
+
+  /* ===== TABLE OF CONTENTS ===== */
+  .toc-page h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    color: #3d2b1f;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #c4a882;
+  }
+
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dotted #ddd;
+    font-size: 14px;
+    color: #3d2b1f;
+  }
+
+  .toc-item .num {
+    font-weight: 700;
+    color: #8b6d4c;
+    margin-right: 15px;
+    min-width: 28px;
+  }
+
+  .toc-item .page-num {
+    font-family: 'Lato', sans-serif;
+    color: #8b6d4c;
+    min-width: 30px;
+    text-align: right;
+  }
+
+  .toc-title { display: flex; }
+
+  .toc-spacer { height: 20px; }
+
+  .toc-sub {
+    padding-left: 43px;
+    font-size: 12px;
+    color: #666;
+    border-bottom: 1px dotted #eee;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  /* ===== CHAPTERS ===== */
+  .chapter-header {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #c4a882;
+  }
+
+  .chapter-number {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 14px;
+    color: #8b6d4c;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .chapter-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #3d2b1f;
+  }
+
+  .chapter-intro {
+    font-size: 14px;
+    color: #555;
+    font-style: italic;
+    margin-bottom: 25px;
+    padding: 12px 20px;
+    background: #f5efe7;
+    border-left: 4px solid #c4a882;
+  }
+
+  h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    color: #3d2b1f;
+    margin: 25px 0 12px;
+  }
+
+  h4 {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #5a4030;
+    margin: 20px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 12px;
+    text-align: justify;
+  }
+
+  .note-box {
+    background: #f9f4ed;
+    border-left: 3px solid #c4a882;
+    padding: 12px 18px;
+    margin: 15px 0;
+    font-size: 13px;
+    color: #555;
+  }
+
+  .note-box strong {
+    color: #3d2b1f;
+  }
+
+  .video-ref {
+    font-size: 12px;
+    color: #888;
+    padding: 4px 0;
+    word-break: break-all;
+  }
+
+  .video-ref::before {
+    content: '\25B6';
+    color: #8b6d4c;
+    margin-right: 6px;
+  }
+
+  .reflection-box {
+    background: #f5efe7;
+    padding: 18px 22px;
+    margin: 20px 0;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .reflection-box h4 {
+    margin-top: 0;
+    color: #8b6d4c;
+  }
+
+  .bullet-list {
+    margin: 10px 0 15px 20px;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .bullet-list li {
+    margin-bottom: 6px;
+  }
+
+  /* ===== REFERENCES ===== */
+  .references-page h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    color: #3d2b1f;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 35px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #c4a882;
+  }
+
+  .ref-entry {
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 14px;
+    padding-left: 36px;
+    text-indent: -36px;
+    text-align: left;
+  }
+
+  /* ===== EXTRA SPACE ===== */
+  .extra-space {
+    min-height: 200px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    margin: 25px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
+    font-size: 13px;
+    font-style: italic;
+    background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(200,200,200,0.05) 10px, rgba(200,200,200,0.05) 20px);
+  }
+
+  .image-placeholder {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    margin: 20px 0;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
+    font-size: 13px;
+    font-style: italic;
+    background: #faf6f0;
+  }
+
+  .image-placeholder img {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 4px;
+  }
+
+  .two-col {
+    display: flex;
+    gap: 30px;
+    margin: 15px 0;
+  }
+
+  .two-col > div { flex: 1; }
+
+  /* ===== PRINT ===== */
+  @media print {
+    body { background: white; padding: 0; }
+    .book { box-shadow: none; max-width: 100%; }
+    .page { page-break-after: always; border: none; }
+    .extra-space { border: 1px dashed #ccc; min-height: 150px; }
+    .image-placeholder { border: 1px dashed #ccc; min-height: 120px; }
+  }
+
+  @media (max-width: 850px) {
+    .book { max-width: 100%; margin: 0 10px; }
+    .page { padding: 40px 30px 60px; }
+    .title-main { font-size: 36px; }
+    .two-col { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="book">
+
+  <!-- ===== TITLE PAGE ===== -->
+  <div class="title-page page">
+    <div class="title-ornament-top">✦ ✦ ✦</div>
+    <div class="title-main">Cicilia's Portfolio</div>
+    <div class="title-sub">A Journey in Literacy & Learning</div>
+    <div class="title-divider"></div>
+    <div class="title-image-placeholder" id="profilePhoto">
+      <span style="opacity:0.5;">YOUR PHOTO</span>
+    </div>
+    <div class="title-line name">Cicilia Kretteka Mondle</div>
+    <div class="title-line">Asian University For Women</div>
+    <div class="title-line id">AUW254003</div>
+    <div class="title-divider"></div>
+    <div class="title-ornament-bottom">❧</div>
+    <div class="title-year">Spring 2026</div>
+  </div>
+
+  <!-- ===== ABOUT ME PAGE ===== -->
+  <div class="page">
+    <div class="chapter-header">
+      <div class="chapter-title">About Me</div>
+    </div>
+    <div class="image-placeholder" style="float:right; width:200px; height:200px; margin:0 0 20px 25px; border-radius:50%;">
+      <span>YOUR PHOTO</span>
+    </div>
+    <p>I am a passionate educator and curriculum enthusiast currently pursuing my Master's in Education at Asian University for Women. Alongside my studies, I work as a teacher at William Carey Academy, where I apply learner-centered and practical teaching approaches in the classroom. I genuinely love working with children and supporting their growth both academically and personally.</p>
+    <p>I believe that meaningful change in Bangladesh's education system begins with strong curriculum development. A well-designed curriculum can ensure that every child has access to high-quality education, regardless of their background, as it serves as the backbone of every institution.</p>
+    <p>My goal is to contribute to the development of effective, inclusive, and engaging curricula that empower both teachers and learners. Through this portfolio, I have compiled the key ideas, strategies, and reflections from my coursework &mdash; covering early literacy methods, comprehension, critical literacy, conflict resolution, and the role of technology in education.</p>
+    <p style="margin-top:20px;"><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/cicilia-kretteka/" target="_blank" style="color:#8b6d4c;">linkedin.com/in/cicilia-kretteka</a></p>
+
+    <div class="extra-space">+ Add more text or images here</div>
+    <div class="page-number">2</div>
+  </div>
+
+  <!-- ===== TABLE OF CONTENTS ===== -->
+  <div class="page toc-page">
+    <h2>Table of Contents</h2>
+
+    <div class="toc-item"><span class="toc-title"><span class="num">1</span> Early Literacy Methods</span><span class="page-num">4</span></div>
+    <div class="toc-sub">Language Experience Approach &bull; Teaching Through Singing &bull; Guided Reading</div>
+
+    <div class="toc-item"><span class="toc-title"><span class="num">2</span> Comprehension &amp; Reading Development</span><span class="page-num">6</span></div>
+    <div class="toc-sub">Close Reading &bull; Shared Reading &bull; Orton-Gillingham Approach</div>
+
+    <div class="toc-item"><span class="toc-title"><span class="num">3</span> Vocabulary Development</span><span class="page-num">8</span></div>
+    <div class="toc-sub">Vocabulary Strategies &bull; Morphological Analysis &bull; Five Contexts for Reading</div>
+
+    <div class="toc-item"><span class="toc-title"><span class="num">4</span> Writing &amp; Reading Workshop</span><span class="page-num">10</span></div>
+    <div class="toc-sub">Writing Workshop &bull; Reader's Workshop &bull; Bibliotherapy</div>
+
+    <div class="toc-item"><span class="toc-title"><span class="num">5</span> Critical Literacy</span><span class="page-num">12</span></div>
+    <div class="toc-sub">Critical Literacy Framework &bull; Critical Media Studies &bull; Text Analysis</div>
+
+    <div class="toc-item"><span class="toc-title"><span class="num">6</span> Dyslexia &amp; Special Needs</span><span class="page-num">14</span></div>
+    <div class="toc-sub">Understanding Dyslexia &bull; Screening &amp; Assessment &bull; Inclusive Strategies</div>
+
+    <div class="toc-item"><span class="toc-title"><span class="num">7</span> Conflict Resolution &amp; SEL</span><span class="page-num">16</span></div>
+    <div class="toc-sub">Transformative SEL &bull; Healing-Centered Trauma Support &bull; Peer Mediation</div>
+
+    <div class="toc-item"><span class="toc-title"><span class="num">8</span> The Future of Literacy &amp; AI</span><span class="page-num">18</span></div>
+    <div class="toc-sub">AI in Education &bull; Personalized Learning &bull; Societal Impacts</div>
+
+    <div class="toc-item"><span class="toc-title"><span class="num">9</span> Course Reflections</span><span class="page-num">20</span></div>
+
+    <div class="toc-spacer"></div>
+    <div class="toc-item"><span class="toc-title"><span class="num"></span> References</span><span class="page-num">21</span></div>
+
+    <div class="page-number">3</div>
+  </div>
+
+  <!-- ===== CHAPTER 1: EARLY LITERACY METHODS ===== -->
+  <div class="page">
+    <div class="chapter-header">
+      <div class="chapter-number">Chapter 1</div>
+      <div class="chapter-title">Early Literacy Methods</div>
+    </div>
+    <div class="chapter-intro">
+      This chapter explores foundational approaches to teaching reading to young learners. Drawing from class presentations, video demonstrations, and personal teaching experience, I have compiled key methods that build a strong literacy foundation.
+    </div>
+
+    <h3>Language Experience Approach (LEA)</h3>
+    <p>LEA is a reading method where students create stories or sentences from their own experiences, and the teacher writes them down for reading practice. This approach honors the child's voice and makes reading personally meaningful.</p>
+    <p><strong>Example:</strong> After a zoo visit, students describe what they saw and the teacher writes their sentences on chart paper for the class to read together.</p>
+    <div class="video-ref">youtu.be/taH4pzbNt6k</div>
+
+    <div class="image-placeholder">[ Add image of LEA chart paper activity ]</div>
+
+    <h3>Teaching Through Singing</h3>
+    <p>A literacy strategy where songs and lyrics are used to improve reading, pronunciation, vocabulary, and fluency. Since children already remember the tune and words, reading becomes easier and more enjoyable.</p>
+    <p><strong>Example:</strong> The teacher teaches the song "Baby Shark" to kindergarten students by singing it together several times. After students memorize the song, the teacher writes the lyrics on chart paper. While singing, the teacher points to each word so students can connect spoken words with written text. Later, students identify familiar words such as "baby," "shark," and "mommy," practice letter sounds, and read the lyrics independently.</p>
+    <div class="video-ref">youtube.com/shorts/J0shIsMBDek</div>
+
+    <div class="extra-space">[ Add more examples, images, or reflections here ]</div>
+
+    <div class="page-number">4</div>
+  </div>
+
+  <!-- Chapter 1 continued -->
+  <div class="page">
+    <h3>Guided Reading</h3>
+    <p>A small-group reading instruction method where the teacher supports students while they read texts at their learning level. The teacher reads a story with a small group and helps students sound out difficult words.</p>
+
+    <h4>Steps in Guided Reading</h4>
+    <p><strong>Before Reading:</strong> The teacher prepares students for the text by discussing the topic, pictures, or difficult words. For example, the teacher asks students what they know about animals before reading a zoo story.</p>
+    <div class="video-ref">youtube.com/watch?v=HFRcwN2x6Gs</div>
+
+    <p><strong>During Reading:</strong> Students read the text while the teacher supports comprehension and pronunciation. The teacher helps students decode unfamiliar words while reading.</p>
+    <div class="video-ref">youtube.com/watch?v=HZdIHuNtIbc</div>
+
+    <p><strong>After Reading:</strong> The teacher checks for comprehension through discussion, questions, and follow-up activities such as word games, writing tasks, or drawing.</p>
+    <div class="video-ref">youtube.com/watch?v=hTXQPIYLzoo</div>
+
+    <div class="reflection-box">
+      <h4>My Reflection on Guided Reading</h4>
+      <p>Before reading, during reading, and after reading are the three stages of guided reading, and the videos demonstrate a number of efficient ways to organize reading courses.</p>
+      <p>Before reading, the teacher instructed the students to look at and discuss pictures and illustrations, as well as ask questions about the topic. This method worked because it prompted students to consider what they already knew and made them desire to read the book.</p>
+      <p>During reading, the teacher guided kids who were struggling with certain words by providing hints, relating new words to a song they already knew, and assigning different students to read aloud.</p>
+      <p>After reading, the teacher helped the students learn more by having them play word-finding activities, build words with letters, write words, and clap syllables &mdash; helping students learn more about phonics and vocabulary while keeping them engaged.</p>
+    </div>
+
+    <div class="extra-space">[ Add more notes, images, or student work samples here ]</div>
+    <div class="page-number">5</div>
+  </div>
+
+  <!-- ===== CHAPTER 2: COMPREHENSION & READING DEVELOPMENT ===== -->
+  <div class="page">
+    <div class="chapter-header">
+      <div class="chapter-number">Chapter 2</div>
+      <div class="chapter-title">Comprehension &amp; Reading Development</div>
+    </div>
+    <div class="chapter-intro">
+      Reading is more than decoding words &mdash; true comprehension requires active thinking strategies. This chapter covers close reading, shared reading, and specialized approaches for struggling readers.
+    </div>
+
+    <h3>Close Reading</h3>
+    <p>Close reading is an intense focus to understand the ideas in a short text. If the teacher models all the ways to comprehend and respond to the ideas in the text many times, eventually the students will learn the many ways they can comprehend the text.</p>
+    <div class="video-ref">youtube.com/watch?v=iKIUovilf5Y</div>
+    <div class="video-ref">youtube.com/watch?v=CZwDGCMbsts</div>
+    <div class="video-ref">youtube.com/watch?v=zIZZEvPRR9A</div>
+
+    <h3>Shared Reading</h3>
+    <p>Shared reading focuses mostly on decoding the words in the text. The teacher and students read together, with the teacher modeling fluent reading while students follow along.</p>
+    <div class="video-ref">youtube.com/watch?v=Y2UDee7STBo</div>
+
+    <h3>Orton-Gillingham for Dyslexic Children</h3>
+    <p>Some students need one-on-one instruction. In the Orton-Gillingham approach, the teacher starts by assessing the child's ability to recognize letter names and letter sounds. The sequence of explicit, direct teaching follows: Model, Shared, Guided, Independent.</p>
+    <p>The approach introduces CVC words (consonant-vowel-consonant) such as "not" and "fan," open vowels such as "no," and silent-e patterns such as "note." The teacher uses a little story about the power struggle between consonants and vowels to help students remember the rules.</p>
+    <div class="video-ref">youtube.com/watch?v=zZgS8Ij1Ltg</div>
+
+    <h3>Online Practice of Letter Blending</h3>
+    <div class="video-ref">youtube.com/watch?v=j2hazzQ5bSs</div>
+
+    <div class="extra-space">[ Add screenshots of close reading activities, anchor charts, or student work ]</div>
+    <div class="page-number">6</div>
+  </div>
+
+  <!-- Chapter 2 continued - Reflection -->
+  <div class="page">
+    <div class="reflection-box">
+      <h4>My Response on Reading Comprehension</h4>
+      <p>Keene and Zimmermann's article highlights the concept that true reading needs thinking techniques rather than just word decoding. Through their research, the authors show that skilled readers use a variety of psychological techniques, such as asking questions, making guesses, and relating what they read to what they already know. I found it most interesting that they claim that the majority of kids are good at decoding (fluency) but poor at comprehension.</p>
+      <p>I focused on a child in the scatterplot who was above the slanted line (high listening comprehension) but to the left of the vertical line (limited reading comprehension). This student has reading difficulties on their own, but they can comprehend language when they hear it. The article claims that this shows a student who may have good comprehension and intellectual skills but poor decoding or fluency capabilities. This is significant because it demonstrates that access to the text is the problem rather than intelligence or intellectual ability.</p>
+      <p>Based on my experience, I strongly feel that both learner types can benefit from reading aloud with expression. Expressive reading facilitates the connection between spoken language and written text for kids with good listening comprehension but poor reading abilities. Listening to expressive reading also demonstrates how meaning is created for students who are able to decode but need deep comprehension.</p>
+      <p>The article makes a point that teaching people to understand things should not be done in a strict or boring way. It should help students think about what they're reading, talk about it, and really get into it. I have seen this in my classroom &mdash; when I get students talking about what they read and I read to them in a fun way, even the students who do not usually pay attention start to focus and get interested.</p>
+      <p style="text-align:left; font-size:12px; color:#888; margin-top:10px;"><strong>Reference:</strong> Keene, E. O., &amp; Zimmermann, S. (2013). Years later, comprehension strategies are still at work. <em>The Reading Teacher</em>, <em>66</em>(8), 601&ndash;606.</p>
+    </div>
+
+    <div class="extra-space">[ Add your own examples of comprehension activities from your classroom ]</div>
+    <div class="page-number">7</div>
+  </div>
+
+  <!-- ===== CHAPTER 3: VOCABULARY DEVELOPMENT ===== -->
+  <div class="page">
+    <div class="chapter-header">
+      <div class="chapter-number">Chapter 3</div>
+      <div class="chapter-title">Vocabulary Development</div>
+    </div>
+    <div class="chapter-intro">
+      Building a rich vocabulary is essential for reading comprehension and academic success. This chapter compiles strategies for teaching vocabulary from class discussions and independent readings.
+    </div>
+
+    <h3>How to Learn Vocabulary</h3>
+    <p>Teaching students how to find out what a word means without the teacher being there:</p>
+    <ul class="bullet-list">
+      <li>Use a tablet, computer, or dictionary</li>
+      <li>Use the context of the sentence to guess what the word might mean</li>
+      <li>Use Google to see an image or definition of the word</li>
+      <li>Ask a friend</li>
+      <li>Use morphological analysis</li>
+      <li>Look at the picture</li>
+      <li>Use your schema or background knowledge</li>
+      <li>Get a text that's not too difficult</li>
+      <li>Use the Frayer model for difficult words</li>
+      <li>Use Reciprocal Teaching to clarify, summarize, question, and predict</li>
+    </ul>
+
+    <h3>Morphological Analysis</h3>
+    <p>Understanding word parts helps students decode meaning. For example, "magic" is part of the word "magician." Greek and Latin roots also help:</p>
+    <ul class="bullet-list">
+      <li><strong>Ast</strong> (star) = astronaut, aster, astronomer, astrology</li>
+    </ul>
+
+    <div class="video-ref">youtube.com/watch?v=_9HtKCxUxhs</div>
+    <div class="video-ref">youtube.com/watch?v=A_gcgA-YaTw</div>
+
+    <h3>Five Contexts for Organizing Reading Instruction</h3>
+    <ol class="bullet-list">
+      <li><strong>Language Experience Approach:</strong> Experience, teacher writes, teacher reads, students read, phonics</li>
+      <li><strong>Teacher Reading:</strong> Model and support decoding, or Interactive Reading for comprehension</li>
+      <li><strong>Whole Group Instruction:</strong> Model, shared, guided, independent activities</li>
+      <li><strong>Small Group Guided Reading:</strong> 4-8 students; Before, During, and After reading activities</li>
+      <li><strong>Reading Workshop:</strong> Mini-lesson, student self-selected reading, and sharing</li>
+    </ol>
+
+    <div class="extra-space">[ Add Frayer model examples or vocabulary wall photos ]</div>
+    <div class="page-number">8</div>
+  </div>
+
+  <!-- Chapter 3 continued - Reflection -->
+  <div class="page">
+    <div class="reflection-box">
+      <h4>My Vocabulary Reading Response</h4>
+      <p>In "Best Practices in Vocabulary Instruction Revisited," Blachowicz and Fisher explain that the best way to help students learn words is to provide them with a word-rich environment and opportunities to use words meaningfully (2011). The authors reported that students learn better from repeated exposure to words, wordplay, discussion, and reading.</p>
+      <p>A key concept is that students need to not only know what words mean, but also apply them in conversations, writing, and class discussions. I found the read-aloud activities quite interesting, as children are naturally able to learn many new words when stories are read to them by teachers or parents. Discussion and interaction are also very important for expanding students' vocabulary development.</p>
+      <p>Another significant takeaway is the role of motivation in vocabulary acquisition. Using word games, word walls, puzzles, and discussions makes students interested in learning new vocabulary in a fun way (Blachowicz &amp; Fisher, 2011). Students retain words better if they can be related to real-life experiences.</p>
+      <p>We also discussed in class how students could practice vocabulary in schools that don't have enough resources. Teachers can help parents develop reading routines at home, especially before bedtime. Another good idea is to have small vocabulary goals in each class &mdash; one teacher creates a class vocabulary list, and students practice and use those words in other subjects and conversations.</p>
+      <p style="text-align:left; font-size:12px; color:#888; margin-top:10px;"><strong>Reference:</strong> Blachowicz, C. L., &amp; Fisher, P. J. (2011). Best practices in vocabulary instruction revisited. <em>Best practices in literacy instruction</em>, <em>4</em>, 224&ndash;249.</p>
+    </div>
+
+    <div class="extra-space">[ Add vocabulary games you use in your classroom ]</div>
+    <div class="page-number">9</div>
+  </div>
+
+  <!-- ===== CHAPTER 4: WRITING & READING WORKSHOP ===== -->
+  <div class="page">
+    <div class="chapter-header">
+      <div class="chapter-number">Chapter 4</div>
+      <div class="chapter-title">Writing &amp; Reading Workshop</div>
+    </div>
+    <div class="chapter-intro">
+      Workshop models put students at the center of their learning. This chapter explores Writing Workshop, Reader's Workshop, and Bibliotherapy as approaches for more independent and engaged learners.
+    </div>
+
+    <h3>Bibliotherapy</h3>
+    <p>Bibliotherapy is the use of book reading to bring up and solve social problems in the classroom. It helps teachers find out what problems children face &mdash; sometimes students can't express problems directly, but they may identify with ideas in the context of a story.</p>
+    <p><strong>How to identify student needs:</strong></p>
+    <ul class="bullet-list">
+      <li>Talk to parents at drop-off or pick-up time</li>
+      <li>Observe children in different settings</li>
+      <li>Ask other staff members</li>
+    </ul>
+
+    <h3>Writing Workshop</h3>
+    <p>Writing Workshop is a student-centered teaching approach where students learn writing through regular practice, guidance, sharing, and revision. It helps students become independent and confident writers.</p>
+
+    <h4>Main Parts of Writing Workshop</h4>
+    <ul class="bullet-list">
+      <li><strong>Mini-Lesson:</strong> Short teacher instruction (5-15 minutes) on one writing skill or strategy</li>
+      <li><strong>Independent Writing Time:</strong> Students write on their own topics while the teacher gives support</li>
+      <li><strong>Conferencing:</strong> Teacher meets individually or in small groups to give feedback</li>
+      <li><strong>Sharing/Reflection:</strong> Students share their writing to build confidence and peer learning</li>
+    </ul>
+    <div class="video-ref">youtube.com/watch?v=FXTA_mUYPKU</div>
+    <div class="video-ref">youtube.com/watch?v=uI2LBpCwyOE</div>
+
+    <h3>Reader's Workshop</h3>
+    <p>Reader's Workshop is a student-centered reading approach where students develop reading skills through independent reading, teacher guidance, discussion, and reflection.</p>
+    <div class="video-ref">youtube.com/watch?v=LPHVmIOcFbg</div>
+    <div class="video-ref">youtube.com/watch?v=gviJBpfWLGs</div>
+    <div class="video-ref">youtube.com/watch?v=bLNzAQkJTKs</div>
+
+    <div class="extra-space">[ Add photos of your classroom workshop setup or student work ]</div>
+    <div class="page-number">10</div>
+  </div>
+
+  <!-- Chapter 4 continued - Reflection -->
+  <div class="page">
+    <div class="reflection-box">
+      <h4>My Response to Workshop Videos</h4>
+      <p>Following the viewing of the videos, I became more aware of the role of education, communication, and human connection in learning environments. A key insight was that knowledge is not just imparting information to students but also understanding the background of their emotions and experiences. The videos revealed that students learn differently in different environments and with different support systems.</p>
+      <p>Another important point was the role of technology and modern communication in education. Technologies can add to the opportunities for learning, but they can also be a source of inequality. Students with greater access to the internet, digital devices, or a supportive environment will be more able to engage actively. This is a particular concern in developing countries.</p>
+      <p>I also gained an interest in critical thinking and reflection. The videos challenged me to examine practices, systems, and assumptions. I believe this is very important in the professional world because work should not be mechanical, but critically thought out &mdash; whether it is ethical, inclusive, and effective.</p>
+      <p>The concept that resonated with me most was the importance of emotional support and motivation in learning. There are occasions when students are labelled as "weak" or "less capable," but the videos indicate that it may be a lack of support, confidence, and opportunity that is the issue. This altered my perspective on student achievement.</p>
+    </div>
+
+    <div class="extra-space">[ Add your own workshop implementation ideas or experiences ]</div>
+    <div class="page-number">11</div>
+  </div>
+
+  <!-- ===== CHAPTER 5: CRITICAL LITERACY ===== -->
+  <div class="page">
+    <div class="chapter-header">
+      <div class="chapter-number">Chapter 5</div>
+      <div class="chapter-title">Critical Literacy</div>
+    </div>
+    <div class="chapter-intro">
+      Critical literacy encourages students to think deeply about texts, question ideas, and examine issues of power, fairness, inequality, and perspective. This chapter explores how to help learners understand that texts reflect different viewpoints and social influences.
+    </div>
+
+    <h3>What is Critical Literacy?</h3>
+    <p>Critical literacy is an approach to reading and learning that encourages students to think deeply about texts, question ideas, and examine issues of power, fairness, inequality, and perspective. After reading a story, students discuss questions such as:</p>
+    <ul class="bullet-list">
+      <li>Whose voice is included or missing?</li>
+      <li>Is the situation fair to all characters?</li>
+      <li>How could the story change from another person's perspective?</li>
+    </ul>
+    <div class="video-ref">vimeo.com/939840927 &mdash; Dr. Glenn DeVoogd on Critical Literacy</div>
+
+    <h4>How Do We Come to a Conclusion?</h4>
+    <ul class="bullet-list">
+      <li>Evidence from the text</li>
+      <li>Awareness of context (social, historical, cultural)</li>
+      <li>Considering multiple perspectives</li>
+      <li>Evaluating impact (who benefits/harmed)</li>
+    </ul>
+
+    <h3>Critical Media Studies</h3>
+    <p>Billboards, television, movies, and advertisements all influence people. Critical media studies helps students understand the values implicit in media, develop alternative narratives, and take action to seek justice and equity.</p>
+    <div class="video-ref">criticalmediaproject.org</div>
+    <div class="video-ref">cmp.gsas.harvard.edu</div>
+
+    <div class="extra-space">[ Add examples of critical literacy questions you've used in class ]</div>
+    <div class="page-number">12</div>
+  </div>
+
+  <!-- Chapter 5 continued - Reflections -->
+  <div class="page">
+    <div class="reflection-box">
+      <h4>My Response on Critical Literacy</h4>
+      <p>Maureen McLaughlin and Glenn DeVoogd discuss the meaning of critical literacy and its extended version, critical expressionism, in the article "Critical Expressionism: Expanding Reader Response in Critical Literacy." Critical literacy is the process of understanding texts and also their underlying values, prejudices, and sociopolitical context. This point of view makes the reader challenge the decisions made by the author and seek additional meanings in the text.</p>
+      <p>I discovered that critical literacy pushes readers to look beyond the text and consider power relations, attitudes, and unseen prejudices. It is essential to ask why authors decide to write about certain things, what perspective they are writing from, and what perspectives are skipped.</p>
+      <p>As an illustration, the classic story of <em>The Tortoise and the Hare</em> can be subjected to a critical viewpoint:</p>
+      <ul class="bullet-list">
+        <li><strong>Concealed values:</strong> The story promotes dedication, humility, and cautions against pride. It emphasizes perseverance and hard work over natural talent.</li>
+        <li><strong>Values promoted/excluded:</strong> Patience and persistence are rewarded; overconfidence is critiqued.</li>
+        <li><strong>Missing perspectives:</strong> Other animals observing the race; the rabbit's background; the tortoise's motivation.</li>
+        <li><strong>Action for justice:</strong> Use the lesson in real-life scenarios where people are underestimated because of perceived weaknesses.</li>
+      </ul>
+      <p style="text-align:left; font-size:12px; color:#888; margin-top:10px;"><strong>Reference:</strong> McLaughlin, M., &amp; DeVoogd, G. (2020). Critical expressionism: Expanding reader response in critical literacy. <em>The Reading Teacher</em>, <em>73</em>(5), 587&ndash;595.</p>
+    </div>
+
+    <div class="extra-space">[ Add your own critical literacy analysis of a book, movie, or article ]</div>
+    <div class="page-number">13</div>
+  </div>
+
+  <!-- Chapter 5 continued - Encanto Analysis -->
+  <div class="page">
+    <div class="reflection-box">
+      <h4>Critical Literacy Analysis: Encanto (2021)</h4>
+      <p><em>Encanto</em> tells the story of the Madrigal family who reside in a magical house in Colombia. Each person possesses a particular power &mdash; everyone except Mirabel, the main character. With the family magic slowly fading, Mirabel discovers that the pressure and expectations within the family are the real problem.</p>
+
+      <h4>Author's Perspective</h4>
+      <p>The movie leans towards perfection, productivity, and usefulness. Strong or visible powers are more appreciated, reflecting a societal ideology that individuals are not worth anything unless they are productive or successful. Meanwhile, the movie highlights those who do not conform &mdash; Mirabel is left out for lacking powers, and Bruno is isolated for his misunderstood ability to see the future.</p>
+
+      <h4>Alternative Perspectives</h4>
+      <p>Each person is valuable regardless of capabilities. Mirabel introduces emotional insight and healing. Bruno's visions could have been viewed as beneficial. The movie urges acceptance of diversity in talents, personality, and feelings.</p>
+
+      <h4>Action to Promote Justice and Peace</h4>
+      <ul class="bullet-list">
+        <li>Encourage acceptance and inclusion by appreciating people as they are</li>
+        <li>Promote family and community communication</li>
+        <li>Reduce unrealistic expectations and focus on mental wellness</li>
+        <li>Show empathy and encourage understanding in others</li>
+      </ul>
+      <p style="text-align:left; font-size:12px; color:#888; margin-top:5px;"><strong>Reference:</strong> Bush, J. (Director). (2021). <em>Encanto</em> [Film]. Walt Disney Pictures.</p>
+    </div>
+
+    <div class="image-placeholder">[ Add Encanto movie poster or a related image ]</div>
+    <div class="extra-space">[ Add more critical literacy analyses ]</div>
+    <div class="page-number">14</div>
+  </div>
+
+  <!-- ===== CHAPTER 6: DYSLEXIA & SPECIAL NEEDS ===== -->
+  <div class="page">
+    <div class="chapter-header">
+      <div class="chapter-number">Chapter 6</div>
+      <div class="chapter-title">Dyslexia &amp; Special Needs</div>
+    </div>
+    <div class="chapter-intro">
+      Understanding learning differences is essential for inclusive education. This chapter compiles my learning from modules on dyslexia, screening, assessment, and strategies for supporting students with special needs.
+    </div>
+
+    <h3>Understanding Dyslexia</h3>
+    <p>Dyslexia is a specific and neurobiological learning issue, not a sign of intelligence or lack of effort. Dyslexics struggle to quickly and accurately recognize, decode, and spell words. It is more closely associated with issues connected to the phonological component of language &mdash; the ability to perceive and modify word sounds.</p>
+
+    <p><strong>Key insights:</strong></p>
+    <ul class="bullet-list">
+      <li>Dyslexia varies from person to person; some have minor issues, others more significant</li>
+      <li>It can occur alongside other conditions and is often hereditary</li>
+      <li>The human brain is not built for reading &mdash; we learn to read by collaborating different brain parts</li>
+      <li>The brain is flexible; with the right instruction, it can adapt and improve</li>
+      <li>Students with dyslexia often experience anxiety, frustration, and self-doubt</li>
+    </ul>
+
+    <h3>Screening and Assessment</h3>
+    <p>The Multi-Tiered System of Support (MTSS) provides varying degrees of assistance according to student needs. Key areas include:</p>
+    <ul class="bullet-list">
+      <li>Phonological awareness</li>
+      <li>Working memory</li>
+      <li>Rapid naming</li>
+      <li>Vocabulary, phonics, decoding, and reading fluency</li>
+    </ul>
+
+    <h3>Teaching Literacy for Special Needs Students</h3>
+    <p>An instructional approach that adapts reading and writing methods to meet individual learning needs using flexible strategies such as visual aids, multisensory activities, repetition, and assistive tools.</p>
+    <p><strong>Example:</strong> Using picture cards, tracing letters in sand, and simple word matching games to help a student recognize letters and build early reading skills.</p>
+    <div class="video-ref">readingrockets.org &mdash; Hooking Struggling Readers</div>
+
+    <div class="extra-space">[ Add resources, infographics, or notes on dyslexia ]</div>
+    <div class="page-number">15</div>
+  </div>
+
+  <!-- Chapter 6 continued - Reflection -->
+  <div class="page">
+    <div class="reflection-box">
+      <h4>My Reading Response on Dyslexia</h4>
+      <p>I developed a deeper understanding of dyslexia as a complicated and lifelong learning disability that impacts people in various ways after completing the modules on "Introduction to Dyslexia and Literacy," "The Reading Brain and Dyslexia," and "Screening and Assessment of Literacy Skills and Dyslexia."</p>
+      <p>One significant discovery is that dyslexia is a neurobiological learning issue, not a sign of intelligence. This encouraged me to reconsider my beliefs, particularly the assumption that dyslexia is mostly a visual issue such as letter switching. It is more closely associated with phonological components of language.</p>
+      <p>The connection between thoughts and emotions was another crucial lesson. Students with dyslexia frequently experience anxiety, frustration, and self-doubt, which can hinder their ability to study. Therefore, educators must provide a secure, encouraging environment that attends to students' emotional well-being.</p>
+      <p>These modules were really useful and fascinating. I appreciate the increased focus on dyslexia in today's classroom. However, I'm concerned that this issue is still poorly understood from a South Asian perspective. Instead of receiving the assistance they require, children are frequently labeled as slow or untalented. I experienced a similar circumstance in my classroom with an American student &mdash; it wasn't until I met with the parents that I understood what was wrong.</p>
+      <p>Out of all the modules, the Screening and Assessment segment was my favorite because it provides clear guidance on how to identify and assist students. I hope to apply these methods in my future work. The lack of knowledge regarding dyslexia in my own community is currently my main concern, and I believe it is my responsibility to educate others so that children are not harmed or misunderstood.</p>
+      <p style="text-align:left; font-size:12px; color:#888; margin-top:10px;"><strong>Reference:</strong> UC|CSU Collaborative for Neuroscience, Diversity, and Learning. (n.d.). <em>Literacy &amp; dyslexia</em>. https://ca-diverse-learning.org/programs/Literacy-dyslexia</p>
+    </div>
+
+    <div class="extra-space">[ Add more strategies or insights for special needs teaching ]</div>
+    <div class="page-number">16</div>
+  </div>
+
+  <!-- ===== CHAPTER 7: CONFLICT RESOLUTION & SEL ===== -->
+  <div class="page">
+    <div class="chapter-header">
+      <div class="chapter-number">Chapter 7</div>
+      <div class="chapter-title">Conflict Resolution &amp; Social-Emotional Learning</div>
+    </div>
+    <div class="chapter-intro">
+      Social-emotional learning and conflict resolution are vital for creating a positive school environment. This chapter covers transformative SEL, healing-centered trauma support, peer mediation, and related approaches.
+    </div>
+
+    <h3>Transformative Social Emotional Learning</h3>
+    <p>Transformative SEL is an educational approach that helps students develop social and emotional skills while also promoting equity, identity, relationships, and social awareness. It encourages students to understand themselves and others, build positive relationships, and work toward fairness and inclusion in society.</p>
+    <p><strong>Example:</strong> In a classroom discussion about bullying, students learn empathy, respect, and communication skills while also discussing fairness, cultural differences, and how to support classmates who may feel excluded.</p>
+    <div class="video-ref">casel.org &mdash; Fundamentals of SEL</div>
+
+    <h3>Healing-Centered Trauma Support in Schools</h3>
+    <p>The HCE framework, formulated by Shawn Ginwright, aims at giving students assistance regarding their academic, emotional, and psychological needs. Instead of asking "What is wrong with you?", it starts with asking what is good about the learners. The framework emphasizes learners' identity, culture, stability, and possibilities.</p>
+    <div class="video-ref">ginwright.medium.com &mdash; The Future of Healing</div>
+
+    <h4>Key Principles of HCE</h4>
+    <ul class="bullet-list">
+      <li>Asset-based: Focus on strengths, not deficits</li>
+      <li>Cultural: Value students' identity and community</li>
+      <li>Political: Address systemic issues</li>
+      <li>Adult flourishing: Support the whole person</li>
+    </ul>
+
+    <h3>Empathy</h3>
+    <p>Empathy is important in Transformative SEL because it helps students understand and respect the feelings, experiences, and perspectives of others. It encourages kindness, inclusion, cooperation, and positive relationships.</p>
+    <div class="video-ref">youtube.com/watch?v=QT6FdhKriB8</div>
+
+    <div class="extra-space">[ Add images of SEL activities or empathy exercises ]</div>
+    <div class="page-number">17</div>
+  </div>
+
+  <!-- Chapter 7 continued - Peer Mediation & Reflection -->
+  <div class="page">
+    <h3>Conflict Resolution &amp; Peace Education</h3>
+    <p>The Whitaker Peace and Development Initiative (WPDI) provides frameworks for conflict resolution. We all have different styles of dealing with conflict &mdash; some become aggressive, some avoid confrontation, and others work collaboratively to meet everyone's needs.</p>
+    <div class="video-ref">wpdi.org</div>
+    <div class="video-ref">youtube.com/watch?v=6lzIqdf7-3Q &mdash; The 17 Camels Story</div>
+
+    <h3>Peer Mediation</h3>
+    <p>Peer mediation is a conflict-resolution process where trained students help other students peacefully resolve disagreements. Instead of adults stepping in right away, peers guide the discussion so both sides can be heard.</p>
+
+    <h4>Steps of Peer Mediation</h4>
+    <ol class="bullet-list">
+      <li><strong>Introduction:</strong> Mediators introduce themselves, explain ground rules (no interrupting, no put-downs, confidentiality)</li>
+      <li><strong>Listening:</strong> Each person shares their side; mediators ask clarifying questions, restate, and reflect</li>
+      <li><strong>Solutions:</strong> Brainstorm wants and willings; both must contribute to the solution</li>
+      <li><strong>Closing:</strong> Write the solution, sign the agreement, celebrate the resolution</li>
+    </ol>
+
+    <div class="reflection-box">
+      <h4>My Response on SEL &amp; Healing-Centered Engagement</h4>
+      <p>The term Social and Emotional Learning refers to a procedure whereby an individual acquires skills on social competence, emotional control, and self-awareness. The five elements of SEL are: self-awareness, self-management, social awareness, relationship skills, and responsible decision-making.</p>
+      <p>I want to respond specifically to "Healing-Centered Trauma Support in Schools" because I believe that if an educational institution doesn't know how to support trauma, the relationship between teacher and students will be non-friendly. This is a very visible problem in the modern world that works as a barrier to child growth.</p>
+      <p>In Bangladesh, elders often don't want to face or admit mental health issues. They treat trauma and mental health as non-existent. But trauma can destroy people from childhood and follow them through life. As second parents or guardians, educators can take great steps to mitigate this in educational institutions. The teacher-student relationship plays a very important role in this work.</p>
+    </div>
+
+    <div class="extra-space">[ Add peer mediation scripts or photos from role-play activities ]</div>
+    <div class="page-number">18</div>
+  </div>
+
+  <!-- ===== CHAPTER 8: THE FUTURE OF LITERACY & AI ===== -->
+  <div class="page">
+    <div class="chapter-header">
+      <div class="chapter-number">Chapter 8</div>
+      <div class="chapter-title">The Future of Literacy &amp; Artificial Intelligence</div>
+    </div>
+    <div class="chapter-intro">
+      Technology is rapidly transforming education. This chapter explores how AI can support teaching and learning, as well as the societal implications we must consider as educators.
+    </div>
+
+    <h3>30 Under 30: Young Leaders in Literacy</h3>
+    <p>The International Literacy Association celebrates 30 educators under the age of 30. Notable mentions include Ahmad from Afghanistan (p. 51) and Ahmed (p. 55), who are making remarkable contributions to literacy in their communities.</p>
+    <div class="video-ref">literacyworldwide.org &mdash; ILA 2023 30 Under 30</div>
+
+    <h3>Teaching and Learning with AI</h3>
+    <p><strong>For Teachers:</strong> Generating differentiated materials for students at different levels of ability; creating lesson plans and assessments at different Bloom's Taxonomy levels.</p>
+    <p><strong>For Students:</strong> Getting started on a project; creating high-interest materials; text-to-speech, visual representations, and translation for students with disabilities.</p>
+
+    <h4>Example Prompts for AI</h4>
+    <p><strong>Lesson Plan Prompt:</strong> "As a high school biology teacher, design an engaging and interactive lesson plan for tenth-grade students exploring the process of cellular respiration..."</p>
+    <p><strong>Assessment Prompt:</strong> "You're a middle school science teacher. Create a rubric for assessing a student's science journals worth 25 points with five assessable categories and three performance levels..."</p>
+
+    <div class="video-ref">aiforeducation.io &mdash; Prompt Library for Teachers</div>
+    <div class="video-ref">youtube.com/watch?v=Z0e4eYVb6Cc</div>
+    <div class="video-ref">youtube.com/watch?v=1tn3H7dlXGg</div>
+    <div class="video-ref">youtube.com/watch?v=6oLNLCO0vfI</div>
+
+    <h3>Personalized Learning</h3>
+    <p>Students make choices within Writing Workshop, Social Studies Workshop, or Youth Participatory Action Research. AI can help develop individual learning paths by suggesting different resources, activities, and assessments based on interests and prior knowledge.</p>
+
+    <div class="extra-space">[ Add examples of AI tools you use or want to use in your classroom ]</div>
+    <div class="page-number">19</div>
+  </div>
+
+  <!-- Chapter 8 continued - Societal Impacts -->
+  <div class="page">
+    <h3>Societal Impacts of AI</h3>
+    <p>AI has both positive and negative effects on society, including the environment, economy, and human life.</p>
+
+    <h4>Key Concerns</h4>
+    <ul class="bullet-list">
+      <li><strong>High Energy Consumption:</strong> AI systems require large amounts of electricity to train and run</li>
+      <li><strong>Resource Depletion:</strong> AI hardware depends on rare minerals and materials</li>
+      <li><strong>Electronic Waste:</strong> Frequent upgrading leads to more discarded electronics</li>
+      <li><strong>Water Usage:</strong> Data centers use large amounts of water for cooling</li>
+      <li><strong>Unemployment:</strong> Automation can replace some human jobs</li>
+      <li><strong>Intellectual Property:</strong> AI-generated content raises concerns about ownership and copyright</li>
+    </ul>
+
+    <div class="video-ref">youtube.com/watch?v=eXdVDhOGqoE</div>
+
+    <div class="note-box">
+      <strong>Class Discussion Note:</strong> We discussed how teachers can balance the benefits of AI with responsible use. While AI can save time and provide personalized support, we must ensure students develop critical thinking skills and understand the limitations of AI-generated content.
+    </div>
+
+    <div class="extra-space">[ Add your thoughts on AI in education and how you plan to use it ]</div>
+    <div class="page-number">20</div>
+  </div>
+
+  <!-- ===== CHAPTER 9: COURSE REFLECTIONS ===== -->
+  <div class="page">
+    <div class="chapter-header">
+      <div class="chapter-number">Chapter 9</div>
+      <div class="chapter-title">Course Reflections</div>
+    </div>
+    <div class="chapter-intro">
+      This course has shaped my understanding of literacy education in profound ways. Here I reflect on the key takeaways from my learning journey.
+    </div>
+
+    <div class="reflection-box">
+      <h4>Overall Reflection</h4>
+      <p>Throughout this course, I have learned that literacy is not simply about decoding words &mdash; it is about making meaning, questioning perspectives, and empowering learners. The journey from early literacy methods like the Language Experience Approach and Guided Reading to more advanced concepts like Critical Literacy and AI in education has given me a comprehensive toolkit for my teaching practice.</p>
+
+      <p>One of the most important shifts in my thinking has been understanding the difference between decoding and comprehension. Many students can read words fluently but struggle to understand what they read. This has made me more intentional about teaching comprehension strategies explicitly.</p>
+
+      <p>Critical literacy has been particularly eye-opening. Learning to question texts &mdash; asking whose voice is missing, what values are being promoted, and how power operates in stories &mdash; has transformed how I approach reading with my students. I now see that literacy can be a tool for social justice and equity.</p>
+
+      <p>I also gained deep insights into dyslexia and special needs education. Understanding that dyslexia is neurobiological, not a reflection of intelligence, has changed how I view struggling readers. I am now better equipped to identify signs of dyslexia and provide appropriate support.</p>
+
+      <p>The conflict resolution and SEL components of the course have been equally valuable. I now recognize that students' emotional well-being is inseparable from their academic success. The Healing-Centered Engagement framework has given me a new lens for understanding and supporting students who have experienced trauma.</p>
+
+      <p>Finally, exploring AI in education has opened my eyes to both possibilities and responsibilities. As educators, we must harness technology thoughtfully while ensuring equity and critical awareness.</p>
+
+      <p>As I move forward in my career, I carry these lessons with me. My goal is to create classrooms where every child feels seen, supported, and empowered to become a confident reader and critical thinker. I am especially committed to bringing awareness about dyslexia and inclusive education to South Asian contexts, where these issues are still often misunderstood.</p>
+    </div>
+
+    <div class="extra-space">[ Add personal photos, certificates, or other mementos from the course ]</div>
+    <div class="page-number">21</div>
+  </div>
+
+  <!-- ===== REFERENCES ===== -->
+  <div class="page references-page">
+    <h2>References</h2>
+
+    <div class="ref-entry">Blachowicz, C. L., &amp; Fisher, P. J. (2011). Best practices in vocabulary instruction revisited. In <em>Best practices in literacy instruction</em> (4th ed., pp. 224&ndash;249). Guilford Press.</div>
+
+    <div class="ref-entry">Bush, J. (Director). (2021). <em>Encanto</em> [Film]. Walt Disney Pictures.</div>
+
+    <div class="ref-entry">Critical Media Project. (n.d.). <em>Critical media project</em>. https://criticalmediaproject.org</div>
+
+    <div class="ref-entry">Domestic Harmonizer. (n.d.). <em>Domestic harmonizer project</em>. https://domesticharmonizer.org</div>
+
+    <div class="ref-entry">Ginwright, S. (2018). The future of healing: Shifting from trauma informed care to healing centered engagement. <em>Occasional Paper</em>, <em>25</em>(1), 25&ndash;32.</div>
+
+    <div class="ref-entry">International Literacy Association. (2023). <em>30 under 30</em>. https://www.literacyworldwide.org/docs/default-source/communications/literacy-today/ila-2023-30-under-30.pdf</div>
+
+    <div class="ref-entry">Keene, E. O., &amp; Zimmermann, S. (2013). Years later, comprehension strategies are still at work. <em>The Reading Teacher</em>, <em>66</em>(8), 601&ndash;606. https://doi.org/10.1002/trtr.1167</div>
+
+    <div class="ref-entry">McLaughlin, M., &amp; DeVoogd, G. (2020). Critical expressionism: Expanding reader response in critical literacy. <em>The Reading Teacher</em>, <em>73</em>(5), 587&ndash;595.</div>
+
+    <div class="ref-entry">UC|CSU Collaborative for Neuroscience, Diversity, and Learning. (n.d.). <em>Literacy &amp; dyslexia</em>. https://ca-diverse-learning.org/programs/Literacy-dyslexia</div>
+
+    <div class="ref-entry">Whitaker Peace and Development Initiative. (n.d.). <em>WPDI</em>. https://wpdi.org</div>
+
+    <div class="ref-entry">Collaborative for Academic, Social, and Emotional Learning. (n.d.). <em>Fundamentals of SEL</em>. https://casel.org/fundamentals-of-sel</div>
+
+    <div class="ref-entry">InsideTrack. (n.d.). <em>Support students with this healing-centered engagement framework</em>. https://www.insidetrack.org/blog/support-students-with-this-healing-centered-engagement-framework</div>
+
+    <div class="note-box" style="margin-top:25px;">
+      <strong>Note:</strong> YouTube video references are embedded throughout the chapters. Additional video sources include guided reading demonstrations, phonics activities, writing workshop examples, and critical literacy talks.
+    </div>
+
+    <div class="extra-space">[ Add any additional references from your independent readings here ]</div>
+    <div class="page-number">22</div>
+  </div>
+
+</div>
+
+</body>
+</html>

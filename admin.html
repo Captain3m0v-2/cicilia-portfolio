@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Cicilia's Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#111;color:#e0e0e0;line-height:1.6;min-height:100vh;display:flex;align-items:center;justify-content:center}
+a{color:#c4a882;text-decoration:none}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#1a1a1a}
+::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+/* LOGIN */
+.login-screen{position:fixed;inset:0;z-index:9999;background:#111;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:32px}
+.login-screen.hidden{display:none}
+.login-box{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:16px;padding:40px;width:360px;max-width:90vw}
+.login-box h2{font-size:22px;color:#fff;margin-bottom:4px}
+.login-box p{font-size:13px;color:#666;margin-bottom:24px}
+.login-box label{font-size:12px;font-weight:600;color:#999;display:block;margin-bottom:4px}
+.login-box input{width:100%;padding:10px 14px;border-radius:8px;border:1px solid #2a2a2a;background:#222;color:#fff;font-size:14px;margin-bottom:16px;outline:none;transition:border 0.2s}
+.login-box input:focus{border-color:#c4a882}
+.login-box .error{color:#e74c3c;font-size:12px;margin-bottom:12px;display:none}
+.login-box button{width:100%;padding:12px;border:none;border-radius:8px;background:#c4a882;color:#111;font-weight:600;font-size:14px;cursor:pointer;transition:opacity 0.2s}
+.login-box button:hover{opacity:0.85}
+.login-box .hint{font-size:11px;color:#444;margin-top:12px;text-align:center}
+/* DASHBOARD */
+.dashboard{display:none;width:100%;min-height:100vh}
+.dashboard.active{display:flex}
+.sidebar{width:220px;background:#151515;border-right:1px solid #222;padding:20px 0;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:10}
+.sidebar h3{padding:0 20px;font-size:13px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+.sidebar h3 span{color:#c4a882}
+.sidebar .nav-item{display:block;padding:9px 20px;font-size:13px;color:#999;cursor:pointer;transition:all 0.15s;border-left:3px solid transparent}
+.sidebar .nav-item:hover{color:#fff;background:rgba(196,168,130,0.04)}
+.sidebar .nav-item.active{color:#c4a882;border-left-color:#c4a882;background:rgba(196,168,130,0.06)}
+.sidebar .nav-group{font-size:10px;font-weight:600;color:#444;text-transform:uppercase;letter-spacing:1px;padding:16px 20px 6px}
+.main{padding:0;flex:1;margin-left:220px;margin-top:0}
+.main-header{background:#151515;border-bottom:1px solid #222;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.main-header h2{font-size:18px;color:#fff;font-weight:600}
+.main-header .actions{display:flex;gap:10px}
+.main-header .btn-export{padding:9px 20px;border:none;border-radius:8px;background:#c4a882;color:#111;font-weight:600;font-size:13px;cursor:pointer;transition:opacity 0.2s}
+.main-header .btn-export:hover{opacity:0.85}
+.main-header .btn-logout{padding:9px 20px;border:1px solid #333;border-radius:8px;background:transparent;color:#999;font-weight:500;font-size:13px;cursor:pointer;transition:all 0.2s}
+.main-header .btn-logout:hover{border-color:#555;color:#fff}
+.main-content{padding:32px;max-width:900px}
+.form-section{display:none}
+.form-section.active{display:block}
+.form-section h3{font-size:22px;color:#fff;font-weight:600;margin-bottom:4px}
+.form-section .desc{font-size:13px;color:#666;margin-bottom:24px}
+.form-group{margin-bottom:20px}
+.form-group label{font-size:12px;font-weight:600;color:#999;display:block;margin-bottom:5px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 14px;border-radius:8px;border:1px solid #2a2a2a;background:#222;color:#e0e0e0;font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border 0.2s;resize:vertical}
+.form-group input:focus,.form-group textarea:focus{border-color:#c4a882}
+.form-group textarea{min-height:100px;line-height:1.6}
+.form-group .hint{font-size:11px;color:#555;margin-top:4px}
+.form-group .char-count{font-size:11px;color:#555;text-align:right;margin-top:2px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+/* IMAGE UPLOAD */
+.img-upload{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.img-upload .preview{width:80px;height:80px;border-radius:8px;overflow:hidden;background:#1a1a1a;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.img-upload .preview img{width:100%;height:100%;object-fit:cover}
+.img-upload .preview .placeholder{font-size:10px;color:#555;text-align:center;padding:4px}
+.img-upload label.btn-upload{padding:8px 16px;border-radius:6px;border:1px solid #333;background:#1a1a1a;color:#ccc;font-size:12px;cursor:pointer;transition:all 0.2s}
+.img-upload label.btn-upload:hover{background:#2a2a2a;color:#fff}
+.img-upload input[type=file]{display:none}
+.img-upload .filename{font-size:11px;color:#666;word-break:break-all}
+/* COLLAPSIBLE */
+.collapse-header{padding:14px 0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #222;margin-bottom:16px;user-select:none}
+.collapse-header h4{font-size:15px;color:#fff;font-weight:500}
+.collapse-header .arrow{color:#555;font-size:14px;transition:transform 0.2s}
+.collapse-header.open .arrow{transform:rotate(180deg)}
+.collapse-body{padding-bottom:20px}
+.collapse-body.hidden{display:none}
+/* SUCCESS OVERLAY */
+.success-toast{position:fixed;bottom:30px;right:30px;z-index:9999;background:#1a3a1a;border:1px solid #2a5a2a;border-radius:12px;padding:16px 24px;color:#8bc88b;font-size:14px;display:none;box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+.success-toast.show{display:block}
+@media(max-width:768px){
+  .sidebar{width:100%;position:relative;height:auto;border-right:none;border-bottom:1px solid #222}
+  .sidebar .nav-item{padding:7px 16px;font-size:12px}
+  .main{margin-left:0}
+  .main-content{padding:20px}
+  .main-header{padding:14px 20px;flex-wrap:wrap;gap:10px}
+  .form-row{grid-template-columns:1fr}
+  .login-box{width:auto;margin:0 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div style="text-align:center">
+    <div style="font-size:32px;margin-bottom:8px;opacity:0.3">⚙️</div>
+    <div style="font-size:13px;color:#555">Cicilia's Portfolio</div>
+  </div>
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <p>Enter your credentials to manage the portfolio.</p>
+    <form id="loginForm" onsubmit="return handleLogin(event)">
+      <div>
+        <label for="username">Username</label>
+        <input type="text" id="username" value="cicilia" autocomplete="off">
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="off">
+      </div>
+      <div class="error" id="loginError">Invalid username or password.</div>
+      <button type="submit">Sign In</button>
+      <div class="hint">Username: cicilia</div>
+    </form>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h3>Cicilia<span>.</span></h3>
+    <div class="nav-item active" data-section="site-identity">Site Identity</div>
+    <div class="nav-item" data-section="about">About Me</div>
+    <div class="nav-item" data-section="overview">Overview Cards</div>
+    <div class="nav-group">Chapters</div>
+    <div class="nav-item" data-section="ch1">1 — Early Literacy</div>
+    <div class="nav-item" data-section="ch2">2 — Comprehension</div>
+    <div class="nav-item" data-section="ch3">3 — Vocabulary</div>
+    <div class="nav-item" data-section="ch4">4 — Workshop</div>
+    <div class="nav-item" data-section="ch5">5 — Critical Literacy</div>
+    <div class="nav-item" data-section="ch6">6 — Dyslexia</div>
+    <div class="nav-item" data-section="ch7">7 — SEL</div>
+    <div class="nav-item" data-section="ch8">8 — AI & Future</div>
+    <div class="nav-item" data-section="ch9">9 — Reflections</div>
+    <div class="nav-group">Site</div>
+    <div class="nav-item" data-section="references">References</div>
+    <div class="nav-item" data-section="footer">Footer</div>
+    <div class="nav-item" data-section="preview">Preview</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="main-header">
+      <h2 id="mainTitle">Site Identity</h2>
+      <div class="actions">
+        <button class="btn-logout" style="border-color:#333;color:#999" onclick="document.getElementById('fileInput').click()">📂 Load from File</button>
+      <input type="file" id="fileInput" accept=".html" style="display:none">
+      <button class="btn-export" onclick="handleExport()">⬇ Export &amp; Download</button>
+      <button class="btn-logout" onclick="handleLogout()">Logout</button>
+      </div>
+    </div>
+    <div class="main-content" id="mainContent">
+
+      <!-- SITE IDENTITY -->
+      <div class="form-section active" id="sec-site-identity">
+        <h3>Site Identity</h3>
+        <p class="desc">Edit the hero section — the first thing visitors see.</p>
+        <div class="form-group">
+          <label>Badge Text</label>
+          <input type="text" id="f_heroBadge" value="✦ Master of Education">
+        </div>
+        <div class="form-group">
+          <label>Your Name (displayed below badge)</label>
+          <input type="text" id="f_heroName" value="Cicilia Kretteka Mondle">
+        </div>
+        <div class="form-group">
+          <label>ID / Institution Line</label>
+          <input type="text" id="f_heroId" value="Asian University For Women — AUW254003">
+        </div>
+        <div class="form-group">
+          <label>Subtitle (italic text)</label>
+          <input type="text" id="f_heroSubtitle" value="A Journey in Literacy &amp; Learning">
+        </div>
+        <div class="form-group">
+          <label>Tagline / Description</label>
+          <textarea id="f_heroTagline" rows="3">Exploring early literacy, critical thinking, social-emotional learning, and the future of education.</textarea>
+        </div>
+        <div class="form-group">
+          <label>Profile Photo</label>
+          <div class="img-upload">
+            <div class="preview"><img id="preview_heroImg" src="1.jpeg" alt=""><span class="placeholder" style="display:none">No image</span></div>
+            <label class="btn-upload">Choose Image<input type="file" accept="image/*" onchange="handleImageUpload(this, 'f_heroImg', 'preview_heroImg')"></label>
+            <span class="filename" id="fname_heroImg">1.jpeg</span>
+          </div>
+          <div class="hint">Upload a new photo to replace the current one. Recommended: 500×500px.</div>
+        </div>
+      </div>
+
+      <!-- ABOUT ME -->
+      <div class="form-section" id="sec-about">
+        <h3>About Me</h3>
+        <p class="desc">Edit your biography and profile images.</p>
+        <div class="form-group">
+          <label>Paragraph 1</label>
+          <textarea id="f_aboutP1" rows="4">I am a passionate educator and curriculum enthusiast currently pursuing my Master's in Education at Asian University for Women. Alongside my studies, I work as a teacher at William Carey Academy, where I apply learner-centered and practical teaching approaches in the classroom. I genuinely love working with children and supporting their growth both academically and personally.</textarea>
+        </div>
+        <div class="form-group">
+          <label>Paragraph 2</label>
+          <textarea id="f_aboutP2" rows="3">I believe that meaningful change in Bangladesh's education system begins with strong curriculum development. A well-designed curriculum can ensure that every child has access to high-quality education, regardless of their background, as it serves as the backbone of every institution.</textarea>
+        </div>
+        <div class="form-group">
+          <label>Paragraph 3</label>
+          <textarea id="f_aboutP3" rows="4">My goal is to contribute to the development of effective, inclusive, and engaging curricula that empower both teachers and learners. Through this portfolio, I have compiled the key ideas, strategies, and reflections from my coursework — covering early literacy methods, comprehension, critical literacy, conflict resolution, and the role of technology in education.</textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>LinkedIn URL</label>
+            <input type="text" id="f_linkedinUrl" value="https://www.linkedin.com/in/cicilia-kretteka/">
+          </div>
+          <div class="form-group">
+            <label>LinkedIn Display Text</label>
+            <input type="text" id="f_linkedinText" value="linkedin.com/in/cicilia-kretteka">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Profile Photo (same as hero, used in About section)</label>
+          <div class="img-upload">
+            <div class="preview"><img id="preview_aboutImg" src="1.jpeg" alt=""><span class="placeholder" style="display:none">No image</span></div>
+            <label class="btn-upload">Choose Image<input type="file" accept="image/*" onchange="handleImageUpload(this, 'f_aboutImg', 'preview_aboutImg')"></label>
+            <span class="filename" id="fname_aboutImg">1.jpeg</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Extra Image (e.g., teaching photo, certificate)</label>
+          <div class="img-upload">
+            <div class="preview"><img id="preview_extraImg" src="2.jpg" alt=""><span class="placeholder" style="display:none">No image</span></div>
+            <label class="btn-upload">Choose Image<input type="file" accept="image/*" onchange="handleImageUpload(this, 'f_extraImg', 'preview_extraImg')"></label>
+            <span class="filename" id="fname_extraImg">2.jpg</span>
+          </div>
+          <div class="hint">This image appears below your bio. Upload a teaching photo, certificate, or leave empty.</div>
+        </div>
+      </div>
+
+      <!-- OVERVIEW CARDS -->
+      <div class="form-section" id="sec-overview">
+        <h3>Overview Cards</h3>
+        <p class="desc">Edit the 8 topic cards shown in the Areas Covered section. Each card has an emoji, title, and short description.</p>
+        <div id="overviewCardsContainer"></div>
+        <div class="hint">Format per line: <code>emoji | Title | Description</code>. This is the quick overview grid.</div>
+      </div>
+
+      <!-- CHAPTER SECTIONS -->
+      <script>
+      // Chapter config
+      const CHAPTERS = [
+        {id:'ch1',num:'01',title:'Early Literacy Methods',key:'Early Literacy Methods'},
+        {id:'ch2',num:'02',title:'Comprehension & Reading Development',key:'Comprehension &amp; Reading Development'},
+        {id:'ch3',num:'03',title:'Vocabulary Development',key:'Vocabulary Development'},
+        {id:'ch4',num:'04',title:'Writing & Reading Workshop',key:'Writing &amp; Reading Workshop'},
+        {id:'ch5',num:'05',title:'Critical Literacy',key:'Critical Literacy'},
+        {id:'ch6',num:'06',title:'Dyslexia & Special Needs',key:'Dyslexia &amp; Special Needs'},
+        {id:'ch7',num:'07',title:'Conflict Resolution & SEL',key:'Conflict Resolution &amp; Social-Emotional Learning'},
+        {id:'ch8',num:'08',title:'The Future of Literacy & AI',key:'The Future of Literacy &amp; AI'},
+        {id:'ch9',num:'09',title:'Course Reflections',key:'Course Reflections'}
+      ];
+      </script>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS TOAST -->
+<div class="success-toast" id="successToast">✓ Site exported successfully! Save the downloaded file and upload to GitHub.</div>
+
+<script>
+// ===== PASSWORD HASH =====
+// SHA-256 hash of 'cicilia2026' (pre-computed)
+const HASH = 'fcdcfcb97a3e996831e49c36c98f89da0f57ea71b3382cd1ed36aa2dd17f5dbc';
+
+async function hashPassword(pw) {
+  const enc = new TextEncoder();
+  const data = enc.encode(pw);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const pw = document.getElementById('password').value;
+  const user = document.getElementById('username').value;
+  if (user !== 'cicilia') {
+    document.getElementById('loginError').style.display = 'block';
+    return false;
+  }
+  const h = await hashPassword(pw);
+  if (h === HASH) {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dashboard').classList.add('active');
+    initDashboard();
+    return false;
+  }
+  document.getElementById('loginError').style.display = 'block';
+  return false;
+}
+
+function handleLogout() {
+  document.getElementById('dashboard').classList.remove('active');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('password').value = '';
+  document.getElementById('loginError').style.display = 'none';
+}
+
+// ===== DASHBOARD NAV =====
+let currentSection = 'site-identity';
+
+function initDashboard() {
+  document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.sidebar .nav-item').forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+      const sec = item.dataset.section;
+      if (sec === 'preview') { showPreview(); return; }
+      switchSection(sec);
+    });
+  });
+  buildOverviewCards();
+  buildChapterForms();
+  switchSection('site-identity');
+}
+
+function switchSection(sec) {
+  currentSection = sec;
+  document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('sec-' + sec);
+  if (el) {
+    el.classList.add('active');
+    const titles = {
+      'site-identity':'Site Identity','about':'About Me','overview':'Overview Cards',
+      'ch1':'Chapter 1 — Early Literacy','ch2':'Chapter 2 — Comprehension','ch3':'Chapter 3 — Vocabulary',
+      'ch4':'Chapter 4 — Workshop','ch5':'Chapter 5 — Critical Literacy','ch6':'Chapter 6 — Dyslexia',
+      'ch7':'Chapter 7 — SEL','ch8':'Chapter 8 — AI & Future','ch9':'Chapter 9 — Reflections',
+      'references':'References','footer':'Footer'
+    };
+    document.getElementById('mainTitle').textContent = titles[sec] || 'Edit Section';
+  }
+}
+
+// ===== IMAGE UPLOAD =====
+const imageStore = {};
+
+function handleImageUpload(input, fieldId, previewId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    imageStore[fieldId] = dataUrl;
+    const preview = document.getElementById(previewId);
+    preview.src = dataUrl;
+    preview.style.display = 'block';
+    const placeholder = preview.nextElementSibling;
+    if (placeholder && placeholder.classList.contains('placeholder')) placeholder.style.display = 'none';
+    const fname = document.getElementById('fname_' + fieldId.replace('f_',''));
+    if (fname) fname.textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+function getImageDataUrl(fieldId) {
+  return imageStore[fieldId] || null;
+}
+
+// ===== OVERVIEW CARDS =====
+const overviewCardData = [
+  {icon:'📖',title:'Early Literacy',desc:'LEA, Singing, Guided Reading'},
+  {icon:'🧠',title:'Comprehension',desc:'Close Reading, Shared Reading'},
+  {icon:'📝',title:'Vocabulary',desc:'Strategies, Morphology'},
+  {icon:'✍️',title:'Workshop',desc:'Writing & Reader\'s Workshop'},
+  {icon:'🔍',title:'Critical Literacy',desc:'Text Analysis, Media'},
+  {icon:'💡',title:'Dyslexia',desc:'Special Needs, Inclusion'},
+  {icon:'🤝',title:'SEL',desc:'Conflict Resolution, Empathy'},
+  {icon:'🤖',title:'AI & Future',desc:'EdTech, Impact'}
+];
+
+function buildOverviewCards() {
+  const container = document.getElementById('overviewCardsContainer');
+  container.innerHTML = '';
+  overviewCardData.forEach((card, i) => {
+    const div = document.createElement('div');
+    div.className = 'form-group';
+    div.innerHTML = `
+      <label>Card ${i+1}</label>
+      <div class="form-row">
+        <input type="text" class="oc-icon" value="${card.icon}" placeholder="Emoji" style="max-width:70px">
+        <input type="text" class="oc-title" value="${card.title}" placeholder="Title">
+        <input type="text" class="oc-desc" value="${card.desc}" placeholder="Description">
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function getOverviewCards() {
+  const cards = [];
+  document.querySelectorAll('#overviewCardsContainer .form-group').forEach(g => {
+    const inputs = g.querySelectorAll('input');
+    if (inputs.length === 3) {
+      cards.push({icon: inputs[0].value, title: inputs[1].value, desc: inputs[2].value});
+    }
+  });
+  return cards;
+}
+
+// ===== CHAPTER FORMS =====
+function buildChapterForms() {
+  const mainContent = document.getElementById('mainContent');
+  const chSubtitles = {
+    ch1:'Foundational approaches to teaching reading to young learners.',
+    ch2:'True reading requires thinking strategies, not just word decoding.',
+    ch3:'Building a rich vocabulary is essential for reading comprehension and academic success.',
+    ch4:'Student-centered approaches that build independent, confident readers and writers.',
+    ch5:'Questioning texts, examining power, and reading beyond the surface to promote equity.',
+    ch6:'Understanding learning differences and creating inclusive classrooms.',
+    ch7:'Building empathy, resolving conflicts, and supporting students\' emotional well-being.',
+    ch8:'Technology is transforming education — exploring the possibilities and responsibilities.',
+    ch9:'Looking back at my learning journey through this course.'
+  };
+  const chContentDefaults = {
+    ch1: '',
+    ch2: '',
+    ch3: '',
+    ch4: '',
+    ch5: '',
+    ch6: '',
+    ch7: '',
+    ch8: '',
+    ch9: ''
+  };
+  // Load default content from file if available
+  const storedContent = localStorage.getItem('adminChapterContent');
+  if (storedContent) {
+    try {
+      const parsed = JSON.parse(storedContent);
+      Object.assign(chContentDefaults, parsed);
+    } catch(e) {}
+  }
+
+  CHAPTERS.forEach((ch, idx) => {
+    const sec = document.createElement('div');
+    sec.className = 'form-section';
+    sec.id = 'sec-' + ch.id;
+    const num = ch.num;
+    sec.innerHTML = `
+      <h3>Chapter ${num}: ${ch.title}</h3>
+      <p class="desc">Edit the subtitle and full HTML content for this chapter. Use the <strong>📂 Load from File</strong> button above to import from your current index.html.</p>
+      <div class="form-group">
+        <label>Section Subtitle (shown below the chapter heading)</label>
+        <input type="text" class="ch-subtitle" data-ch="${ch.id}" value="${chSubtitles[ch.id].replace(/'/g,"\\'")}">
+      </div>
+      <div class="form-group">
+        <label>Content (HTML)</label>
+        <div class="hint">Use HTML tags: &lt;p&gt;text&lt;/p&gt;, &lt;strong&gt;bold&lt;/strong&gt;, &lt;em&gt;italic&lt;/em&gt;, &lt;ul&gt;&lt;li&gt;item&lt;/li&gt;&lt;/ul&gt;</div>
+        <textarea class="ch-content" data-ch="${ch.id}" rows="20" placeholder="Paste the chapter HTML content here...">${chContentDefaults[ch.id]}</textarea>
+      </div>
+    `;
+    mainContent.appendChild(sec);
+  });
+  // References section
+  const refSec = document.createElement('div');
+  refSec.className = 'form-section';
+  refSec.id = 'sec-references';
+  refSec.innerHTML = `
+    <h3>References</h3>
+    <p class="desc">Edit the APA references and notes.</p>
+    <div class="form-group">
+      <label>Reference Entries (one per line, APA format)</label>
+      <textarea id="f_references" rows="16"></textarea>
+      <div class="hint">Each line is a separate reference entry with hanging indent. HTML tags like &lt;em&gt; are supported.</div>
+    </div>
+    <div class="form-group">
+      <label>Note (shown below references)</label>
+      <textarea id="f_refNote" rows="3"></textarea>
+    </div>
+  `;
+  mainContent.appendChild(refSec);
+
+  // Footer section
+  const footerSec = document.createElement('div');
+  footerSec.className = 'form-section';
+  footerSec.id = 'sec-footer';
+  footerSec.innerHTML = `
+    <h3>Footer</h3>
+    <p class="desc">Edit the site footer information.</p>
+    <div class="form-group">
+      <label>Brand Description</label>
+      <textarea id="f_footerDesc" rows="3"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>LinkedIn URL</label>
+        <input type="text" id="f_footerLinkedin" value="https://www.linkedin.com/in/cicilia-kretteka/">
+      </div>
+      <div class="form-group">
+        <label>University URL</label>
+        <input type="text" id="f_footerUniversity" value="https://asian-university.org/">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="text" id="f_footerEmail" value="">
+      </div>
+      <div class="form-group">
+        <label>Copyright Name</label>
+        <input type="text" id="f_footerCopyright" value="Cicilia Kretteka Mondle — Asian University For Women">
+      </div>
+    </div>
+  `;
+  mainContent.appendChild(footerSec);
+
+  // Preview section
+  const previewSec = document.createElement('div');
+  previewSec.className = 'form-section';
+  previewSec.id = 'sec-preview';
+  previewSec.innerHTML = `
+    <h3>Preview</h3>
+    <p class="desc">See a preview of your site before exporting.</p>
+    <div style="background:#fff;border-radius:12px;overflow:hidden;min-height:400px">
+      <iframe id="previewFrame" style="width:100%;min-height:500px;border:none;background:#fff"></iframe>
+    </div>
+  `;
+  mainContent.appendChild(previewSec);
+}
+
+// ===== RENDER SITE =====
+function collectFormData() {
+  const d = {};
+
+  // Hero
+  d.heroBadge = document.getElementById('f_heroBadge').value;
+  d.heroName = document.getElementById('f_heroName').value;
+  d.heroId = document.getElementById('f_heroId').value;
+  d.heroSubtitle = document.getElementById('f_heroSubtitle').value;
+  d.heroTagline = document.getElementById('f_heroTagline').value;
+
+  // About
+  d.aboutP1 = document.getElementById('f_aboutP1').value;
+  d.aboutP2 = document.getElementById('f_aboutP2').value;
+  d.aboutP3 = document.getElementById('f_aboutP3').value;
+  d.linkedinUrl = document.getElementById('f_linkedinUrl').value;
+  d.linkedinText = document.getElementById('f_linkedinText').value;
+
+  // Images
+  d.heroImg = getImageDataUrl('f_heroImg') || '1.jpeg';
+  d.aboutImg = getImageDataUrl('f_aboutImg') || '1.jpeg';
+  d.extraImg = getImageDataUrl('f_extraImg') || '2.jpg';
+
+  // Overview cards
+  d.overviewCards = getOverviewCards();
+
+  // Chapters
+  d.chapters = {};
+  CHAPTERS.forEach(ch => {
+    const subtitle = document.querySelector(`.ch-subtitle[data-ch="${ch.id}"]`);
+    const content = document.querySelector(`.ch-content[data-ch="${ch.id}"]`);
+    d.chapters[ch.id] = {
+      subtitle: subtitle ? subtitle.value : '',
+      content: content ? content.value : ''
+    };
+  });
+
+  // References
+  d.references = document.getElementById('f_references').value;
+  d.refNote = document.getElementById('f_refNote').value;
+
+  // Footer
+  d.footerDesc = document.getElementById('f_footerDesc').value;
+  d.footerLinkedin = document.getElementById('f_footerLinkedin').value;
+  d.footerUniversity = document.getElementById('f_footerUniversity').value;
+  d.footerEmail = document.getElementById('f_footerEmail').value;
+  d.footerCopyright = document.getElementById('f_footerCopyright').value;
+
+  return d;
+}
+
+// ===== EXPORT =====
+function escHtml(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function generateSite(d) {
+  const oc = d.overviewCards;
+  const overviewHTML = oc.map(c =>
+    `<div class="overview-card"><div class="icon">${c.icon}</div><h4>${escHtml(c.title)}</h4><p>${escHtml(c.desc)}</p></div>`
+  ).join('\n    ');
+
+  const chSubtitle = (id) => d.chapters[id] ? escHtml(d.chapters[id].subtitle) : '';
+  const chContent = (id) => {
+    const c = d.chapters[id] ? d.chapters[id].content : '';
+    // Escape ${} and backticks that would break template literal
+    return c.replace(/\$\{/g, '\\${').replace(/`/g, '\\`');
+  };
+
+  const refs = d.references.split('\n').filter(l => l.trim()).map(l =>
+    `<div class="ref-entry">${l}</div>`
+  ).join('\n    ');
+
+  const year = new Date().getFullYear();
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cicilia's Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#f8f6f2;color:#1a1a2e;line-height:1.7;overflow-x:hidden}
+p{text-align:justify}
+.scroll-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#c4a882,#8b6d4c,#5a4030);z-index:1001;width:0%;transition:width 0.1s}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(248,246,242,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid rgba(0,0,0,0.05);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;transition:box-shadow 0.3s}
+.navbar.scrolled{box-shadow:0 1px 20px rgba(0,0,0,0.06)}
+.nav-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1a1a2e;text-decoration:none;letter-spacing:-0.5px}
+.nav-logo span{color:#c4a882}
+.nav-links{display:flex;gap:2px;list-style:none;align-items:center}
+.nav-links a{text-decoration:none;color:#555;font-size:12.5px;font-weight:500;padding:7px 14px;border-radius:6px;transition:all 0.25s;letter-spacing:0.2px;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{background:#1a1a2e;color:#fff}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.hamburger span{width:22px;height:2px;background:#1a1a2e;border-radius:2px;transition:0.3s}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(196,168,130,0.12) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(196,168,130,0.08) 0%,transparent 60%),radial-gradient(ellipse at 50% 0%,rgba(196,168,130,0.06) 0%,transparent 50%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(196,168,130,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(196,168,130,0.04) 1px,transparent 1px);background-size:60px 60px}
+.hero-content{position:relative;z-index:1;max-width:720px}
+.hero-badge{display:inline-block;font-size:11px;font-weight:600;color:#c4a882;letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;padding:7px 22px;border:1px solid rgba(196,168,130,0.25);border-radius:50px;background:rgba(248,246,242,0.6)}
+.hero-image{width:150px;height:150px;border-radius:50%;border:4px solid #fff;box-shadow:0 8px 40px rgba(0,0,0,0.08);margin:0 auto 24px;overflow:hidden;background:#e8ddd0;cursor:pointer;transition:transform 0.5s ease,box-shadow 0.5s ease}
+.hero-image:hover{transform:scale(1.04);box-shadow:0 12px 50px rgba(0,0,0,0.15)}
+.hero-image img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s ease}
+.hero-image:hover img{transform:scale(1.08)}
+.hero h1{font-family:'Playfair Display',serif;font-size:64px;font-weight:700;color:#1a1a2e;margin-bottom:6px;line-height:1.08;opacity:0;transform:translateY(20px);animation:fadeUp 0.8s 0.2s forwards}
+.hero h1 span{background:linear-gradient(135deg,#c4a882,#8b6d4c,#5a4030);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{font-family:'Playfair Display',serif;font-size:20px;color:#8b6d4c;font-style:italic;margin-bottom:12px;opacity:0;animation:fadeUp 0.8s 0.4s forwards}
+.hero .tagline{font-size:15px;color:#666;margin-bottom:32px;line-height:1.9;opacity:0;animation:fadeUp 0.8s 0.6s forwards}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s 0.8s forwards}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 30px;border-radius:50px;text-decoration:none;font-size:14px;font-weight:600;transition:all 0.3s;border:none;cursor:pointer}
+.btn-primary{background:#1a1a2e;color:#fff;box-shadow:0 4px 15px rgba(26,26,46,0.15)}
+.btn-primary:hover{background:#2a2a4e;transform:translateY(-3px);box-shadow:0 8px 30px rgba(26,26,46,0.2)}
+.btn-outline{background:transparent;color:#1a1a2e;border:2px solid #1a1a2e}
+.btn-outline:hover{background:#1a1a2e;color:#fff;transform:translateY(-3px)}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+.scroll-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:#bbb;font-size:10px;letter-spacing:3px;text-transform:uppercase;opacity:0;animation:fadeUp 0.8s 1.2s forwards,bounce 2.4s 1.2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+.section{padding:100px 48px;max-width:1120px;margin:0 auto;opacity:0;transform:translateY(40px);transition:opacity 0.8s ease,transform 0.8s ease}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-header{text-align:center;margin-bottom:56px}
+.section-number{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:#c4a882;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.section-title{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:#1a1a2e;margin-bottom:10px}
+.section-title .highlight{background:linear-gradient(135deg,#c4a882,#8b6d4c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-desc{font-size:15px;color:#888;max-width:580px;margin:0 auto;line-height:1.8}
+.section-divider{width:60px;height:3px;background:linear-gradient(90deg,#c4a882,#8b6d4c);border-radius:3px;margin:14px auto 0}
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:40px}
+.overview-card{background:#fff;border-radius:14px;padding:24px 20px;text-align:center;border:1px solid rgba(0,0,0,0.04);box-shadow:0 2px 12px rgba(0,0,0,0.03);transition:all 0.3s;cursor:default}
+.overview-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.06);border-color:rgba(196,168,130,0.2)}
+.overview-card .icon{font-size:28px;margin-bottom:10px;display:inline-block}
+.overview-card h4{font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:2px;letter-spacing:0.3px}
+.overview-card p{font-size:11px;color:#aaa;font-weight:400}
+.content-card{background:#fff;border-radius:18px;padding:36px;margin-bottom:28px;box-shadow:0 2px 8px rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.05);transition:all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);position:relative}
+.content-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#c4a882,#8b6d4c);border-radius:18px 18px 0 0;opacity:0;transition:opacity 0.3s}
+.content-card:hover{box-shadow:0 8px 35px rgba(0,0,0,0.06);transform:translateY(-3px);border-color:rgba(196,168,130,0.15)}
+.content-card:hover::before{opacity:1}
+.content-card h3{font-family:'Playfair Display',serif;font-size:21px;color:#1a1a2e;margin-bottom:6px}
+.content-card h4{font-size:14px;font-weight:600;color:#8b6d4c;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;margin-top:18px}
+.content-card p{font-size:14.5px;color:#444;margin-bottom:10px;line-height:1.8}
+.content-card p:last-child{margin-bottom:0}
+.content-card ul,.content-card ol{margin:8px 0 14px 18px;font-size:14.5px;color:#444;line-height:1.8}
+.content-card ul:last-child,.content-card ol:last-child{margin-bottom:0}
+.content-card li{margin-bottom:5px}
+.card-tag{display:inline-block;font-size:10px;font-weight:700;color:#c4a882;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;padding:3px 12px;background:rgba(196,168,130,0.08);border-radius:4px}
+.ref-link{font-size:12px;color:#999;padding:3px 0;word-break:break-all;display:flex;align-items:center;gap:6px;cursor:pointer;position:relative;transition:color 0.2s}
+.ref-link::before{content:'\\25B6';display:inline-block;width:16px;height:16px;background:rgba(196,168,130,0.12);color:#c4a882;border-radius:50%;flex-shrink:0;text-align:center;line-height:16px;font-size:8px;letter-spacing:0;transition:all 0.2s}
+.ref-link:hover{color:#c4a882}
+.ref-link:hover::before{background:#c4a882;color:#fff}
+.vid-tooltip{position:fixed;z-index:9998;width:280px;border-radius:12px;overflow:hidden;box-shadow:0 12px 50px rgba(0,0,0,0.2);opacity:0;visibility:hidden;transition:opacity 0.25s ease,visibility 0.25s ease,transform 0.25s ease;transform:translateY(6px) scale(0.96);pointer-events:none;border:1px solid rgba(255,255,255,0.08)}
+.vid-tooltip.show{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+.vid-tooltip img{width:100%;display:block}
+.vid-tooltip .vid-label{position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(transparent,rgba(0,0,0,0.75));color:#fff;font-size:11px;font-weight:500;display:flex;align-items:center;gap:6px}
+.vid-tooltip .vid-label::before{content:'\\25B6';font-size:10px}
+.reflection{background:linear-gradient(135deg,#f5efe7,#faf6f0);border-radius:18px;padding:36px;margin:28px 0;border:1px solid rgba(196,168,130,0.12);position:relative}
+.reflection::before{content:'\\201C';font-family:'Playfair Display',serif;font-size:72px;color:rgba(196,168,130,0.15);position:absolute;top:8px;left:20px;line-height:1}
+.reflection h4{font-family:'Playfair Display',serif;font-size:19px;color:#1a1a2e;margin-bottom:10px;padding-left:30px}
+.reflection p{font-size:14.5px;color:#444;margin-bottom:8px;line-height:1.8;padding-left:30px}
+.reflection ul{padding-left:50px;font-size:14.5px;color:#444;line-height:1.8}
+.reflection li{margin-bottom:4px}
+.ref-citation{font-size:12px;color:#888;margin-top:12px;padding-top:12px;padding-left:30px;border-top:1px solid rgba(0,0,0,0.05);text-align:left}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:16px 0}
+.step-card{background:#f8f6f2;border-radius:12px;padding:20px;border:1px solid rgba(0,0,0,0.04);transition:all 0.3s}
+.step-card:hover{background:#f5efe7}
+.step-card .step-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#c4a882;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.step-card h4{font-size:14px;margin-top:0;margin-bottom:6px}
+.step-card p{font-size:13.5px;margin-bottom:8px}
+.step-card .ref-link{font-size:11px}
+.about-grid{display:grid;grid-template-columns:260px 1fr;gap:44px;align-items:start}
+.about-image{width:100%;border-radius:18px;overflow:hidden;background:#e8ddd0;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,0.04);transition:transform 0.5s ease,box-shadow 0.5s ease}
+.about-image:hover{transform:scale(1.02);box-shadow:0 8px 35px rgba(0,0,0,0.1)}
+.about-image img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s ease}
+.about-image:hover img{transform:scale(1.06)}
+.about-extra-image{width:100%;max-width:320px;border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,0.06);transition:transform 0.5s ease,box-shadow 0.5s ease;margin-top:18px}
+.toc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.toc-item{display:flex;align-items:center;gap:18px;background:#fff;border-radius:14px;padding:20px 24px;text-decoration:none;border:1px solid rgba(0,0,0,0.04);box-shadow:0 2px 8px rgba(0,0,0,0.02);transition:all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);position:relative;overflow:hidden}
+.toc-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#c4a882,#8b6d4c);border-radius:0 3px 3px 0;opacity:0;transition:opacity 0.3s}
+.toc-item:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,0.06);border-color:rgba(196,168,130,0.2)}
+.toc-item:hover::before{opacity:1}
+.toc-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:#c4a882;min-width:40px;text-align:center;line-height:1}
+.toc-body{flex:1;min-width:0}
+.toc-chapter{font-size:10.5px;font-weight:600;color:#c4a882;letter-spacing:2px;text-transform:uppercase;margin-bottom:1px}
+.toc-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:#1a1a2e;margin-bottom:2px;line-height:1.3}
+.toc-desc{font-size:12.5px;color:#999;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toc-arrow{font-size:18px;color:#ddd;transition:all 0.3s;flex-shrink:0}
+.toc-item:hover .toc-arrow{color:#c4a882;transform:translateX(4px)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.ref-entry{font-size:13.5px;color:#444;margin-bottom:14px;padding-left:30px;text-indent:-30px;line-height:1.7}
+.back-top{position:fixed;bottom:30px;right:30px;z-index:999;width:44px;height:44px;border-radius:50%;background:#1a1a2e;color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:all 0.3s;box-shadow:0 4px 15px rgba(26,26,46,0.15)}
+.back-top.visible{opacity:1;pointer-events:auto}
+.back-top:hover{transform:translateY(-3px);background:#2a2a4e}
+.footer{background:#1a1a2e;position:relative;overflow:hidden;padding:56px 40px 32px}
+.footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(196,168,130,0.3),transparent)}
+.footer-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;text-align:left}
+.footer-brand h4{font-family:'Playfair Display',serif;font-size:20px;color:#fff;margin-bottom:6px}
+.footer-brand h4 span{color:#c4a882}
+.footer-brand p{font-size:13px;color:rgba(255,255,255,0.35);line-height:1.7;max-width:320px}
+.footer-col h5{font-size:11px;font-weight:600;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,0.45);text-decoration:none;margin-bottom:8px;transition:color 0.2s}
+.footer-col a:hover{color:#c4a882}
+.footer-bottom{max-width:1120px;margin:32px auto 0;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom p{font-size:12px;color:rgba(255,255,255,0.25)}
+.footer-bottom .social{display:flex;gap:12px}
+.footer-bottom .social a{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;transition:all 0.3s;color:rgba(255,255,255,0.3);text-decoration:none}
+.footer-bottom .social a:hover{background:#c4a882;color:#1a1a2e}
+@media(max-width:960px){
+.nav-links{display:none}.hamburger{display:flex}
+.nav-links.open{display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:rgba(248,246,242,0.98);padding:12px 20px 24px;border-bottom:1px solid rgba(0,0,0,0.06);gap:4px;max-height:80vh;overflow-y:auto}
+.nav-links.open a{font-size:13px;padding:10px 14px;border-radius:6px}
+.hero h1{font-size:44px}.hero .subtitle{font-size:20px}
+.section-title{font-size:28px}.section{padding:60px 28px}
+.navbar{padding:0 24px}
+.about-grid{grid-template-columns:1fr;gap:28px}
+.about-image{max-width:220px;margin:0 auto}
+.steps{grid-template-columns:1fr;gap:12px}
+.content-card p,.reflection p,.content-card li{text-align:justify}
+}
+@media(max-width:640px){
+.hero{padding:100px 20px 60px}.hero h1{font-size:32px}.hero .subtitle{font-size:17px}
+.hero .tagline{font-size:14px}.hero-badge{font-size:10px;padding:5px 16px}
+.hero-image{width:120px;height:120px;margin-bottom:18px}
+.hero-btns{flex-direction:column;align-items:center}
+.hero-btns .btn{width:100%;max-width:280px;justify-content:center}
+.section{padding:44px 16px}.section-title{font-size:24px}.section-number{font-size:11px}
+.section-desc{font-size:14px}
+.content-card{padding:20px;border-radius:14px;margin-bottom:20px}
+.content-card h3{font-size:18px}
+.content-card p,.content-card li{font-size:14px;text-align:justify}
+.content-card ul,.content-card ol{padding-left:16px}
+.card-tag{font-size:9px;padding:2px 10px}
+.reflection{padding:20px;border-radius:14px;margin:20px 0}
+.reflection h4{font-size:17px;padding-left:0}
+.reflection p{font-size:14px;padding-left:0;text-align:justify}
+.reflection ul{padding-left:24px}.reflection::before{font-size:40px;top:12px;left:14px}
+.ref-citation{padding-left:0;font-size:11px}
+.two-col{grid-template-columns:1fr;gap:16px}
+.overview-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+.overview-card{padding:16px 12px}.overview-card .icon{font-size:22px;margin-bottom:6px}
+.overview-card h4{font-size:12px}.overview-card p{font-size:10px}
+.toc-grid{grid-template-columns:1fr;gap:10px}
+.toc-item{padding:14px 18px;gap:12px}.toc-num{font-size:18px;min-width:30px}
+.toc-chapter{font-size:9px}.toc-title{font-size:15px}
+.toc-desc{white-space:normal;font-size:11.5px}.toc-arrow{font-size:16px}
+.step-card{padding:16px}.step-card p{font-size:13px;text-align:justify}
+.ref-entry{font-size:12.5px;padding-left:24px;text-indent:-24px}
+.footer{padding:40px 20px 24px}.footer-inner{grid-template-columns:1fr;gap:28px}
+.footer-brand p{max-width:100%}.footer-bottom{flex-direction:column;text-align:center}
+.back-top{bottom:16px;right:16px;width:36px;height:36px}
+.btn{font-size:13px;padding:11px 22px}
+}
+@media(max-width:380px){
+.hero h1{font-size:27px}.hero .subtitle{font-size:15px}
+.section-title{font-size:21px}.section{padding:36px 12px}
+.content-card{padding:16px}.overview-grid{grid-template-columns:1fr 1fr;gap:8px}
+.overview-card{padding:12px 8px}.navbar{padding:0 12px}.nav-logo{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="progressBar"></div>
+
+<nav class="navbar" id="navbar">
+  <a href="#home" class="nav-logo">Cicilia<span>.</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home" class="active">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#topics">Topics</a></li>
+    <li><a href="#contents">Contents</a></li>
+    <li><a href="#early-literacy">Early Literacy</a></li>
+    <li><a href="#comprehension">Comprehension</a></li>
+    <li><a href="#vocabulary">Vocabulary</a></li>
+    <li><a href="#workshop">Workshop</a></li>
+    <li><a href="#critical-literacy">Critical Lit</a></li>
+    <li><a href="#dyslexia">Dyslexia</a></li>
+    <li><a href="#sel">SEL</a></li>
+    <li><a href="#ai">AI</a></li>
+    <li><a href="#reflections">Reflections</a></li>
+    <li><a href="#references">Refs</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">${escHtml(d.heroBadge)}</div>
+    <div class="hero-image" id="profilePhoto"><img src="${d.heroImg}" alt="${escHtml(d.heroName)}"></div>
+    <h1>Cicilia's <span>Portfolio</span></h1>
+    <div class="subtitle">${escHtml(d.heroSubtitle)}</div>
+    <p class="tagline">
+      <strong style="color:#1a1a2e;">${escHtml(d.heroName)}</strong><br>
+      ${escHtml(d.heroId)}<br>
+      ${escHtml(d.heroTagline)}
+    </p>
+    <div class="hero-btns">
+      <a href="#about" class="btn btn-primary">Explore Portfolio &nbsp;↓</a>
+      <a href="#contents" class="btn btn-outline">Table of Contents</a>
+      <a href="#references" class="btn btn-outline">References</a>
+    </div>
+  </div>
+  <div class="scroll-indicator"><span>Scroll</span>
+    <svg width="14" height="22" viewBox="0 0 14 22" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M7 0v14M2 9l5 5 5-5"/></svg>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="section-header">
+    <div class="section-number">About Me</div>
+    <h2 class="section-title">Who <span class="highlight">I Am</span></h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-image"><img src="${d.aboutImg}" alt="${escHtml(d.heroName)}"></div>
+    <div>
+      <p>${escHtml(d.aboutP1)}</p>
+      <p>${escHtml(d.aboutP2)}</p>
+      <p>${escHtml(d.aboutP3)}</p>
+      <p style="margin-top:14px;"><strong style="color:#1a1a2e;">LinkedIn:</strong> <a href="${escHtml(d.linkedinUrl)}" target="_blank" style="color:#c4a882; font-weight:500;">${escHtml(d.linkedinText)}</a></p>
+      <div style="display:flex; gap:14px; margin-top:18px; flex-wrap:wrap;">
+        ${d.extraImg ? '<img src="'+d.extraImg+'" alt="Cicilia\'s work" class="about-extra-image">' : ''}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOPICS OVERVIEW -->
+<section class="section" id="topics">
+  <div class="section-header">
+    <div class="section-number">Overview</div>
+    <h2 class="section-title">Areas <span class="highlight">Covered</span></h2>
+    <p class="section-desc">A snapshot of the key domains explored throughout this portfolio.</p>
+    <div class="section-divider"></div>
+  </div>
+  <div class="overview-grid">
+    ${overviewHTML}
+  </div>
+</section>
+
+<!-- TABLE OF CONTENTS -->
+<section class="section" id="contents">
+  <div class="section-header">
+    <div class="section-number">Navigation</div>
+    <h2 class="section-title">Table of <span class="highlight">Contents</span></h2>
+    <p class="section-desc">A structured overview of all chapters in this portfolio.</p>
+    <div class="section-divider"></div>
+  </div>
+  <div class="toc-grid">
+    <a href="#early-literacy" class="toc-item"><div class="toc-num">01</div><div class="toc-body"><div class="toc-chapter">Chapter 1</div><div class="toc-title">Early Literacy Methods</div><div class="toc-desc">Language Experience Approach, Teaching Through Singing, Guided Reading</div></div><div class="toc-arrow">→</div></a>
+    <a href="#comprehension" class="toc-item"><div class="toc-num">02</div><div class="toc-body"><div class="toc-chapter">Chapter 2</div><div class="toc-title">Comprehension &amp; Reading Development</div><div class="toc-desc">Close Reading, Shared Reading, Orton-Gillingham Approach</div></div><div class="toc-arrow">→</div></a>
+    <a href="#vocabulary" class="toc-item"><div class="toc-num">03</div><div class="toc-body"><div class="toc-chapter">Chapter 3</div><div class="toc-title">Vocabulary Development</div><div class="toc-desc">Vocabulary Strategies, Morphological Analysis, Five Contexts for Reading</div></div><div class="toc-arrow">→</div></a>
+    <a href="#workshop" class="toc-item"><div class="toc-num">04</div><div class="toc-body"><div class="toc-chapter">Chapter 4</div><div class="toc-title">Writing &amp; Reading Workshop</div><div class="toc-desc">Writing Workshop, Reader's Workshop, Bibliotherapy</div></div><div class="toc-arrow">→</div></a>
+    <a href="#critical-literacy" class="toc-item"><div class="toc-num">05</div><div class="toc-body"><div class="toc-chapter">Chapter 5</div><div class="toc-title">Critical Literacy</div><div class="toc-desc">Critical Literacy Framework, Critical Media Studies, Text Analysis</div></div><div class="toc-arrow">→</div></a>
+    <a href="#dyslexia" class="toc-item"><div class="toc-num">06</div><div class="toc-body"><div class="toc-chapter">Chapter 6</div><div class="toc-title">Dyslexia &amp; Special Needs</div><div class="toc-desc">Understanding Dyslexia, Screening &amp; Assessment, Inclusive Strategies</div></div><div class="toc-arrow">→</div></a>
+    <a href="#sel" class="toc-item"><div class="toc-num">07</div><div class="toc-body"><div class="toc-chapter">Chapter 7</div><div class="toc-title">Conflict Resolution &amp; SEL</div><div class="toc-desc">Transformative SEL, Healing-Centered Trauma Support, Peer Mediation</div></div><div class="toc-arrow">→</div></a>
+    <a href="#ai" class="toc-item"><div class="toc-num">08</div><div class="toc-body"><div class="toc-chapter">Chapter 8</div><div class="toc-title">The Future of Literacy &amp; AI</div><div class="toc-desc">AI in Education, Personalized Learning, Societal Impacts</div></div><div class="toc-arrow">→</div></a>
+    <a href="#reflections" class="toc-item"><div class="toc-num">09</div><div class="toc-body"><div class="toc-chapter">Chapter 9</div><div class="toc-title">Course Reflections</div><div class="toc-desc">Overall reflections on the learning journey throughout this course</div></div><div class="toc-arrow">→</div></a>
+    <a href="#references" class="toc-item"><div class="toc-num"></div><div class="toc-body"><div class="toc-chapter">References</div><div class="toc-title">Works Cited</div><div class="toc-desc">All sources cited in APA format with hanging indents</div></div><div class="toc-arrow">→</div></a>
+  </div>
+</section>
+
+<!-- CHAPTER 1 -->
+<section class="section" id="early-literacy">
+  <div class="section-header">
+    <div class="section-number">Chapter 01</div>
+    <h2 class="section-title">Early <span class="highlight">Literacy Methods</span></h2>
+    <p class="section-desc">${escHtml(chSubtitle('ch1'))}</p>
+    <div class="section-divider"></div>
+  </div>
+  ${chContent('ch1')}
+</section>
+
+<!-- CHAPTER 2 -->
+<section class="section" id="comprehension">
+  <div class="section-header">
+    <div class="section-number">Chapter 02</div>
+    <h2 class="section-title">Comprehension &amp; <span class="highlight">Reading Development</span></h2>
+    <p class="section-desc">${escHtml(chSubtitle('ch2'))}</p>
+    <div class="section-divider"></div>
+  </div>
+  ${chContent('ch2')}
+</section>
+
+<!-- CHAPTER 3 -->
+<section class="section" id="vocabulary">
+  <div class="section-header">
+    <div class="section-number">Chapter 03</div>
+    <h2 class="section-title">Vocabulary <span class="highlight">Development</span></h2>
+    <p class="section-desc">${escHtml(chSubtitle('ch3'))}</p>
+    <div class="section-divider"></div>
+  </div>
+  ${chContent('ch3')}
+</section>
+
+<!-- CHAPTER 4 -->
+<section class="section" id="workshop">
+  <div class="section-header">
+    <div class="section-number">Chapter 04</div>
+    <h2 class="section-title">Writing &amp; <span class="highlight">Reading Workshop</span></h2>
+    <p class="section-desc">${escHtml(chSubtitle('ch4'))}</p>
+    <div class="section-divider"></div>
+  </div>
+  ${chContent('ch4')}
+</section>
+
+<!-- CHAPTER 5 -->
+<section class="section" id="critical-literacy">
+  <div class="section-header">
+    <div class="section-number">Chapter 05</div>
+    <h2 class="section-title">Critical <span class="highlight">Literacy</span></h2>
+    <p class="section-desc">${escHtml(chSubtitle('ch5'))}</p>
+    <div class="section-divider"></div>
+  </div>
+  ${chContent('ch5')}
+</section>
+
+<!-- CHAPTER 6 -->
+<section class="section" id="dyslexia">
+  <div class="section-header">
+    <div class="section-number">Chapter 06</div>
+    <h2 class="section-title">Dyslexia &amp; <span class="highlight">Special Needs</span></h2>
+    <p class="section-desc">${escHtml(chSubtitle('ch6'))}</p>
+    <div class="section-divider"></div>
+  </div>
+  ${chContent('ch6')}
+</section>
+
+<!-- CHAPTER 7 -->
+<section class="section" id="sel">
+  <div class="section-header">
+    <div class="section-number">Chapter 07</div>
+    <h2 class="section-title">Conflict Resolution &amp; <span class="highlight">Social-Emotional Learning</span></h2>
+    <p class="section-desc">${escHtml(chSubtitle('ch7'))}</p>
+    <div class="section-divider"></div>
+  </div>
+  ${chContent('ch7')}
+</section>
+
+<!-- CHAPTER 8 -->
+<section class="section" id="ai">
+  <div class="section-header">
+    <div class="section-number">Chapter 08</div>
+    <h2 class="section-title">The Future of <span class="highlight">Literacy &amp; AI</span></h2>
+    <p class="section-desc">${escHtml(chSubtitle('ch8'))}</p>
+    <div class="section-divider"></div>
+  </div>
+  ${chContent('ch8')}
+</section>
+
+<!-- CHAPTER 9 -->
+<section class="section" id="reflections">
+  <div class="section-header">
+    <div class="section-number">Chapter 09</div>
+    <h2 class="section-title">Course <span class="highlight">Reflections</span></h2>
+    <p class="section-desc">${escHtml(chSubtitle('ch9'))}</p>
+    <div class="section-divider"></div>
+  </div>
+  ${chContent('ch9')}
+</section>
+
+<!-- REFERENCES -->
+<section class="section" id="references">
+  <div class="section-header">
+    <div class="section-number">References</div>
+    <h2 class="section-title">Works <span class="highlight">Cited</span></h2>
+    <p class="section-desc">All sources cited in APA format throughout this portfolio.</p>
+    <div class="section-divider"></div>
+  </div>
+  <div class="content-card" style="padding:40px;">
+    ${refs}
+  </div>
+  <div class="content-card" style="background:#f5efe7; border-color:rgba(196,168,130,0.15);">
+    <p style="font-size:14px; color:#666; margin:0;"><strong>Note:</strong> ${escHtml(d.refNote || 'YouTube video references are embedded throughout the chapters as direct links. Additional sources include guided reading demonstrations, phonics activities, writing workshop examples, and critical literacy talks accessed through the course materials.')}</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h4>Cicilia<span>.</span></h4>
+      <p>${escHtml(d.footerDesc)}</p>
+    </div>
+    <div class="footer-col">
+      <h5>Navigate</h5>
+      <a href="#home">Home</a>
+      <a href="#about">About Me</a>
+      <a href="#contents">Table of Contents</a>
+      <a href="#references">References</a>
+    </div>
+    <div class="footer-col">
+      <h5>Connect</h5>
+      <a href="${escHtml(d.footerLinkedin)}" target="_blank">LinkedIn</a>
+      <a href="${escHtml(d.footerUniversity)}" target="_blank">Asian University for Women</a>
+      <a href="mailto:${escHtml(d.footerEmail)}">${d.footerEmail ? 'Email' : 'Email'}</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; ${year} ${escHtml(d.footerCopyright)}</p>
+    <div class="social">
+      <a href="${escHtml(d.footerLinkedin)}" target="_blank" title="LinkedIn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="${escHtml(d.footerUniversity)}" target="_blank" title="University">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 8l11 6 9-4.91V17h2V9.24l3-1.64L12 2zm0 3.86L18.27 8 12 10.14 5.73 8 12 5.86zM18 14.09l-6 3.27-6-3.27V12l6 3.27L18 12v2.09z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<script>
+function toggleNav(){document.getElementById('navLinks').classList.toggle('open')}
+document.querySelectorAll('.nav-links a').forEach(l=>l.addEventListener('click',()=>{document.getElementById('navLinks').classList.remove('open')}))
+window.addEventListener('scroll',()=>{
+  const st=document.documentElement.scrollTop||document.body.scrollTop
+  const sh=document.documentElement.scrollHeight-document.documentElement.clientHeight
+  document.getElementById('progressBar').style.width=(sh>0?(st/sh)*100:0)+'%'
+  document.getElementById('backTop').classList.toggle('visible',st>500)
+  document.getElementById('navbar').classList.toggle('scrolled',st>50)
+  let cur=''
+  document.querySelectorAll('.section[id]').forEach(s=>{if(s.getBoundingClientRect().top<=200)cur=s.getAttribute('id')})
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur))
+})
+const obs=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:0.1})
+document.querySelectorAll('.section').forEach(s=>obs.observe(s))
+document.getElementById('footerCopyright').innerHTML='&copy; '+new Date().getFullYear()+' Cicilia Kretteka Mondle &mdash; Asian University For Women'
+const up=document.createElement('p')
+up.textContent='Last updated: '+document.lastModified
+document.querySelector('.footer-bottom').appendChild(up)
+function extractYtId(t){const m=t.match(/(?:youtube\\.com\\/watch\\?v=|youtu\\.be\\/|youtube\\.com\\/shorts\\/)([a-zA-Z0-9_-]{11})/);return m?m[1]:null}
+const tip=document.createElement('div');tip.className='vid-tooltip';tip.innerHTML='<img src="" alt=""><div class="vid-label"><span>Click to watch</span></div>'
+document.body.appendChild(tip);const ti=tip.querySelector('img')
+document.querySelectorAll('.ref-link').forEach(el=>{
+  const t=el.textContent.trim(),v=extractYtId(t)
+  if(!v)return
+  el.style.cursor='pointer';el.title='Click to watch on YouTube'
+  let st=null
+  el.addEventListener('mouseenter',e=>{
+    ti.src='https://img.youtube.com/vi/'+v+'/hqdefault.jpg'
+    st=setTimeout(()=>{
+      const r=el.getBoundingClientRect()
+      let l=r.left+r.width/2-140,t2=r.bottom+10
+      if(l<10)l=10
+      if(l+280>window.innerWidth-10)l=window.innerWidth-290
+      if(t2+180>window.innerHeight)t2=r.top-190
+      tip.style.left=l+'px';tip.style.top=t2+'px';tip.classList.add('show')
+    },400)
+  })
+  el.addEventListener('mouseleave',()=>{clearTimeout(st);tip.classList.remove('show')})
+  el.addEventListener('click',()=>{tip.classList.remove('show');let u=t;if(!u.startsWith('http'))u='https://'+u;window.open(u,'_blank')})
+})
+document.getElementById('profilePhoto').addEventListener('click',function(){
+  const i=this.querySelector('img');if(!i)return
+  const o=document.createElement('div')
+  o.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;cursor:zoom-out;animation:fadeIn 0.3s ease;'
+  const f=document.createElement('img')
+  f.src=i.src
+  f.style.cssText='max-width:90%;max-height:90%;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.4);transform:scale(0.92);transition:transform 0.3s ease;'
+  o.appendChild(f);document.body.appendChild(o)
+  requestAnimationFrame(()=>{f.style.transform='scale(1)'})
+  o.addEventListener('click',()=>{document.body.removeChild(o)})
+})
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){const o=document.querySelector('div[style*="z-index:9999"]');if(o)document.body.removeChild(o)}
+})
+</script>
+</body>
+</html>`;
+}
+
+// ===== EXPORT HANDLER =====
+function handleExport() {
+  const data = collectFormData();
+  const html = generateSite(data);
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'index.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  const toast = document.getElementById('successToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 5000);
+}
+
+// ===== PREVIEW =====
+function showPreview() {
+  const data = collectFormData();
+  const html = generateSite(data);
+  const frame = document.getElementById('previewFrame');
+  const blob = new Blob([html], {type: 'text/html'});
+  frame.src = URL.createObjectURL(blob);
+  switchSection('preview');
+}
+
+// === LOAD FROM FILE ===
+document.getElementById('loadFileBtn').addEventListener('click', function() {
+  document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const html = ev.target.result;
+    parseAndPopulate(html);
+  };
+  reader.readAsText(file);
+  this.value = ''; // Allow re-uploading same file
+});
+
+function parseAndPopulate(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  // Hero section
+  const heroBadge = doc.querySelector('.hero-badge');
+  if (heroBadge) document.getElementById('f_heroBadge').value = heroBadge.textContent.trim();
+
+  const heroTagline = doc.querySelector('.hero .tagline');
+  if (heroTagline) {
+    const strong = heroTagline.querySelector('strong');
+    const lines = heroTagline.innerHTML.split('<br>');
+    if (strong) document.getElementById('f_heroName').value = strong.textContent.trim();
+    if (lines.length > 1) document.getElementById('f_heroId').value = lines[1].replace(/&mdash;/g,'—').trim();
+    if (lines.length > 2) {
+      const tagline = lines.slice(2).join(' ').replace(/<[^>]+>/g,'').trim();
+      document.getElementById('f_heroTagline').value = tagline;
+    }
+  }
+
+  const heroSubtitle = doc.querySelector('.hero .subtitle');
+  if (heroSubtitle) document.getElementById('f_heroSubtitle').value = heroSubtitle.textContent.trim();
+
+  // About section
+  const aboutPs = doc.querySelectorAll('#about .about-grid > div:last-child > p');
+  if (aboutPs.length > 0) document.getElementById('f_aboutP1').value = aboutPs[0].textContent.trim();
+  if (aboutPs.length > 1) document.getElementById('f_aboutP2').value = aboutPs[1].textContent.trim();
+  if (aboutPs.length > 2) document.getElementById('f_aboutP3').value = aboutPs[2].textContent.trim();
+
+  const linkedinLink = doc.querySelector('#about a[href*="linkedin"]');
+  if (linkedinLink) {
+    document.getElementById('f_linkedinUrl').value = linkedinLink.getAttribute('href') || '';
+    document.getElementById('f_linkedinText').value = linkedinLink.textContent.trim();
+  }
+
+  // Hero image
+  const heroImg = doc.querySelector('.hero-image img');
+  if (heroImg) {
+    const src = heroImg.getAttribute('src');
+    if (src && !src.startsWith('data:')) {
+      // Keep the filename reference
+    }
+  }
+
+  // Overview cards
+  const cards = doc.querySelectorAll('.overview-card');
+  if (cards.length > 0) {
+    const inputs = document.querySelectorAll('#overviewCardsContainer input');
+    cards.forEach((card, i) => {
+      const icon = card.querySelector('.icon');
+      const title = card.querySelector('h4');
+      const desc = card.querySelector('p');
+      if (icon && inputs[i*3]) inputs[i*3].value = icon.textContent.trim();
+      if (title && inputs[i*3+1]) inputs[i*3+1].value = title.textContent.trim();
+      if (desc && inputs[i*3+2]) inputs[i*3+2].value = desc.textContent.trim();
+    });
+  }
+
+  // Chapter subtitles
+  const chSections = ['early-literacy','comprehension','vocabulary','workshop','critical-literacy','dyslexia','sel','ai','reflections'];
+  const chIds = ['ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8','ch9'];
+  chSections.forEach((id, i) => {
+    const sec = doc.getElementById(id);
+    if (sec) {
+      const desc = sec.querySelector('.section-desc');
+      if (desc) {
+        const input = document.querySelector(`.ch-subtitle[data-ch="${chIds[i]}"]`);
+        if (input) input.value = desc.textContent.trim();
+      }
+      // Get full chapter content (the section body without the header)
+      const header = sec.querySelector('.section-header');
+      const contentDivs = sec.querySelectorAll(':scope > .content-card, :scope > .reflection, :scope > .two-col, :scope > .steps');
+      if (contentDivs.length > 0) {
+        let html = '';
+        contentDivs.forEach(el => html += el.outerHTML + '\n\n  ');
+        const textarea = document.querySelector(`.ch-content[data-ch="${chIds[i]}"]`);
+        if (textarea) textarea.value = html.trim();
+      }
+    }
+  });
+
+  // References
+  const refEntries = doc.querySelectorAll('.ref-entry');
+  if (refEntries.length > 0) {
+    const refs = Array.from(refEntries).map(e => e.innerHTML).join('\n');
+    document.getElementById('f_references').value = refs;
+  }
+
+  const refNote = doc.querySelector('#references .content-card:last-child p');
+  if (refNote) document.getElementById('f_refNote').value = refNote.textContent.replace(/^Note:\s*/,'').trim();
+
+  // Footer
+  const footerDesc = doc.querySelector('.footer-brand p');
+  if (footerDesc) document.getElementById('f_footerDesc').value = footerDesc.textContent.trim();
+
+  const footerLinks = doc.querySelectorAll('.footer-col a');
+  if (footerLinks.length > 0) document.getElementById('f_footerLinkedin').value = footerLinks[0].getAttribute('href') || '';
+  if (footerLinks.length > 1) document.getElementById('f_footerUniversity').value = footerLinks[1].getAttribute('href') || '';
+
+  const footerCopyright = doc.querySelector('.footer-bottom p');
+  if (footerCopyright) {
+    const text = footerCopyright.textContent.replace(/©\s*\d{4}\s*/,'').trim();
+    document.getElementById('f_footerCopyright').value = text;
+  }
+
+  // Store chapter content in localStorage for persistence
+  const chData = {};
+  chIds.forEach(id => {
+    const ta = document.querySelector(`.ch-content[data-ch="${id}"]`);
+    if (ta) chData[id] = ta.value;
+  });
+  localStorage.setItem('adminChapterContent', JSON.stringify(chData));
+
+  // Reload any images from the file
+  const aboutExtraImg = doc.querySelector('.about-extra-image');
+  if (aboutExtraImg) {
+    const src = aboutExtraImg.getAttribute('src');
+  }
+
+  document.getElementById('successToast').textContent = '✓ Content loaded from file successfully!';
+  document.getElementById('successToast').classList.add('show');
+  setTimeout(() => {
+    document.getElementById('successToast').classList.remove('show');
+    document.getElementById('successToast').textContent = '✓ Site exported successfully! Save the downloaded file and upload to GitHub.';
+  }, 3000);
+}
+</script>
+</body>
+</html>

@@ -320,6 +320,7 @@ p { text-align:justify; }
 .ref-link {
   font-size:12px; color:#999; padding:3px 0;
   word-break:break-all; display:flex; align-items:center; gap:6px;
+  cursor:pointer; position:relative; transition:color 0.2s;
 }
 .ref-link::before {
   content:'\25B6'; display:inline-block; width:16px; height:16px;
@@ -327,8 +328,36 @@ p { text-align:justify; }
   border-radius:50%; flex-shrink:0;
   text-align:center; line-height:16px;
   font-size:8px; letter-spacing:0;
+  transition:all 0.2s;
 }
-.ref-link:hover { color:#666; }
+.ref-link:hover { color:#c4a882; }
+.ref-link:hover::before { background:#c4a882; color:#fff; }
+
+/* ===== VIDEO TOOLTIP ===== */
+.vid-tooltip {
+  position:fixed; z-index:9998;
+  width:280px; border-radius:12px; overflow:hidden;
+  box-shadow:0 12px 50px rgba(0,0,0,0.2);
+  opacity:0; visibility:hidden;
+  transition:opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
+  transform:translateY(6px) scale(0.96);
+  pointer-events:none;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.vid-tooltip.show { opacity:1; visibility:visible; transform:translateY(0) scale(1); }
+.vid-tooltip img {
+  width:100%; display:block;
+}
+.vid-tooltip .vid-label {
+  position:absolute; bottom:0; left:0; right:0;
+  padding:8px 12px;
+  background:linear-gradient(transparent, rgba(0,0,0,0.75));
+  color:#fff; font-size:11px; font-weight:500;
+  display:flex; align-items:center; gap:6px;
+}
+.vid-tooltip .vid-label::before {
+  content:'\25B6'; font-size:10px;
+}
 
 /* ===== REFLECTION ===== */
 .reflection {
@@ -669,9 +698,94 @@ p { text-align:justify; }
   .navbar { padding:0 12px; }
   .nav-logo { font-size:18px; }
 }
+/* ===== ADMIN ===== */
+.admin-btn{position:fixed;bottom:30px;left:30px;z-index:999;width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(0,0,0,0.08);color:#999;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s;font-size:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.admin-btn:hover{background:#f5f0e8;color:#1a1a2e;transform:scale(1.08);box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+.admin-btn.logged-in{background:#1a1a2e;color:#fff;border-color:#1a1a2e;box-shadow:0 2px 12px rgba(26,26,46,0.15)}
+.admin-modal{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center}
+.admin-modal.open{display:flex}
+.admin-modal-box{background:#fff;border-radius:16px;padding:32px;width:340px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.admin-modal-box h3{font-size:20px;color:#1a1a2e;margin-bottom:4px}
+.admin-modal-box p{font-size:13px;color:#888;margin-bottom:20px}
+.admin-modal-box label{font-size:12px;font-weight:600;color:#555;display:block;margin-bottom:4px}
+.admin-modal-box input{width:100%;padding:10px 14px;border-radius:8px;border:1px solid #ddd;font-size:14px;margin-bottom:14px;outline:none;transition:border 0.2s}
+.admin-modal-box input:focus{border-color:#c4a882}
+.admin-modal-box .error{color:#e74c3c;font-size:12px;margin-bottom:10px;display:none}
+.admin-modal-box button{width:100%;padding:11px;border:none;border-radius:8px;background:#1a1a2e;color:#fff;font-weight:600;font-size:14px;cursor:pointer;transition:opacity 0.2s}
+.admin-modal-box button:hover{opacity:0.85}
+.admin-toolbar{position:fixed;top:0;left:0;right:0;z-index:9998;background:#1a1a2e;padding:8px 20px;display:none;align-items:center;justify-content:space-between;transform:translateY(-100%);transition:transform 0.3s}
+.admin-toolbar.show{display:flex;transform:translateY(0)}
+.admin-toolbar span{font-size:13px;color:rgba(255,255,255,0.5);font-weight:500}
+.admin-toolbar .actions{display:flex;gap:8px}
+.admin-toolbar button{padding:6px 16px;border-radius:6px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:opacity 0.2s}
+.admin-toolbar .btn-save{background:#c4a882;color:#1a1a2e}
+.admin-toolbar .btn-exit{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6)}
+.admin-toolbar .btn-save:hover,.admin-toolbar .btn-exit:hover{opacity:0.8}
+.admin-toolbar .btn-export{background:#27ae60;color:#fff}
+.admin-toolbar .btn-export:hover{opacity:0.8}
+[contenteditable=true]{outline:none;cursor:text;transition:background 0.2s;border-radius:4px;padding:2px 4px;margin:-2px -4px}
+[contenteditable=true]:hover{background:rgba(196,168,130,0.06)}
+[contenteditable=true]:focus{background:rgba(196,168,130,0.1);box-shadow:0 0 0 2px rgba(196,168,130,0.2)}
+.editable-image{cursor:pointer;position:relative}
+.editable-image::after{content:'Change Photo';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);color:#fff;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.3s;border-radius:inherit}
+.editable-image:hover::after{opacity:1}
+.edit-chapter-btn{display:inline-block;margin:8px 0;padding:5px 14px;border-radius:6px;border:1px dashed #c4a882;background:transparent;color:#c4a882;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.edit-chapter-btn:hover{background:rgba(196,168,130,0.1)}
+.chapter-edit-modal{position:fixed;inset:0;z-index:9997;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;padding:20px}
+.chapter-edit-modal.open{display:flex}
+.chapter-edit-modal textarea{width:90vw;max-width:800px;height:70vh;border-radius:12px;border:none;padding:20px;font-family:monospace;font-size:13px;line-height:1.6;resize:vertical;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.chapter-edit-modal .modal-actions{display:flex;gap:8px;margin-top:10px;justify-content:flex-end;max-width:800px;width:90vw}
+.chapter-edit-modal .modal-actions button{padding:8px 20px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer}
+.chapter-edit-modal .modal-actions .btn-apply{background:#c4a882;color:#1a1a2e}
+.chapter-edit-modal .modal-actions .btn-cancel{background:#eee;color:#666}
+.admin-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;background:#1a1a2e;color:#fff;padding:12px 24px;border-radius:10px;font-size:13px;font-weight:500;display:none;box-shadow:0 8px 30px rgba(0,0,0,0.15)}
+.admin-toast.show{display:block;animation:toastIn 0.3s ease}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@media(max-width:640px){
+  .admin-btn{bottom:16px;left:16px;width:40px;height:40px;font-size:15px}
+  .admin-modal-box{padding:24px}
+  .admin-toolbar{padding:6px 12px;flex-wrap:wrap;gap:6px}
+  .admin-toolbar span{font-size:11px}
+  .admin-toolbar button{font-size:11px;padding:5px 12px}
+  .chapter-edit-modal textarea{width:100%;height:60vh}
+}
 </style>
 </head>
 <body>
+
+<!-- ===== ADMIN ===== -->
+<div class="admin-toast" id="adminToast"></div>
+<div class="admin-modal" id="adminModal">
+  <div class="admin-modal-box">
+    <h3>🔒 Admin</h3>
+    <p>Sign in to edit the portfolio.</p>
+    <form id="adminLoginForm" onsubmit="return adminLogin(event)">
+      <label for="adminUser">Username</label>
+      <input type="text" id="adminUser" value="cicilia" autocomplete="off">
+      <label for="adminPass">Password</label>
+      <input type="password" id="adminPass" autocomplete="off">
+      <div class="error" id="adminError">Invalid credentials.</div>
+      <button type="submit">Sign In</button>
+    </form>
+  </div>
+</div>
+<div class="admin-toolbar" id="adminToolbar">
+  <span>✏️ Edit Mode</span>
+  <div class="actions">
+    <button class="btn-export" onclick="exportSite()">⬇ Export HTML</button>
+    <button class="btn-exit" onclick="exitEditMode()">Exit</button>
+  </div>
+</div>
+<button class="admin-btn" id="adminBtn" onclick="toggleAdmin()" title="Admin">🔑</button>
+<div class="chapter-edit-modal" id="chapterEditModal">
+  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+    <textarea id="chapterEditTextarea" spellcheck="false"></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeChapterEdit()">Cancel</button>
+      <button class="btn-apply" onclick="applyChapterEdit()">Apply</button>
+    </div>
+  </div>
+</div>
 
 <div class="scroll-progress" id="progressBar"></div>
 
@@ -1412,6 +1526,56 @@ const updatedSpan = document.createElement('p');
 updatedSpan.textContent = 'Last updated: ' + document.lastModified;
 document.querySelector('.footer-bottom').appendChild(updatedSpan);
 
+// === YOUTUBE LINK HOVER TOOLTIP ===
+function extractYtId(text) {
+  const m = text.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+const tooltipEl = document.createElement('div');
+tooltipEl.className = 'vid-tooltip';
+tooltipEl.innerHTML = '<img src="" alt=""><div class="vid-label"><span>Click to watch</span></div>';
+document.body.appendChild(tooltipEl);
+const tipImg = tooltipEl.querySelector('img');
+
+document.querySelectorAll('.ref-link').forEach(el => {
+  const text = el.textContent.trim();
+  const vid = extractYtId(text);
+  if (!vid) return;
+
+  el.style.cursor = 'pointer';
+  el.title = 'Click to watch on YouTube';
+
+  let showTimer = null;
+
+  el.addEventListener('mouseenter', (e) => {
+    tipImg.src = 'https://img.youtube.com/vi/' + vid + '/hqdefault.jpg';
+    showTimer = setTimeout(() => {
+      const rect = el.getBoundingClientRect();
+      let left = rect.left + rect.width / 2 - 140;
+      let top = rect.bottom + 10;
+      if (left < 10) left = 10;
+      if (left + 280 > window.innerWidth - 10) left = window.innerWidth - 290;
+      if (top + 180 > window.innerHeight) top = rect.top - 190;
+      tooltipEl.style.left = left + 'px';
+      tooltipEl.style.top = top + 'px';
+      tooltipEl.classList.add('show');
+    }, 400);
+  });
+
+  el.addEventListener('mouseleave', () => {
+    clearTimeout(showTimer);
+    tooltipEl.classList.remove('show');
+  });
+
+  el.addEventListener('click', () => {
+    tooltipEl.classList.remove('show');
+    let url = text;
+    if (!url.startsWith('http')) url = 'https://' + url;
+    window.open(url, '_blank');
+  });
+});
+
 // === HERO IMAGE CLICK: FULLSCREEN PREVIEW ===
 document.getElementById('profilePhoto').addEventListener('click', function() {
   const img = this.querySelector('img');
@@ -1433,6 +1597,244 @@ document.addEventListener('keydown', (e) => {
     const overlay = document.querySelector('div[style*="z-index:9999"]');
     if (overlay) document.body.removeChild(overlay);
   }
+});
+
+// ===== ADMIN LOGIN & EDIT MODE =====
+const ADMIN_HASH = 'fcdcfcb97a3e996831e49c36c98f89da0f57ea71b3382cd1ed36aa2dd17f5dbc';
+let isEditMode = false;
+let currentEditChapter = null;
+
+async function adminHash(pw) {
+  const enc = new TextEncoder();
+  const data = enc.encode(pw);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function toggleAdmin() {
+  const btn = document.getElementById('adminBtn');
+  if (btn.classList.contains('logged-in')) {
+    exitEditMode();
+  } else {
+    document.getElementById('adminModal').classList.add('open');
+    document.getElementById('adminPass').value = '';
+    document.getElementById('adminError').style.display = 'none';
+  }
+}
+
+async function adminLogin(e) {
+  e.preventDefault();
+  const user = document.getElementById('adminUser').value;
+  const pw = document.getElementById('adminPass').value;
+  if (user !== 'cicilia') {
+    document.getElementById('adminError').style.display = 'block';
+    return false;
+  }
+  const h = await adminHash(pw);
+  if (h === ADMIN_HASH) {
+    document.getElementById('adminModal').classList.remove('open');
+    enterEditMode();
+  } else {
+    document.getElementById('adminError').style.display = 'block';
+  }
+  return false;
+}
+
+function enterEditMode() {
+  isEditMode = true;
+  document.getElementById('adminToolbar').classList.add('show');
+  document.getElementById('adminBtn').classList.add('logged-in');
+  document.getElementById('adminBtn').textContent = '✓';
+  document.getElementById('adminBtn').title = 'Edit mode active';
+  makeEditable();
+  showToast('Edit mode activated — click any text to edit');
+}
+
+function exitEditMode() {
+  isEditMode = false;
+  document.getElementById('adminToolbar').classList.remove('show');
+  document.getElementById('adminBtn').classList.remove('logged-in');
+  document.getElementById('adminBtn').textContent = '🔑';
+  document.getElementById('adminBtn').title = 'Admin';
+  document.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+  document.querySelectorAll('.edit-chapter-btn').forEach(el => el.remove());
+  document.querySelectorAll('.admin-overlay').forEach(el => el.remove());
+  closeChapterEdit();
+}
+
+function makeEditable() {
+  // Hero text elements
+  const heroEls = [
+    { selector: '.hero-badge', single: true },
+    { selector: '.hero h1', single: true },
+    { selector: '.hero .subtitle', single: true },
+    { selector: '.hero .tagline', single: true }
+  ];
+  heroEls.forEach(({ selector, single }) => {
+    const el = single ? document.querySelector(selector) : document.querySelector(selector);
+    if (el) el.contentEditable = true;
+  });
+
+  // About section paragraphs
+  document.querySelectorAll('#about .about-grid > div:last-child > p').forEach(el => {
+    const link = el.querySelector('a');
+    if (!link) el.contentEditable = true;
+  });
+
+  // Section headers
+  document.querySelectorAll('.section-title, .section-desc, .section-number').forEach(el => {
+    if (el.closest('#contents')) return; // skip TOC
+    el.contentEditable = true;
+  });
+
+  // Content cards
+  document.querySelectorAll('.content-card h3, .content-card h4, .content-card p, .content-card li').forEach(el => {
+    // Skip ref-links (YouTube links) and ref-entries
+    if (el.closest('.ref-link') || el.closest('.ref-entry') || el.closest('.vid-tooltip')) return;
+    el.contentEditable = true;
+  });
+
+  // Reflection blocks
+  document.querySelectorAll('.reflection h4, .reflection p, .reflection li, .ref-citation').forEach(el => {
+    el.contentEditable = true;
+  });
+
+  // Overview cards
+  document.querySelectorAll('.overview-card h4, .overview-card p').forEach(el => {
+    el.contentEditable = true;
+  });
+
+  // References
+  document.querySelectorAll('.ref-entry').forEach(el => {
+    el.contentEditable = true;
+  });
+
+  // Footer
+  document.querySelectorAll('.footer-brand p, .footer-col a').forEach(el => {
+    el.contentEditable = true;
+  });
+
+  // Add chapter edit buttons
+  document.querySelectorAll('.section[id]').forEach(sec => {
+    if (sec.id === 'home' || sec.id === 'about' || sec.id === 'topics' || sec.id === 'contents' || sec.id === 'references') return;
+    const btn = document.createElement('button');
+    btn.className = 'edit-chapter-btn';
+    btn.textContent = '✏️ Edit Chapter HTML';
+    btn.dataset.sectionId = sec.id;
+    btn.onclick = function() { openChapterEdit(sec.id); };
+    sec.appendChild(btn);
+  });
+
+  // Make images clickable for upload
+  document.querySelectorAll('.hero-image, .about-image, .about-extra-image').forEach(el => {
+    el.classList.add('editable-image');
+    el.addEventListener('click', function(e) {
+      if (!isEditMode) return;
+      if (e.target.closest('.editable-image')) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = function(ev) {
+          const file = ev.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            const img = el.querySelector('img') || el;
+            if (el.tagName === 'IMG') {
+              el.src = event.target.result;
+            } else if (img && img.tagName === 'IMG') {
+              img.src = event.target.result;
+            }
+            // Also update matching images elsewhere
+            const allImgs = document.querySelectorAll(`img[src*="${img.src.split('/').pop()}"]`);
+            allImgs.forEach(i => { if (i !== img) i.src = event.target.result; });
+            showToast('Image updated');
+          };
+          reader.readAsDataURL(file);
+        };
+        input.click();
+      }
+    });
+  });
+}
+
+function openChapterEdit(sectionId) {
+  const sec = document.getElementById(sectionId);
+  if (!sec) return;
+  currentEditChapter = sectionId;
+  // Get all content except section-header and edit button
+  const header = sec.querySelector('.section-header');
+  const editBtn = sec.querySelector('.edit-chapter-btn');
+  let html = '';
+  let afterHeader = false;
+  for (let child of sec.children) {
+    if (child === header || child === editBtn) continue;
+    html += child.outerHTML + '\n';
+  }
+  document.getElementById('chapterEditTextarea').value = html.trim();
+  document.getElementById('chapterEditModal').classList.add('open');
+}
+
+function closeChapterEdit() {
+  document.getElementById('chapterEditModal').classList.remove('open');
+  currentEditChapter = null;
+}
+
+function applyChapterEdit() {
+  if (!currentEditChapter) return;
+  const sec = document.getElementById(currentEditChapter);
+  if (!sec) return;
+  const newHtml = document.getElementById('chapterEditTextarea').value;
+  // Remove existing content (keep header and edit button)
+  const header = sec.querySelector('.section-header');
+  const editBtn = sec.querySelector('.edit-chapter-btn');
+  const children = Array.from(sec.children);
+  children.forEach(child => {
+    if (child !== header && child !== editBtn) {
+      sec.removeChild(child);
+    }
+  });
+  // Insert new content after header
+  const temp = document.createElement('div');
+  temp.innerHTML = newHtml.trim();
+  const ref = editBtn || null;
+  while (temp.firstChild) {
+    sec.insertBefore(temp.firstChild, ref);
+  }
+  closeChapterEdit();
+  showToast('Chapter content updated');
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('adminToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function exportSite() {
+  // Get the full page HTML with all edits
+  const doctype = '<!DOCTYPE html>\n';
+  const html = document.documentElement.outerHTML;
+  const blob = new Blob([doctype + html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'index.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ Exported! Upload index.html to GitHub');
+}
+
+// Close modal on overlay click
+document.getElementById('adminModal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+document.getElementById('chapterEditModal').addEventListener('click', function(e) {
+  if (e.target === this) closeChapterEdit();
 });
 </script>
 
