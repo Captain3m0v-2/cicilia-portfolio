@@ -2423,41 +2423,51 @@ function hideInsertPopup() {
 function showInsertPopup(e) {
   if (!isEditMode) return;
   if (e.target.closest('.admin-toolbar,.admin-format-toolbar,#insertPopup,.del-btn,.move-btn,.edit-chapter-btn,.insert-btn,.admin-btn,.editable-image,.insert-marker')) return;
-  if (e.target.closest('[contenteditable="true"]') || (e.target.tagName === 'IMG' && e.target.closest('.section'))) return;
+  if (e.target.tagName === 'IMG' && e.target.closest('.section')) return;
   const sec = e.target.closest('.section[id]');
   if (!sec) return;
   const popup = document.getElementById('insertPopup');
   popup.style.left = Math.min(e.clientX, window.innerWidth - 160) + 'px';
   popup.style.top = Math.min(e.clientY, window.innerHeight - 220) + 'px';
-  insertPopupTarget = { section: sec, clientY: e.clientY };
+  insertPopupTarget = { section: sec, clientY: e.clientY, clickedEl: e.target };
   popup.classList.add('show');
 }
 
 function getInsertPosition() {
   if (!insertPopupTarget) return null;
-  const sec = insertPopupTarget.section;
-  const clickY = insertPopupTarget.clientY;
-  const children = Array.from(sec.children).filter(el => el.classList && (el.classList.contains('content-card')||el.classList.contains('reflection')||el.tagName==='IMG'||el.classList.contains('section-header')||el.classList.contains('insert-marker')));
-  let beforeEl = null;
+  const { section, clientY, clickedEl } = insertPopupTarget;
+  // If click was inside a content-card, insert between its children
+  const card = clickedEl.closest('.content-card');
+  if (card) {
+    const kids = Array.from(card.children);
+    for (const kid of kids) {
+      const r = kid.getBoundingClientRect();
+      if (clientY < r.top + r.height/2) { return { parent: card, beforeElement: kid }; }
+    }
+    return { parent: card, beforeElement: null };
+  }
+  // Otherwise insert at section level (between cards)
+  const children = Array.from(section.children).filter(el => el.classList && (el.classList.contains('content-card')||el.classList.contains('reflection')||el.tagName==='IMG'||el.classList.contains('section-header')||el.classList.contains('insert-marker')));
   for (const child of children) {
     const r = child.getBoundingClientRect();
-    if (clickY < r.top + r.height/2) { beforeEl = child; break; }
+    if (clientY < r.top + r.height/2) { return { parent: section, beforeElement: child }; }
   }
-  return { section: sec, beforeElement: beforeEl };
+  return { parent: section, beforeElement: null };
 }
 
 function insertPopupImage(source) {
   const pos = getInsertPosition(); if (!pos) { hideInsertPopup(); return; }
   hideInsertPopup();
+  const doInsert = function(src) {
+    const img = document.createElement('img');
+    img.src = src.startsWith('data:') ? src : 'images/' + src;
+    img.style.cssText = 'max-width:100%;border-radius:8px;margin:8px 0;display:block';
+    img.alt = '';
+    if (pos.beforeElement) pos.parent.insertBefore(img, pos.beforeElement); else pos.parent.appendChild(img);
+    showToast('Image inserted');
+  };
   if (source === 'repo') {
-    openImagePicker(function(filename) {
-      const img = document.createElement('img');
-      img.src = 'images/' + filename;
-      img.style.cssText = 'max-width:100%;border-radius:8px;margin:8px 0;display:block';
-      img.alt = '';
-      if (pos.beforeElement) pos.section.insertBefore(img, pos.beforeElement); else pos.section.appendChild(img);
-      showToast('Image inserted from repo');
-    });
+    openImagePicker(function(fn) { doInsert(fn); });
     return;
   }
   const input = document.createElement('input');
@@ -2466,14 +2476,7 @@ function insertPopupImage(source) {
   input.onchange = function(e) {
     const file = e.target.files[0]; document.body.removeChild(input); if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(ev) {
-      const img = document.createElement('img');
-      img.src = ev.target.result;
-      img.style.cssText = 'max-width:100%;border-radius:8px;margin:8px 0;display:block';
-      img.alt = '';
-      if (pos.beforeElement) pos.section.insertBefore(img, pos.beforeElement); else pos.section.appendChild(img);
-      showToast('Image inserted from computer');
-    };
+    reader.onload = function(ev) { doInsert(ev.target.result); };
     reader.readAsDataURL(file);
   };
   input.click();
@@ -2518,7 +2521,7 @@ function insertPopupText() {
   const pos = getInsertPosition(); if (!pos) { hideInsertPopup(); return; }
   const p = document.createElement('p');
   p.contentEditable = 'true'; p.textContent = 'New text here...';
-  if (pos.beforeElement) pos.section.insertBefore(p, pos.beforeElement); else pos.section.appendChild(p);
+  if (pos.beforeElement) pos.parent.insertBefore(p, pos.beforeElement); else pos.parent.appendChild(p);
   p.focus();
   const r = document.createRange(); r.selectNodeContents(p);
   const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
@@ -2530,7 +2533,7 @@ function insertPopupCard() {
   const card = document.createElement('div');
   card.className = 'content-card';
   card.innerHTML = '<div class="card-tag" contenteditable="true">New</div><h3 contenteditable="true">New Card</h3><p contenteditable="true">Add your content here...</p>';
-  if (pos.beforeElement) pos.section.insertBefore(card, pos.beforeElement); else pos.section.appendChild(card);
+  if (pos.beforeElement) pos.parent.insertBefore(card, pos.beforeElement); else pos.parent.appendChild(card);
   hideInsertPopup(); showToast('Card added');
 }
 
@@ -2540,7 +2543,7 @@ function insertPopupVideo() {
   const id = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/)?.[1] || url.trim();
   const div = document.createElement('div');
   div.innerHTML = '<div class="ref-link" contenteditable="true">youtube.com/watch?v='+id+'</div>';
-  if (pos.beforeElement) pos.section.insertBefore(div.firstChild, pos.beforeElement); else pos.section.appendChild(div.firstChild);
+  if (pos.beforeElement) pos.parent.insertBefore(div.firstChild, pos.beforeElement); else pos.parent.appendChild(div.firstChild);
   hideInsertPopup(); showToast('Video link added');
 }
 
