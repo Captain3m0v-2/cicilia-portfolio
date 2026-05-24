@@ -146,7 +146,9 @@ a{color:#c4a882;text-decoration:none}
       <div class="actions">
         <button class="btn-logout" style="border-color:#333;color:#999" onclick="document.getElementById('fileInput').click()">📂 Load from File</button>
       <input type="file" id="fileInput" accept=".html" style="display:none">
-      <button class="btn-export" onclick="handleExport()">⬇ Export &amp; Download</button>
+      <button class="btn-export" onclick="handleExport()">⬇ Export</button>
+      <button class="btn-export" onclick="saveToGithub()" style="background:#2da44e;color:#fff;" id="btnGithub">☁ Save to GitHub</button>
+      <button class="btn-logout" onclick="localStorage.removeItem('gh_token');alert('Token cleared.')" title="Clear saved GitHub token" style="font-size:11px;padding:4px 8px;">🔑</button>
       <button class="btn-logout" onclick="handleLogout()">Logout</button>
       </div>
     </div>
@@ -1282,6 +1284,58 @@ function handleExport() {
   setTimeout(() => toast.classList.remove('show'), 5000);
 }
 
+// ===== SAVE TO GITHUB =====
+function getGithubToken() {
+  let token = localStorage.getItem('gh_token');
+  if (!token) {
+    token = prompt('Enter your GitHub Personal Access Token (classic, with repo scope):\n\nCreate one at: github.com/settings/tokens\nStore it in a safe place — this will be saved in your browser.');
+    if (!token) return null;
+    localStorage.setItem('gh_token', token);
+  }
+  return token;
+}
+
+async function saveToGithub() {
+  const btn = document.getElementById('btnGithub');
+  const token = getGithubToken();
+  if (!token) return;
+  btn.textContent = '⏳ Saving...';
+  btn.disabled = true;
+  try {
+    const data = collectFormData();
+    const html = generateSite(data);
+    const encoded = btoa(unescape(encodeURIComponent(html)));
+    const repo = 'Captain3m0v-2/cicilia-portfolio';
+    // Get current file SHA
+    const getResp = await fetch('https://api.github.com/repos/' + repo + '/contents/index.html', {
+      headers: {'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json'}
+    });
+    if (!getResp.ok) throw new Error('Failed to read repo. Check your token has repo scope.');
+    const fileData = await getResp.json();
+    // Update file
+    const putResp = await fetch('https://api.github.com/repos/' + repo + '/contents/index.html', {
+      method: 'PUT',
+      headers: {'Authorization': 'token ' + token, 'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        message: 'update from admin panel',
+        content: encoded,
+        sha: fileData.sha
+      })
+    });
+    if (!putResp.ok) throw new Error('Failed to save. Check your token permissions.');
+    const toast = document.getElementById('successToast');
+    toast.innerHTML = '✓ Saved to GitHub! Site will update in 1-2 minutes.';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 6000);
+  } catch(e) {
+    alert('Error: ' + e.message + '\n\nTry again or use Export & Download.');
+    // Reset token so they can retry
+    localStorage.removeItem('gh_token');
+  }
+  btn.textContent = '☁ Save to GitHub';
+  btn.disabled = false;
+}
+
 // ===== PREVIEW =====
 function showPreview() {
   const data = collectFormData();
@@ -1293,10 +1347,6 @@ function showPreview() {
 }
 
 // === LOAD FROM FILE ===
-document.getElementById('loadFileBtn').addEventListener('click', function() {
-  document.getElementById('fileInput').click();
-});
-
 document.getElementById('fileInput').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
