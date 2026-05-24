@@ -2502,18 +2502,21 @@ function pickImage(filename) {
 function closeImagePicker() { document.getElementById('imagePicker').classList.remove('show'); imagePickerCallback = null; }
 
 function saveSite() {
-  showToast('💾 Generating file...');
+  showToast('💾 Saving to browser + downloading...');
   setTimeout(function() {
     const doctype = '<!DOCTYPE html>\n';
-    const html = document.documentElement.outerHTML;
-    const blob = new Blob([doctype + html], { type: 'text/html' });
+    const html = doctype + document.documentElement.outerHTML;
+    // Save to localStorage so it survives refresh
+    try { localStorage.setItem('savedSiteHtml', html); } catch(e) {}
+    // Also download for GitHub push
+    const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; a.download = 'index.html';
     document.body.appendChild(a); a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showToast('✅ Saved! Copy index.html to your repo folder, then run: git add index.html images/ && git commit -m "update site" && git push');
+    showToast('✅ Saved in browser + downloaded! Copy index.html to repo and: git add . && git commit -m "update" && git push');
   }, 300);
 }
 
@@ -3134,6 +3137,23 @@ function exportSite() {
   URL.revokeObjectURL(url);
   showToast('✅ Exported! Upload index.html to GitHub');
 }
+
+// Restore saved edits from localStorage (survives refresh)
+(function() {
+  try {
+    var key = 'savedSiteHtml';
+    var saved = localStorage.getItem(key);
+    if (saved && saved.length > 1000 && saved.indexOf('<!DOCTYPE html>') === 0) {
+      var cur = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      if (saved !== cur) {
+        localStorage.removeItem(key);
+        if (confirm('Unsaved edits found from last session. Restore them?')) {
+          document.open(); document.write(saved); document.close();
+        }
+      }
+    }
+  } catch(e) {}
+})();
 
 // Close modal on overlay click
 document.getElementById('adminModal').addEventListener('click', function(e) {
