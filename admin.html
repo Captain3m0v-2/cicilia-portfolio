@@ -132,6 +132,7 @@ a{color:#c4a882;text-decoration:none}
     <div class="nav-item" data-section="ch7">7 — SEL</div>
     <div class="nav-item" data-section="ch8">8 — AI & Future</div>
     <div class="nav-item" data-section="ch9">9 — Reflections</div>
+    <div class="nav-item" data-section="images" style="border-left-color:#c4a882;color:#c4a882;">🖼 Image Manager</div>
     <div class="nav-group">Site</div>
     <div class="nav-item" data-section="references">References</div>
     <div class="nav-item" data-section="footer">Footer</div>
@@ -328,9 +329,10 @@ function switchSection(sec) {
       'ch1':'Chapter 1 — Early Literacy','ch2':'Chapter 2 — Comprehension','ch3':'Chapter 3 — Vocabulary',
       'ch4':'Chapter 4 — Workshop','ch5':'Chapter 5 — Critical Literacy','ch6':'Chapter 6 — Dyslexia',
       'ch7':'Chapter 7 — SEL','ch8':'Chapter 8 — AI & Future','ch9':'Chapter 9 — Reflections',
-      'references':'References','footer':'Footer'
+      'references':'References','footer':'Footer','images':'🖼 Image Manager'
     };
     document.getElementById('mainTitle').textContent = titles[sec] || 'Edit Section';
+    if (sec === 'images') renderImageManager();
   }
 }
 
@@ -357,6 +359,149 @@ function handleImageUpload(input, fieldId, previewId) {
 
 function getImageDataUrl(fieldId) {
   return imageStore[fieldId] || null;
+}
+
+// ===== IMAGE MANAGER =====
+const IMG_PATH = 'images/';
+const knownImages = [
+  '1.jpeg','2.jfif','2.jpg','image1.png','image2.png','image3.png','image4.png','image5.png',
+  'image6.png','image7.png','image8.png','image9.png','image10.png','image11.png','image12.png',
+  'image13.png','image14.png','image15.png','image16.png','image17.png','image18.jpg','image19.jpg',
+  'image20.png','image21.png','image22.png','image23.png','image24.png','image25.jpg','image26.png',
+  'image27.png','image28.jpeg','image29.jpeg','image30.jpeg','profile.jpeg','cicilia1.jfif'
+];
+
+function getAllImageTags() {
+  const results = [];
+  document.querySelectorAll('.ch-content').forEach(textarea => {
+    const ch = textarea.dataset.ch;
+    const html = textarea.value;
+    const regex = /<img[^>]+src=["']images\/([^"']+)["'][^>]*>/gi;
+    let match;
+    while ((match = regex.exec(html)) !== null) {
+      results.push({
+        fullTag: match[0],
+        filename: match[1],
+        chapter: ch,
+        textarea: textarea
+      });
+    }
+  });
+  return results;
+}
+
+function getChapterTitle(chId) {
+  const map = {
+    ch1:'Ch 1 — Early Literacy', ch2:'Ch 2 — Comprehension',
+    ch3:'Ch 3 — Vocabulary', ch4:'Ch 4 — Workshop',
+    ch5:'Ch 5 — Critical Literacy', ch6:'Ch 6 — Dyslexia',
+    ch7:'Ch 7 — SEL', ch8:'Ch 8 — AI & Future', ch9:'Ch 9 — Reflections'
+  };
+  return map[chId] || chId;
+}
+
+function renderImageManager() {
+  const grid = document.getElementById('imageManagerGrid');
+  if (!grid) return;
+  const images = getAllImageTags();
+  if (images.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#555;font-size:14px;">No images found. Load a file first using 📂 Load from File above.</div>';
+    return;
+  }
+  // Group by chapter
+  const grouped = {};
+  images.forEach(img => {
+    if (!grouped[img.chapter]) grouped[img.chapter] = [];
+    grouped[img.chapter].push(img);
+  });
+  let html = '';
+  const allChs = ['ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8','ch9'];
+  allChs.forEach(ch => {
+    const chImages = grouped[ch] || [];
+    html += '<div style="background:#1a1a1a;border-radius:12px;padding:16px;border:1px solid #2a2a2a;' + (chImages.length === 0 ? 'opacity:0.4;' : '') + '" ondrop="onDrop(event)" ondragover="event.preventDefault();this.style.borderColor=\'#c4a882\'" ondragleave="this.style.borderColor=\'#2a2a2a\'" data-chapter="' + ch + '">';
+    html += '<div style="font-size:11px;font-weight:600;color:#c4a882;margin-bottom:10px;letter-spacing:0.5px;">' + getChapterTitle(ch) + ' <span style="color:#555;font-weight:400;">(' + chImages.length + ')</span></div>';
+    if (chImages.length === 0) {
+      html += '<div style="font-size:11px;color:#444;padding:8px 0;">No images</div>';
+    } else {
+      chImages.forEach((img, idx) => {
+        const imgPath = IMG_PATH + img.filename;
+        html += '<div draggable="true" data-filename="' + img.filename + '" data-chapter="' + img.chapter + '" style="background:#222;border-radius:8px;padding:8px;margin-bottom:8px;cursor:grab;border:1px solid #333;transition:all 0.2s;" ondragstart="onDragStart(event)" ondragend="this.style.borderColor=\'#333\'">';
+        html += '<div style="width:100%;height:80px;border-radius:6px;overflow:hidden;background:#1a1a1a;margin-bottom:6px;display:flex;align-items:center;justify-content:center;">';
+        html += '<img src="' + imgPath + '" alt="' + img.filename + '" style="max-width:100%;max-height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML=\'<span style=font-size:10px;color:#555;>No preview</span>\'">';
+        html += '</div>';
+        html += '<div style="font-size:10px;color:#888;word-break:break-all;margin-bottom:4px;">' + img.filename + '</div>';
+        html += '<select onchange="moveImage(this,\'' + img.chapter + '\',\'' + img.filename + '\')" style="width:100%;padding:4px 6px;border-radius:4px;border:1px solid #333;background:#1a1a1a;color:#ccc;font-size:11px;">';
+        allChs.forEach(chOpt => {
+          html += '<option value="' + chOpt + '"' + (chOpt === img.chapter ? ' selected' : '') + '>' + getChapterTitle(chOpt) + '</option>';
+        });
+        html += '</select>';
+        html += '</div>';
+      });
+    }
+    html += '</div>';
+  });
+  grid.innerHTML = html;
+}
+
+function refreshImageManager() {
+  renderImageManager();
+}
+
+function onDragStart(e) {
+  e.dataTransfer.setData('text/plain', JSON.stringify({
+    filename: e.target.closest('[data-filename]').dataset.filename,
+    fromChapter: e.target.closest('[data-filename]').dataset.chapter
+  }));
+  e.target.style.borderColor = '#c4a882';
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  e.currentTarget.style.borderColor = '#2a2a2a';
+  try {
+    const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+    const toChapter = e.currentTarget.dataset.chapter;
+    if (data.fromChapter === toChapter) return;
+    const select = document.querySelector('select[onchange*="' + data.filename + '"]');
+    if (select) {
+      select.value = toChapter;
+      moveImage(select, data.fromChapter, data.filename);
+    }
+  } catch(err) {}
+}
+
+function moveImage(select, fromChapter, filename) {
+  const toChapter = select.value;
+  if (toChapter === fromChapter) return;
+  if (!confirm('Move ' + filename + ' from ' + getChapterTitle(fromChapter) + ' to ' + getChapterTitle(toChapter) + '?')) {
+    select.value = fromChapter;
+    return;
+  }
+  // Find and move the img tag
+  const fromTA = document.querySelector('.ch-content[data-ch="' + fromChapter + '"]');
+  const toTA = document.querySelector('.ch-content[data-ch="' + toChapter + '"]');
+  if (!fromTA || !toTA) return;
+  const regex = new RegExp('<img[^>]*src=["\']images\\/' + filename.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '["\'][^>]*>');
+  const match = fromTA.value.match(regex);
+  if (!match) {
+    alert('Image tag not found in source chapter. Try Refresh.');
+    select.value = fromChapter;
+    return;
+  }
+  fromTA.value = fromTA.value.replace(regex, '');
+  toTA.value = toTA.value + '\n    ' + match[0];
+  renderImageManager();
+}
+
+function applyImageChanges() {
+  // The image moves already applied inline via moveImage()
+  const total = getAllImageTags().length;
+  // Show success
+  const toast = document.getElementById('successToast');
+  toast.innerHTML = '✓ Image arrangement applied! (' + total + ' images across all chapters)';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 5000);
+  renderImageManager();
 }
 
 // ===== OVERVIEW CARDS =====
@@ -454,6 +599,23 @@ function buildChapterForms() {
     `;
     mainContent.appendChild(sec);
   });
+  // Image Manager section
+  const imgSec = document.createElement('div');
+  imgSec.className = 'form-section';
+  imgSec.id = 'sec-images';
+  imgSec.innerHTML = `
+    <h3>🖼 Image Manager</h3>
+    <p class="desc">Drag images between chapters or use the dropdown to rearrange. Click <strong>Apply Changes</strong> to update the chapter content below.</p>
+    <div class="form-group">
+      <label>Image Gallery</label>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+        <button class="btn-export" onclick="applyImageChanges()" style="padding:9px 20px;border:none;border-radius:8px;background:#c4a882;color:#111;font-weight:600;font-size:13px;cursor:pointer;">✓ Apply Changes</button>
+        <button onclick="refreshImageManager()" style="padding:9px 20px;border:1px solid #333;border-radius:8px;background:transparent;color:#999;font-weight:500;font-size:13px;cursor:pointer;">↻ Refresh</button>
+      </div>
+      <div id="imageManagerGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;"></div>
+    </div>
+  `;
+  mainContent.appendChild(imgSec);
   // References section
   const refSec = document.createElement('div');
   refSec.className = 'form-section';
