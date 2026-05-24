@@ -2151,11 +2151,8 @@ document.querySelectorAll('.section').forEach(s => {
   observer.observe(s);
 });
 
-// === DYNAMIC YEAR & LAST UPDATED ===
+// === DYNAMIC YEAR ===
 document.getElementById('footerCopyright').innerHTML = '&copy; ' + new Date().getFullYear() + ' Cicilia Kretteka Mondle &mdash; Asian University For Women';
-const updatedSpan = document.createElement('p');
-updatedSpan.textContent = 'Last updated: ' + document.lastModified;
-document.querySelector('.footer-bottom').appendChild(updatedSpan);
 
 // === REFERENCE LINK CLICK & HOVER TOOLTIP ===
 function extractYtId(text) {
