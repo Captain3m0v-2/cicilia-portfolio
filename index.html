@@ -743,6 +743,16 @@ p { text-align:justify; }
 .insert-popup button{padding:7px 14px;border:none;background:transparent;color:rgba(255,255,255,0.85);font-size:12px;cursor:pointer;border-radius:6px;text-align:left;white-space:nowrap;transition:background 0.15s}
 .insert-popup button:hover{background:rgba(255,255,255,0.1)}
 .insert-popup button.danger:hover{background:rgba(255,60,60,0.2);color:#ff6b6b}
+.image-picker{position:fixed;z-index:10000;background:#1a1a2e;border-radius:12px;padding:16px;box-shadow:0 12px 50px rgba(0,0,0,0.4);display:none;flex-direction:column;max-height:80vh;width:420px;top:50%;left:50%;transform:translate(-50%,-50%)}
+.image-picker.show{display:flex}
+.image-picker h3{color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;margin-bottom:10px}
+.image-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;overflow-y:auto;padding:4px;flex:1}
+.image-picker-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;border:2px solid transparent}
+.image-picker-grid img:hover{transform:scale(1.05);box-shadow:0 4px 15px rgba(0,0,0,0.3);border-color:#c4a882}
+.image-picker-actions{display:flex;gap:6px;margin-top:10px;justify-content:flex-end}
+.image-picker-actions button{padding:6px 14px;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:500}
+.image-picker-actions .btn-cancel{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6)}
+.image-picker-actions .btn-cancel:hover{background:rgba(255,255,255,0.15)}
 .section.insert-target{cursor:crosshair}
 .insert-marker{text-align:center;padding:4px;opacity:0;transition:opacity 0.2s;font-size:11px;color:#c4a882;cursor:crosshair;user-select:none}
 .section.insert-target .insert-marker{opacity:0.4}
@@ -843,7 +853,7 @@ img.dragging{opacity:0.4;transform:scale(0.95)}
     <button class="insert-btn" onclick="addReference()">+Ref</button>
     <button class="insert-btn" onclick="addChapterPrompt()">+Chapter</button>
     <span style="color:rgba(255,255,255,0.12);font-size:13px">|</span>
-    <button style="padding:5px 12px;border:none;border-radius:6px;background:#c4a882;color:#1a1a2e;font-weight:600;font-size:11px;cursor:pointer" onclick="exportSite()">⬇ Export</button>
+    <button style="padding:5px 12px;border:none;border-radius:6px;background:#27ae60;color:#fff;font-weight:600;font-size:11px;cursor:pointer" onclick="saveSite()">💾 Save</button>
     <button style="padding:5px 12px;border:none;border-radius:6px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);font-weight:500;font-size:11px;cursor:pointer" onclick="exitEditMode()">Exit</button>
   </div>
 </div>
@@ -857,12 +867,20 @@ img.dragging{opacity:0.4;transform:scale(0.95)}
 </div>
 <button class="admin-btn" id="adminBtn" onclick="toggleAdmin()" title="Admin">🔑</button>
 <div class="insert-popup" id="insertPopup">
-  <button onclick="insertPopupImage()">📷 Image</button>
+  <button onclick="insertPopupImage('computer')">📷 Image (Computer)</button>
+  <button onclick="insertPopupImage('repo')">📂 Image (Repo)</button>
   <button onclick="insertPopupText()">✏️ Text</button>
   <button onclick="insertPopupCard()">📄 Card</button>
   <button onclick="insertPopupVideo()">▶️ Video</button>
   <button onclick="insertPopupSection()">🔲 New Section</button>
   <button class="danger" onclick="hideInsertPopup()">Cancel</button>
+</div>
+<div class="image-picker" id="imagePicker">
+  <h3>Pick an image from the repo</h3>
+  <div class="image-picker-grid" id="imagePickerGrid"></div>
+  <div class="image-picker-actions">
+    <button class="btn-cancel" onclick="closeImagePicker()">Cancel</button>
+  </div>
 </div>
 <div class="chapter-edit-modal" id="chapterEditModal">
   <div style="display:flex;flex-direction:column;align-items:center;width:100%">
@@ -2428,8 +2446,20 @@ function getInsertPosition() {
   return { section: sec, beforeElement: beforeEl };
 }
 
-function insertPopupImage() {
+function insertPopupImage(source) {
   const pos = getInsertPosition(); if (!pos) { hideInsertPopup(); return; }
+  hideInsertPopup();
+  if (source === 'repo') {
+    openImagePicker(function(filename) {
+      const img = document.createElement('img');
+      img.src = 'images/' + filename;
+      img.style.cssText = 'max-width:100%;border-radius:8px;margin:8px 0;display:block';
+      img.alt = '';
+      if (pos.beforeElement) pos.section.insertBefore(img, pos.beforeElement); else pos.section.appendChild(img);
+      showToast('Image inserted from repo');
+    });
+    return;
+  }
   const input = document.createElement('input');
   input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
   document.body.appendChild(input);
@@ -2442,11 +2472,46 @@ function insertPopupImage() {
       img.style.cssText = 'max-width:100%;border-radius:8px;margin:8px 0;display:block';
       img.alt = '';
       if (pos.beforeElement) pos.section.insertBefore(img, pos.beforeElement); else pos.section.appendChild(img);
-      showToast('Image inserted');
+      showToast('Image inserted from computer');
     };
     reader.readAsDataURL(file);
   };
-  hideInsertPopup(); input.click();
+  input.click();
+}
+
+let imagePickerCallback = null;
+
+function openImagePicker(callback) {
+  imagePickerCallback = callback;
+  const grid = document.getElementById('imagePickerGrid');
+  const images = ['1.jpeg','2.jpg','image1.png','image2.png','image3.png','image4.png','image5.png','image6.png','image7.png','image8.png','image9.png','image10.png','image11.png','image12.png','image13.png','image14.png','image15.png','image16.png','image17.png','image18.jpg','image19.jpg','image20.png','image21.png','image22.png','image23.png','image24.png','image25.jpg','image26.png','image27.png'];
+  grid.innerHTML = images.map(f =>
+    '<img src="images/'+f+'" alt="'+f+'" onclick="pickImage(\''+f+'\')" loading="lazy">'
+  ).join('');
+  document.getElementById('imagePicker').classList.add('show');
+}
+
+function pickImage(filename) {
+  if (imagePickerCallback) imagePickerCallback(filename);
+  closeImagePicker();
+}
+
+function closeImagePicker() { document.getElementById('imagePicker').classList.remove('show'); imagePickerCallback = null; }
+
+function saveSite() {
+  showToast('💾 Generating file...');
+  setTimeout(function() {
+    const doctype = '<!DOCTYPE html>\n';
+    const html = document.documentElement.outerHTML;
+    const blob = new Blob([doctype + html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'index.html';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('✅ Saved! Copy index.html to your repo folder, then run: git add index.html images/ && git commit -m "update site" && git push');
+  }, 300);
 }
 
 function insertPopupText() {
@@ -2701,17 +2766,41 @@ function fmtSize(dir) {
 }
 
 function insertImage() {
-  // Step 1: Open file picker FIRST (must be in user gesture)
+  const src = confirm('Click OK to pick from repo (Cancel to upload from computer)');
+  if (src) {
+    openImagePicker(function(filename) {
+      const chapters = getChapters();
+      if (chapters.length === 0) { showToast('No chapter found'); return; }
+      const names = chapters.map(s => s.querySelector('.section-title')?.textContent?.trim() || s.id);
+      const idx = prompt('Insert image into which chapter? (1-'+chapters.length+')\n'+names.map((n,i)=>(i+1)+': '+n).join('\n'),'1');
+      if (!idx) return;
+      const i = parseInt(idx)-1;
+      if (i < 0 || i >= chapters.length) { showToast('Invalid number'); return; }
+      const sec = chapters[i];
+      const cards = sec.querySelectorAll('.content-card');
+      let posMsg = 'After which card? (0=at top';
+      const cardTitles = [];
+      cards.forEach((c,j) => { const t = c.querySelector('h3')?.textContent?.trim() || c.querySelector('h4')?.textContent?.trim() || 'Card '+(j+1); cardTitles.push(t); });
+      posMsg += ', 1-'+cards.length+'=after that card, or empty for end)';
+      const posStr = prompt(posMsg+'\n'+cardTitles.map((t,j)=>(j+1)+': '+t).join('\n'), cards.length.toString());
+      if (posStr === null) return;
+      const pos = posStr.trim() === '' ? cards.length : Math.max(0, Math.min(cards.length, parseInt(posStr) || 0));
+      const img = document.createElement('img');
+      img.src = 'images/' + filename;
+      img.style.cssText = 'max-width:100%;border-radius:8px;margin:8px 0;display:block';
+      img.alt = '';
+      if (pos === 0 && cards.length > 0) { cards[0].parentNode.insertBefore(img, cards[0]); }
+      else if (pos >= cards.length || cards.length === 0) { const ref = sec.querySelector('.reflection') || sec.querySelector('.edit-chapter-btn') || sec.querySelector('.del-btn'); if (ref) sec.insertBefore(img, ref); else sec.appendChild(img); }
+      else { const after = cards[pos]; after.parentNode.insertBefore(img, after.nextSibling); }
+      showToast('Image inserted from repo');
+    });
+    return;
+  }
   const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.style.display = 'none';
+  input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
   document.body.appendChild(input);
   input.onchange = function(e) {
-    const file = e.target.files[0];
-    document.body.removeChild(input);
-    if (!file) return;
-    // Step 2: Now ask where to place it
+    const file = e.target.files[0]; document.body.removeChild(input); if (!file) return;
     const chapters = getChapters();
     if (chapters.length === 0) { showToast('No chapter found'); return; }
     const names = chapters.map(s => s.querySelector('.section-title')?.textContent?.trim() || s.id);
@@ -2734,15 +2823,9 @@ function insertImage() {
       img.src = ev.target.result;
       img.style.cssText = 'max-width:100%;border-radius:8px;margin:8px 0;display:block';
       img.alt = '';
-      if (pos === 0 && cards.length > 0) {
-        cards[0].parentNode.insertBefore(img, cards[0]);
-      } else if (pos >= cards.length || cards.length === 0) {
-        const ref = sec.querySelector('.reflection') || sec.querySelector('.edit-chapter-btn') || sec.querySelector('.del-btn');
-        if (ref) { sec.insertBefore(img, ref); } else { sec.appendChild(img); }
-      } else {
-        const after = cards[pos];
-        after.parentNode.insertBefore(img, after.nextSibling);
-      }
+      if (pos === 0 && cards.length > 0) { cards[0].parentNode.insertBefore(img, cards[0]); }
+      else if (pos >= cards.length || cards.length === 0) { const ref = sec.querySelector('.reflection') || sec.querySelector('.edit-chapter-btn') || sec.querySelector('.del-btn'); if (ref) sec.insertBefore(img, ref); else sec.appendChild(img); }
+      else { const after = cards[pos]; after.parentNode.insertBefore(img, after.nextSibling); }
       showToast('Image inserted at position '+(pos+1));
     };
     reader.readAsDataURL(file);
