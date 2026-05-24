@@ -738,6 +738,15 @@ p { text-align:justify; }
 .admin-toolbar .btn-export{background:#27ae60;color:#fff}
 .admin-toolbar .btn-export:hover{opacity:0.8}
 [contenteditable=true]{outline:none;cursor:text;transition:background 0.2s;border-radius:4px;padding:2px 4px;margin:-2px -4px}
+.insert-popup{position:fixed;z-index:9999;background:#1a1a2e;border-radius:10px;padding:4px;display:none;gap:2px;box-shadow:0 8px 30px rgba(0,0,0,0.3);flex-direction:column;min-width:140px}
+.insert-popup.show{display:flex}
+.insert-popup button{padding:7px 14px;border:none;background:transparent;color:rgba(255,255,255,0.85);font-size:12px;cursor:pointer;border-radius:6px;text-align:left;white-space:nowrap;transition:background 0.15s}
+.insert-popup button:hover{background:rgba(255,255,255,0.1)}
+.insert-popup button.danger:hover{background:rgba(255,60,60,0.2);color:#ff6b6b}
+.section.insert-target{cursor:crosshair}
+.insert-marker{text-align:center;padding:4px;opacity:0;transition:opacity 0.2s;font-size:11px;color:#c4a882;cursor:crosshair;user-select:none}
+.section.insert-target .insert-marker{opacity:0.4}
+.insert-marker:hover{opacity:1;background:rgba(196,168,130,0.08)}
 [contenteditable=true]:hover{background:rgba(196,168,130,0.06)}
 [contenteditable=true]:focus{background:rgba(196,168,130,0.1);box-shadow:0 0 0 2px rgba(196,168,130,0.2)}
 .editable-image{cursor:pointer;position:relative}
@@ -847,6 +856,14 @@ img.dragging{opacity:0.4;transform:scale(0.95)}
   <button onclick="embedVideo()" title="Video">▶️</button>
 </div>
 <button class="admin-btn" id="adminBtn" onclick="toggleAdmin()" title="Admin">🔑</button>
+<div class="insert-popup" id="insertPopup">
+  <button onclick="insertPopupImage()">📷 Image</button>
+  <button onclick="insertPopupText()">✏️ Text</button>
+  <button onclick="insertPopupCard()">📄 Card</button>
+  <button onclick="insertPopupVideo()">▶️ Video</button>
+  <button onclick="insertPopupSection()">🔲 New Section</button>
+  <button class="danger" onclick="hideInsertPopup()">Cancel</button>
+</div>
 <div class="chapter-edit-modal" id="chapterEditModal">
   <div style="display:flex;flex-direction:column;align-items:center;width:100%">
     <textarea id="chapterEditTextarea" spellcheck="false"></textarea>
@@ -2376,6 +2393,99 @@ function setupImageDrag() {
     });
   });
 }
+
+let insertPopupTarget = null;
+
+function hideInsertPopup() {
+  const p = document.getElementById('insertPopup');
+  if (p) p.classList.remove('show');
+  insertPopupTarget = null;
+}
+
+function showInsertPopup(e) {
+  if (!isEditMode) return;
+  if (e.target.closest('.admin-toolbar,.admin-format-toolbar,#insertPopup,.del-btn,.move-btn,.edit-chapter-btn,.insert-btn,.admin-btn,.editable-image,.insert-marker')) return;
+  if (e.target.closest('[contenteditable="true"]') || (e.target.tagName === 'IMG' && e.target.closest('.section'))) return;
+  const sec = e.target.closest('.section[id]');
+  if (!sec) return;
+  const popup = document.getElementById('insertPopup');
+  popup.style.left = Math.min(e.clientX, window.innerWidth - 160) + 'px';
+  popup.style.top = Math.min(e.clientY, window.innerHeight - 220) + 'px';
+  insertPopupTarget = { section: sec, clientY: e.clientY };
+  popup.classList.add('show');
+}
+
+function getInsertPosition() {
+  if (!insertPopupTarget) return null;
+  const sec = insertPopupTarget.section;
+  const clickY = insertPopupTarget.clientY;
+  const children = Array.from(sec.children).filter(el => el.classList && (el.classList.contains('content-card')||el.classList.contains('reflection')||el.tagName==='IMG'||el.classList.contains('section-header')||el.classList.contains('insert-marker')));
+  let beforeEl = null;
+  for (const child of children) {
+    const r = child.getBoundingClientRect();
+    if (clickY < r.top + r.height/2) { beforeEl = child; break; }
+  }
+  return { section: sec, beforeElement: beforeEl };
+}
+
+function insertPopupImage() {
+  const pos = getInsertPosition(); if (!pos) { hideInsertPopup(); return; }
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
+  document.body.appendChild(input);
+  input.onchange = function(e) {
+    const file = e.target.files[0]; document.body.removeChild(input); if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      const img = document.createElement('img');
+      img.src = ev.target.result;
+      img.style.cssText = 'max-width:100%;border-radius:8px;margin:8px 0;display:block';
+      img.alt = '';
+      if (pos.beforeElement) pos.section.insertBefore(img, pos.beforeElement); else pos.section.appendChild(img);
+      showToast('Image inserted');
+    };
+    reader.readAsDataURL(file);
+  };
+  hideInsertPopup(); input.click();
+}
+
+function insertPopupText() {
+  const pos = getInsertPosition(); if (!pos) { hideInsertPopup(); return; }
+  const p = document.createElement('p');
+  p.contentEditable = 'true'; p.textContent = 'New text here...';
+  if (pos.beforeElement) pos.section.insertBefore(p, pos.beforeElement); else pos.section.appendChild(p);
+  p.focus();
+  const r = document.createRange(); r.selectNodeContents(p);
+  const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+  hideInsertPopup(); showToast('Click to edit text');
+}
+
+function insertPopupCard() {
+  const pos = getInsertPosition(); if (!pos) { hideInsertPopup(); return; }
+  const card = document.createElement('div');
+  card.className = 'content-card';
+  card.innerHTML = '<div class="card-tag" contenteditable="true">New</div><h3 contenteditable="true">New Card</h3><p contenteditable="true">Add your content here...</p>';
+  if (pos.beforeElement) pos.section.insertBefore(card, pos.beforeElement); else pos.section.appendChild(card);
+  hideInsertPopup(); showToast('Card added');
+}
+
+function insertPopupVideo() {
+  const pos = getInsertPosition(); if (!pos) { hideInsertPopup(); return; }
+  const url = prompt('YouTube video URL or ID:'); if (!url) return;
+  const id = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/)?.[1] || url.trim();
+  const div = document.createElement('div');
+  div.innerHTML = '<div class="ref-link" contenteditable="true">youtube.com/watch?v='+id+'</div>';
+  if (pos.beforeElement) pos.section.insertBefore(div.firstChild, pos.beforeElement); else pos.section.appendChild(div.firstChild);
+  hideInsertPopup(); showToast('Video link added');
+}
+
+function insertPopupSection() { hideInsertPopup(); showToast('Use the +Chapter button in the toolbar'); }
+
+document.addEventListener('click', function(e) {
+  const popup = document.getElementById('insertPopup');
+  if (popup && popup.classList.contains('show') && !e.target.closest('#insertPopup')) { hideInsertPopup(); return; }
+  if (isEditMode) showInsertPopup(e);
+});
 
 function setupDragDrop() {
   // Drag-over highlight style
