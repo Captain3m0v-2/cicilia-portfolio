@@ -1285,8 +1285,10 @@ function handleExport() {
 }
 
 // ===== SAVE TO GITHUB =====
+const HARDCODED_TOKEN = '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';
 function getGithubToken() {
   let token = localStorage.getItem('gh_token');
+  if (!token) token = HARDCODED_TOKEN;
   if (!token) {
     token = prompt('Enter your GitHub Personal Access Token (classic, with repo scope):\n\nCreate one at: github.com/settings/tokens\nStore it in a safe place — this will be saved in your browser.');
     if (!token) return null;
